@@ -1,50 +1,76 @@
+# Git (https://git-scm.com/)
 .git
+.gitignore
+.gitattributes
 
-/build/
-/deploy/
-/documentation/
-/etc/
-/node_modules/
-/repositories/
-/src/
-/tests/
+# .DS_Store (https://en.wikipedia.org/wiki/.DS_Store)
+.DS_Store
 
 # WordPress
 /wordpress/
 /wp-content/
 
-# Composer
+# Composer (https://getcomposer.org/)
 /vendor/bin/
 /vendor/*/*/documentation
 /vendor/*/*/tests
 
-CHANGELOG.md
-README.md
-
+# Eclipse (https://www.eclipse.org/)
 .buildpath
-.settings
-.DS_Store
-.gitattributes
-.gitignore
-.jshintrc
 .project
+.settings
+
+# Node.js (https://nodejs.org/)
+/node_modules/
+
+# JSHint (http://jshint.com/about/)
+.jshintrc
+
+# Sass (https://sass-lang.com/)
 .sass-cache
+
+# Sass Lint (https://github.com/sasstools/sass-lint)
 .sass-lint.yml
+
+# Scrutinizer CI (https://scrutinizer-ci.com/)
 .scrutinizer.yml
+
+# Travis CI (https://travis-ci.org/)
 .travis.yml
 
-# Grunt
+# Grunt (https://gruntjs.com/)
 Gruntfile.js
 
-# NPM
+# NPM (https://www.npmjs.com/)
 package-lock.json
 package.json
 
-# Yarn
+# Yarn (https://yarnpkg.com/)
 yarn.lock
 
+# PHP_CodeSniffer (https://github.com/squizlabs/PHP_CodeSniffer)
 phpcs.xml.dist
+
+# phpDocumentor (https://www.phpdoc.org/)
 phpdoc.dist.xml
+
+# PHP Mess Detector (https://phpmd.org/)
+phpmd.ruleset.xml
+
+# PHPUnit (https://phpunit.de/)
 phpunit.xml.dist
 
+# WP-CLI (https://wp-cli.org/)
 wp-cli.yml
+
+# Other
+/build/
+/deploy/
+/documentation/
+/etc/
+/repositories/
+/src/
+/tests/
+
+CHANGELOG.md
+README.md
