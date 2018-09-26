@@ -55,3 +55,15 @@ mkdir build/pronamic-ideal
 
 rsync --recursive --delete --exclude-from=exclude.txt ./git/pronamic-ideal/ ./build/pronamic-ideal/
 ```
+
+## To Subversion
+
+```sh
+rsync --recursive --delete ./build/pronamic-ideal/ ./svn/pronamic-ideal/trunk/
+
+svn status ./deploy/wp-svn/trunk/ | grep '^!' | cut -c 9- | xargs -d '\n' -i svn delete {}@
+
+svn status ./deploy/wp-svn/trunk/ | grep '^?' | cut -c 9- | xargs -d '\n' -i svn add {}@
+
+svn commit ./deploy/wp-svn/trunk/ -m 'Update'
+```
