@@ -1,0 +1,16 @@
+# Build folder
+build/*
+!build/README.md
+
+# Git folder
+git/*
+!git/README.md
+
+# Subversion folder
+svn/*
+!svn/README.md
+
+# ZIP folder
+zip/*
+!zip/README.md
+
