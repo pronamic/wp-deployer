@@ -12,6 +12,8 @@
 
 # Composer (https://getcomposer.org/)
 /vendor/bin/
+/vendor/*/*/composer.json
+/vendor/*/*/composer.lock
 /vendor/*/*/documentation
 /vendor/*/*/tests
 
