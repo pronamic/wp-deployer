@@ -56,6 +56,22 @@ mkdir build/pronamic-ideal
 rsync --recursive --delete --exclude-from=exclude.txt ./git/pronamic-ideal/ ./build/pronamic-ideal/
 ```
 
+## Create ZIP
+
+```sh
+mkdir zip/pronamic-ideal
+
+zip -r ./zip/pronamic-ideal/pronamic-ideal.5.4.1.zip ./build/pronamic-ideal/*
+```
+
+## Create tar.gz
+
+```sh
+mkdir tar/pronamic-ideal
+
+tar -zcvf ./tar/pronamic-ideal/pronamic-ideal.5.4.1.tar.gz ./build/pronamic-ideal/*
+```
+
 ## To Subversion
 
 ```sh
@@ -84,6 +100,10 @@ brew install findutils --with-default-names
 # GNU `grep`:
 # https://apple.stackexchange.com/questions/193288/how-to-install-and-use-gnu-grep-in-osx
 brew install grep --with-default-names
+
+# AWS Command Line Interface
+# https://aws.amazon.com/cli/
+brew install awscli
 ```
 
 ## `svn status` and `xargs`
@@ -140,3 +160,4 @@ svn status | grep '^?' | cut -c 9- | xargs -d '\n' -i svn add {}@
 - https://github.com/GaryJones/wordpress-plugin-svn-deploy
 - https://github.com/sudar/wp-plugin-in-github
 - https://stackoverflow.com/questions/16991428/bash-how-to-put-each-line-within-quotation
+- https://coderwall.com/p/tjekrq/subversion-shallow-checkout
