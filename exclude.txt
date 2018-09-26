@@ -1,0 +1,50 @@
+.git
+
+/build/
+/deploy/
+/documentation/
+/etc/
+/node_modules/
+/repositories/
+/src/
+/tests/
+
+# WordPress
+/wordpress/
+/wp-content/
+
+# Composer
+/vendor/bin/
+/vendor/*/*/documentation
+/vendor/*/*/tests
+
+CHANGELOG.md
+README.md
+
+.buildpath
+.settings
+.DS_Store
+.gitattributes
+.gitignore
+.jshintrc
+.project
+.sass-cache
+.sass-lint.yml
+.scrutinizer.yml
+.travis.yml
+
+# Grunt
+Gruntfile.js
+
+# NPM
+package-lock.json
+package.json
+
+# Yarn
+yarn.lock
+
+phpcs.xml.dist
+phpdoc.dist.xml
+phpunit.xml.dist
+
+wp-cli.yml
