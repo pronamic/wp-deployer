@@ -6,6 +6,9 @@
 # .DS_Store (https://en.wikipedia.org/wiki/.DS_Store)
 .DS_Store
 
+# Keep a Changelog (https://keepachangelog.com/)
+CHANGELOG.md
+
 # WordPress
 /wordpress/
 /wp-content/
@@ -43,6 +46,9 @@
 # Grunt (https://gruntjs.com/)
 Gruntfile.js
 
+# Bower (https://bower.io/)
+bower.json
+
 # NPM (https://www.npmjs.com/)
 package-lock.json
 package.json
@@ -52,6 +58,7 @@ yarn.lock
 
 # PHP_CodeSniffer (https://github.com/squizlabs/PHP_CodeSniffer)
 phpcs.xml.dist
+phpcs.ruleset.xml
 
 # phpDocumentor (https://www.phpdoc.org/)
 phpdoc.dist.xml
@@ -74,5 +81,4 @@ wp-cli.yml
 /src/
 /tests/
 
-CHANGELOG.md
 README.md

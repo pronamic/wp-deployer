@@ -1,11 +1,22 @@
 # Deployer
 
+## Examples
+
+```sh
+./deploy.sh -s pronamic-events -g https://github.com/pronamic/wp-pronamic-events.git
+./deploy.sh -s pronamic-ideal -g https://github.com/pronamic/wp-pronamic-ideal.git
+```
+
 ## Subversion checkout
 
 http://svnbook.red-bean.com/en/1.7/svn.ref.svn.c.checkout.html
 
 ```sh
-svn co https://plugins.svn.wordpress.org/pronamic-ideal svn/pronamic-ideal
+svn co https://plugins.svn.wordpress.org/pronamic-ideal svn/pronamic-ideal --depth immediates
+
+svn update --quiet svn/pronamic-ideal/trunk --set-depth infinity
+
+svn update --quiet svn/pronamic-ideal/assets --set-depth infinity
 ```
 
 ## Git checkout
@@ -82,6 +93,14 @@ svn status ./svn/pronamic-ideal/trunk/ | grep '^!' | cut -c 9- | xargs -d '\n' -
 svn status ./svn/pronamic-ideal/trunk/ | grep '^?' | cut -c 9- | xargs -d '\n' -i svn add {}@
 
 svn commit ./svn/pronamic-ideal/trunk/ -m 'Update'
+```
+
+## Tag Subversion
+
+```sh
+svn copy ./svn/pronamic-ideal/trunk/ ./svn/pronamic-ideal/tags/4.5.1/
+
+svn commit ./svn/pronamic-ideal/tags/4.5.1/ -m 'Tagging version 4.5.1'
 ```
 
 ## Requirements
@@ -161,3 +180,6 @@ svn status | grep '^?' | cut -c 9- | xargs -d '\n' -i svn add {}@
 - https://github.com/sudar/wp-plugin-in-github
 - https://stackoverflow.com/questions/16991428/bash-how-to-put-each-line-within-quotation
 - https://coderwall.com/p/tjekrq/subversion-shallow-checkout
+- https://stackoverflow.com/questions/4709912/how-to-make-grep-only-match-if-the-entire-line-matches
+- https://superuser.com/questions/294850/check-if-a-file-is-already-committed-to-svn
+- https://askubuntu.com/questions/29370/how-to-check-if-a-command-succeeded
