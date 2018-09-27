@@ -245,4 +245,4 @@ echo
 echo "ℹ️  Subversion tag"
 echo
 
-svn cp $SVN_URL/trunk/ $SVN_URL/tags/$VERSION/ -m "Tagging version $VERSION for release."
+svn cp $SVN_URL/trunk $SVN_URL/tags/$VERSION -m "Tagging version $VERSION for release."
