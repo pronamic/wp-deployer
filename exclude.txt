@@ -14,9 +14,17 @@ LICENSE
 LICENSE.md
 LICENSE.txt
 
+# Code of Conduct
+CODE_OF_CONDUCT.md
+
 # WordPress
 /wordpress/
 /wp-content/
+
+# WordPress.org assets
+/.wordpress-org/
+/assets-wp-repo/
+/wordpress_org_assets/
 
 # Composer (https://getcomposer.org/)
 /vendor/bin/
@@ -32,6 +40,21 @@ LICENSE.txt
 
 # Node.js (https://nodejs.org/)
 /node_modules/
+
+# BabelRC (https://babeljs.io/)
+.babelrc
+
+# Code Climate (https://codeclimate.com/)
+.codeclimate.yml
+
+# Codecov (https://codecov.io/)
+.codecov.yml
+
+# stylelint (https://stylelint.io/)
+.stylelintrc
+
+# EditorConfig (https://editorconfig.org/)
+.editorconfig
 
 # JSHint (http://jshint.com/about/)
 .jshintrc
@@ -61,11 +84,18 @@ package.json
 # Yarn (https://yarnpkg.com/)
 yarn.lock
 
+# ApiGen (http://apigen.org/)
+apigen.neon
+
+# PHPCI (https://www.phptesting.org/)
+phpci.yml
+
 # PHP_CodeSniffer (https://github.com/squizlabs/PHP_CodeSniffer)
 phpcs.xml.dist
 phpcs.ruleset.xml
 
 # phpDocumentor (https://www.phpdoc.org/)
+phpdoc.xml
 phpdoc.dist.xml
 
 # PHP Mess Detector (https://phpmd.org/)
