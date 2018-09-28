@@ -50,11 +50,21 @@ CODE_OF_CONDUCT.md
 # Codecov (https://codecov.io/)
 .codecov.yml
 
+# CSScomb (http://csscomb.com/)
+.csscomb.json
+
+# CSSLint (https://github.com/CSSLint/csslint)
+.csslintrc
+
 # stylelint (https://stylelint.io/)
 .stylelintrc
 
 # EditorConfig (https://editorconfig.org/)
 .editorconfig
+
+# ESLint (https://eslint.org/)
+.eslintignore
+.eslintrc
 
 # JSHint (http://jshint.com/about/)
 .jshintrc
