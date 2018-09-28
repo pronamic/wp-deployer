@@ -183,3 +183,4 @@ svn status | grep '^?' | cut -c 9- | xargs -d '\n' -i svn add {}@
 - https://stackoverflow.com/questions/4709912/how-to-make-grep-only-match-if-the-entire-line-matches
 - https://superuser.com/questions/294850/check-if-a-file-is-already-committed-to-svn
 - https://askubuntu.com/questions/29370/how-to-check-if-a-command-succeeded
+- https://linux.die.net/man/1/zip

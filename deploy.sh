@@ -22,16 +22,18 @@ done
 DEPLOYER_DIR=$(pwd)
 
 # Subversion
-
 SVN_URL="https://plugins.svn.wordpress.org/$SLUG"
 SVN_PATH="svn/$SLUG"
 
 # Git
-
 GIT_PATH="git/$SLUG"
 
 # Build
-BUILD_PATH="build/$SLUG"
+BUILD_DIR="build"
+BUILD_PATH="$BUILD_DIR/$SLUG"
+
+# ZIP
+ZIP_PATH="zip/$SLUG"
 
 # Validate
 
@@ -69,6 +71,7 @@ echo
 echo "Main File: $MAIN_FILE"
 echo
 echo "Build path: $BUILD_PATH"
+echo "ZIP path: $ZIP_PATH"
 echo
 
 # Subversion checkout
@@ -99,7 +102,7 @@ echo
 echo "ℹ️  Git pull"
 echo
 
-cd $GIT_PATH
+cd ./$GIT_PATH
 
 git pull
 
@@ -113,7 +116,7 @@ echo
 echo "ℹ️  Git checkout master"
 echo
 
-cd $GIT_PATH
+cd ./$GIT_PATH
 
 git checkout master
 
@@ -154,7 +157,7 @@ echo
 echo "ℹ️  Composer"
 echo
 
-cd $GIT_PATH
+cd ./$GIT_PATH
 
 composer install --no-dev --prefer-dist --optimize-autoloader
 
@@ -172,7 +175,31 @@ mkdir ./$BUILD_PATH
 
 rsync --recursive --delete --exclude-from=exclude.txt --verbose ./$GIT_PATH/ ./$BUILD_PATH/
 
+# ZIP
+
+echo
+echo "🗄️  ZIP"
+echo
+
+cd ./$BUILD_DIR
+
+zip --recurse-paths $DEPLOYER_DIR/$ZIP_PATH/$SLUG.$VERSION.zip $SLUG/*
+
+cd $DEPLOYER_DIR
+
+# AWS S3
+
+echo
+echo "☁️  AWS S3"
+echo
+
+aws s3 cp ./$ZIP_PATH/$SLUG.$VERSION.zip s3://downloads.pronamic.eu/plugins/$SLUG/$SLUG.$VERSION.zip
+
 # Subversion
+
+echo
+echo "🏷️  Check Subversion tag"
+echo
 
 TAG_INFO=$(svn info $SVN_URL/tags/$VERSION 2> /dev/null)
 
