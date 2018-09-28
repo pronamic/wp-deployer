@@ -170,6 +170,14 @@ svn status | grep '^?' | cut -c 9- | xargs -d '\n' -i svn add {}@
 #   \\ Subversion status.
 ```
 
+## WordPress.org assets
+
+- https://developer.wordpress.org/plugins/wordpress-org/plugin-assets/
+- https://developer.wordpress.org/plugins/wordpress-org/how-to-use-subversion/
+- https://github.com/woocommerce/woocommerce/tree/3.4.5/.wordpress-org
+- https://github.com/woocommerce/woocommerce-gateway-stripe/tree/4.1.10/wordpress_org_assets
+- https://github.com/sudar/email-log/tree/2.2.5/assets-wp-repo
+
 ## Links
 
 - https://www.topbug.net/blog/2013/04/14/install-and-use-gnu-command-line-tools-in-mac-os-x/
