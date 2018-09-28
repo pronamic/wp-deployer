@@ -9,6 +9,11 @@
 # Keep a Changelog (https://keepachangelog.com/)
 CHANGELOG.md
 
+# License
+LICENSE
+LICENSE.md
+LICENSE.txt
+
 # WordPress
 /wordpress/
 /wp-content/
@@ -67,7 +72,11 @@ phpdoc.dist.xml
 phpmd.ruleset.xml
 
 # PHPUnit (https://phpunit.de/)
+phpunit.xml
 phpunit.xml.dist
+
+# PHP Static Analysis Tool (https://github.com/phpstan/phpstan)
+phpstan.neon.dist
 
 # WP-CLI (https://wp-cli.org/)
 wp-cli.yml
