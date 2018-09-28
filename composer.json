@@ -1,0 +1,15 @@
+{
+    "name": "pronamic/wp-deployer",
+    "description": "WordPress deployer.",
+    "authors": [
+        {
+            "name": "Pronamic",
+            "email": "info@pronamic.eu"
+        }
+    ],
+    "require": {},
+    "bin": [
+        "bin/wp-build",
+        "bin/wp-deploy"
+    ]
+}
