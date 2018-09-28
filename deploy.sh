@@ -215,24 +215,6 @@ echo
 
 svn commit ./$SVN_PATH/trunk/ -m 'Update'
 
-echo
-echo "ℹ️  Subversion tag check"
-echo
-
-TAG_INFO=$(svn info $SVN_URL/tags/$VERSION)
-
-echo $TAG_INFO
-
-if [ TAG_INFO -eq 0 ]; then
-    echo "❌  Tag $VERSION already exists on $SVN_URL/tags."
-    echo
-    echo $TAG_INFO
-
-    exit 1;
-fi
-
-exit 1;
-
 # Alternately, you can use http URLs to copy, and save yourself bandwidth:
 #
 # ```sh
