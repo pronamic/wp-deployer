@@ -193,7 +193,7 @@ echo
 echo "☁️  AWS S3"
 echo
 
-aws s3 cp ./$ZIP_PATH/$SLUG.$VERSION.zip s3://downloads.pronamic.eu/plugins/$SLUG/$SLUG.$VERSION.zip
+aws s3 cp ./$ZIP_PATH/$SLUG.$VERSION.zip s3://downloads.pronamic.eu/plugins/$SLUG/$SLUG.$VERSION.zip --acl public-read
 
 # Subversion
 
