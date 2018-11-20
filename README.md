@@ -14,6 +14,10 @@ bin/wp-deploy -s pronamic-ideal -g https://github.com/pronamic/wp-pronamic-ideal
 bin/wp-deploy -s easycruit -g https://gitlab.com/pronamic-plugins/easycruit.git
 ```
 
+```sh
+bin/test deploy easycruit https://gitlab.com/pronamic-plugins/easycruit.git -vvv
+```
+
 ## Subversion checkout
 
 http://svnbook.red-bean.com/en/1.7/svn.ref.svn.c.checkout.html

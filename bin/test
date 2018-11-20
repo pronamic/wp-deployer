@@ -6,13 +6,137 @@ require __DIR__.'/../vendor/autoload.php';
 
 use Acme\Command\DefaultCommand;
 use Symfony\Component\Console\Application;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Process\Process;
 
-$application = new Application( 'echo', '1.0.0' );
+$application = new Application( 'Pronamic deployer.', '1.0.0' );
+
+class DeployCommand extends Command
+{
+    protected function configure()
+    {
+        $this
+            ->setName( 'deploy' )
+            ->setDescription( 'Deploy.' )
+            ->setDefinition(
+                new InputDefinition( array(
+                    new InputArgument( 'slug', InputArgument::REQUIRED ),
+                    new InputArgument( 'git', InputArgument::REQUIRED ),
+                    new InputArgument( 'main_file', InputArgument::OPTIONAL ),
+                ) )
+            );
+    }
+
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
+		$io = new SymfonyStyle($input, $output);
+
+    	$slug      = $input->getArgument( 'slug' );
+    	$git       = $input->getArgument( 'git' );
+    	$main_file = $input->getArgument( 'main_file' );
+
+    	if ( empty( $main_file ) ) {
+    		$main_file = sprintf( '%s.php', $slug );
+    	}
+
+    	$svn_url = sprintf(
+    		'https://plugins.svn.wordpress.org/%s',
+    		$slug
+    	);
+
+    	$relative_path_git   = 'git/' . $slug;
+    	$relative_path_build = 'build/' . $slug;
+    	$relative_path_zip   = 'zip/' . $slug;
+
+    	$io->title( sprintf( 'Deploy `%s`', $slug ) );
+
+		$io->table(
+			array(
+				'Key',
+				'Value',
+			),
+			array(
+				array( 'Slug', $slug ),
+				array( 'Git', $git ),
+				array( 'Main file', $main_file ),
+				array( 'SVN URL', $svn_url ),
+				array( 'Git path', $relative_path_git ),
+				array( 'Build path', $relative_path_build ),
+				array( 'ZIP path', $relative_path_build ),
+			)
+    	);
+
+		$helper = $this->getHelper( 'process' );
+
+		$process = new Process( array( 'git', 'pull' ), $relative_path_git );
+
+		$helper->run( $output, $process );
+
+		$process = new Process( array( 'git', 'checkout', 'master' ), $relative_path_git );
+
+		$helper->run( $output, $process );
+
+		$process = new Process( array( 'git', 'pull' ), $relative_path_git );
+
+		$helper->run( $output, $process );
+
+		$commands = array(
+			sprintf(
+				'grep -i "Version:" %s',
+				$relative_path_git . '/' . $main_file
+			),
+			sprintf(
+				"awk -F '%s' '%s'",
+				' ',
+				'{print $NF}'
+			),
+			sprintf(
+				"tr -d '%s'",
+				'\r'
+			),
+		);
+
+		$command = implode( ' | ', $commands );
+
+		$process = new Process( $command );
+
+		$helper->run( $output, $process );
+
+		$version_main_file = trim( $process->getOutput() );
+
+		$commands = array(
+			sprintf(
+				'grep -i "Stable tag:" %s',
+				$relative_path_git . '/readme.txt'
+			),
+			sprintf(
+				"awk -F '%s' '%s'",
+				' ',
+				'{print $NF}'
+			),
+			sprintf(
+				"tr -d '%s'",
+				'\r'
+			),
+		);
+
+		$command = implode( ' | ', $commands );
+
+		$process = new Process( $command );
+
+		$helper->run( $output, $process );
+
+		$version_readme_txt = trim( $process->getOutput() );
+    }
+}
+
+$application->add( new DeployCommand() );
 
 $application->register( 'echo' )
 	->addArgument( 'foo', InputArgument::OPTIONAL, 'The directory' )
@@ -25,6 +149,6 @@ $application->register( 'echo' )
 		$helper->run( $output, 'figlet Symfony' );
 	} );
 
-$application->setDefaultCommand( 'echo', true );
+// $application->setDefaultCommand( 'echo', true );
 
 $application->run();
