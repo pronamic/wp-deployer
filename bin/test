@@ -4,10 +4,27 @@
 
 require __DIR__.'/../vendor/autoload.php';
 
+use Acme\Command\DefaultCommand;
 use Symfony\Component\Console\Application;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Process\Process;
 
-$application = new Application();
+$application = new Application( 'echo', '1.0.0' );
 
-// ... register commands
+$application->register( 'echo' )
+	->addArgument( 'foo', InputArgument::OPTIONAL, 'The directory' )
+	->addOption( 'bar', null, InputOption::VALUE_REQUIRED )
+	->setCode( function( InputInterface $input, OutputInterface $output ) {
+		$helper = $this->getHelper( 'process' );
+
+		$process = new Process( array( 'figlet', 'Pronamic' ) );
+
+		$helper->run( $output, 'figlet Symfony' );
+	} );
+
+$application->setDefaultCommand( 'echo', true );
 
 $application->run();
