@@ -7,7 +7,16 @@
             "email": "info@pronamic.eu"
         }
     ],
-    "require": {},
+    "require": {
+        "league/climate": "^3.3",
+        "symfony/yaml": "^4.0",
+        "deployer/deployer": "^6.2",
+        "symfony/filesystem": "^4.0",
+        "symfony/console": "^4.0",
+        "symfony/process": "^4.0",
+        "mustangostang/spyc": "^0.6.2",
+        "league/uri": "^5.3"
+    },
     "bin": [
         "bin/wp-build",
         "bin/wp-deploy"

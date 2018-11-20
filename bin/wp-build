@@ -134,11 +134,17 @@ echo
 echo "ℹ️  Composer"
 echo
 
-cd ./$GIT_PATH
+if [ ! -f "$GIT_PATH/composer.json" ]; then
+    echo "No 'composer.json' file found."
+fi
 
-composer install --no-dev --prefer-dist --optimize-autoloader
+if [ -f "$GIT_PATH/composer.json" ]; then
+	cd ./$GIT_PATH
 
-cd $DEPLOYER_DIR
+	composer install --no-dev --prefer-dist --optimize-autoloader
+
+	cd $DEPLOYER_DIR
+fi
 
 # Build
 
@@ -157,6 +163,8 @@ rsync --recursive --delete --exclude-from=exclude.txt --verbose ./$GIT_PATH/ ./$
 echo
 echo "🗄️  ZIP"
 echo
+
+mkdir ./$ZIP_PATH
 
 cd ./$BUILD_DIR
 

@@ -199,3 +199,7 @@ svn status | grep '^?' | cut -c 9- | xargs -d '\n' -i svn add {}@
 - https://superuser.com/questions/294850/check-if-a-file-is-already-committed-to-svn
 - https://askubuntu.com/questions/29370/how-to-check-if-a-command-succeeded
 - https://linux.die.net/man/1/zip
+- https://symfony.com/doc/current/components/process.html
+- https://symfony.com/doc/current/components/console/helpers/processhelper.html
+- https://symfonycasts.com/blog/fun-with-symfonys-console
+- https://docs.aws.amazon.com/cli/latest/reference/s3/cp.html
