@@ -3,8 +3,15 @@
 ## Examples
 
 ```sh
-./deploy.sh -s pronamic-events -g https://github.com/pronamic/wp-pronamic-events.git
-./deploy.sh -s pronamic-ideal -g https://github.com/pronamic/wp-pronamic-ideal.git
+bin/wp-build -s pronamic-events -g https://github.com/pronamic/wp-pronamic-events.git
+bin/wp-build -s pronamic-ideal -g https://github.com/pronamic/wp-pronamic-ideal.git
+bin/wp-build -s easycruit -g https://gitlab.com/pronamic-plugins/easycruit.git
+```
+
+```sh
+bin/wp-deploy -s pronamic-events -g https://github.com/pronamic/wp-pronamic-events.git
+bin/wp-deploy -s pronamic-ideal -g https://github.com/pronamic/wp-pronamic-ideal.git
+bin/wp-deploy -s easycruit -g https://gitlab.com/pronamic-plugins/easycruit.git
 ```
 
 ## Subversion checkout
