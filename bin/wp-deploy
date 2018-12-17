@@ -37,6 +37,22 @@ ZIP_PATH="zip/$SLUG"
 
 # Validate
 
+XARGS_VERSION=$(xargs --version 2> /dev/null)
+
+if [[ $XARGS_VERSION != *"GNU findutils"* ]]; then
+    echo "❌  Require GNU findutils xargs."
+
+    exit 1;
+fi;
+
+GREP_VERSION=$(grep --version)
+
+if [[ $GREP_VERSION != *"GNU grep"* ]]; then
+    echo "❌  Require GNU grep xargs."
+
+    exit 1;
+fi;
+
 if [ -z "$SLUG" ]; then
 	echo "❌  Empty slug."
 
