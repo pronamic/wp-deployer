@@ -37,7 +37,7 @@ ZIP_PATH="zip/$SLUG"
 
 # Validate
 
-XARGS_VERSION=$(xargs --version 2> /dev/null)
+XARGS_VERSION=$(gxargs --version 2> /dev/null)
 
 if [[ $XARGS_VERSION != *"GNU findutils"* ]]; then
     echo "❌  Require GNU findutils xargs."
@@ -45,7 +45,7 @@ if [[ $XARGS_VERSION != *"GNU findutils"* ]]; then
     exit 1;
 fi;
 
-GREP_VERSION=$(grep --version)
+GREP_VERSION=$(ggrep --version)
 
 if [[ $GREP_VERSION != *"GNU grep"* ]]; then
     echo "❌  Require GNU grep xargs."
@@ -150,8 +150,8 @@ if [ ! -f "$GIT_PATH/$MAIN_FILE" ]; then
     exit 1;
 fi
 
-MAIN_FILE_VERSION=$(grep -i "Version:" $GIT_PATH/$MAIN_FILE | awk -F ' ' '{print $NF}' | tr -d '\r')
-README_TXT_VERSION=$(grep -i "Stable tag:" $GIT_PATH/readme.txt | awk -F' ' '{print $NF}' | tr -d '\r')
+MAIN_FILE_VERSION=$(ggrep -i "Version:" $GIT_PATH/$MAIN_FILE | awk -F ' ' '{print $NF}' | tr -d '\r')
+README_TXT_VERSION=$(ggrep -i "Stable tag:" $GIT_PATH/readme.txt | awk -F' ' '{print $NF}' | tr -d '\r')
 VERSION=$MAIN_FILE_VERSION
 
 echo
@@ -244,13 +244,13 @@ echo
 echo "ℹ️  Subversion delete"
 echo
 
-svn status ./$SVN_PATH/trunk/ | grep '^!' | cut -c 9- | xargs -d '\n' -i svn delete {}@
+svn status ./$SVN_PATH/trunk/ | ggrep '^!' | cut -c 9- | gxargs -d '\n' -i svn delete {}@
 
 echo
 echo "ℹ️  Subversion add"
 echo
 
-svn status ./$SVN_PATH/trunk/ | grep '^?' | cut -c 9- | xargs -d '\n' -i svn add {}@
+svn status ./$SVN_PATH/trunk/ | ggrep '^?' | cut -c 9- | gxargs -d '\n' -i svn add {}@
 
 echo
 echo "ℹ️  Subversion commit"
