@@ -15,8 +15,8 @@ bin/wp-deploy -s easycruit -g https://gitlab.com/pronamic-plugins/easycruit.git
 ```
 
 ```sh
-bin/test deploy easycruit https://gitlab.com/pronamic-plugins/easycruit.git -vvv
-bin/test deploy pronamic-ideal https://github.com/pronamic/wp-pronamic-ideal.git -vvv
+bin/pronamic-deployer deploy easycruit https://gitlab.com/pronamic-plugins/easycruit.git -vvv
+bin/pronamic-deployer deploy pronamic-ideal https://github.com/pronamic/wp-pronamic-ideal.git -vvv
 ```
 
 ## Subversion checkout

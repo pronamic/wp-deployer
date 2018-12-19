@@ -1,8 +1,14 @@
-#!/usr/bin/env php
 <?php
-// application.php
+/**
+ * Deploy command
+ *
+ * @author    Pronamic <info@pronamic.eu>
+ * @copyright 2005-2018 Pronamic
+ * @license   GPL-3.0-or-later
+ * @package   Pronamic\Deployer
+ */
 
-require __DIR__.'/../vendor/autoload.php';
+namespace Pronamic\Deployer;
 
 use Acme\Command\DefaultCommand;
 use Symfony\Component\Console\Application;
@@ -15,110 +21,75 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Process\Process;
 
-$application = new Application( 'Pronamic deployer.', '1.0.0' );
+/**
+ * Deploy command
+ *
+ * @author  Remco Tolsma
+ * @version 1.0.0
+ * @since   1.0.0
+ */
+class DeployCommand extends Command {
+	/**
+	 * Configure.
+	 */
+	protected function configure() {
+		$this
+			->setName( 'deploy' )
+			->setDescription( 'Deploy.' )
+			->setDefinition(
+				new InputDefinition(
+					array(
+						new InputArgument( 'slug', InputArgument::REQUIRED ),
+						new InputArgument( 'git', InputArgument::REQUIRED ),
+						new InputArgument( 'main_file', InputArgument::OPTIONAL ),
+					)
+				)
+			);
+	}
 
-class DeployCommand extends Command
-{
-    protected function configure()
-    {
-        $this
-            ->setName( 'deploy' )
-            ->setDescription( 'Deploy.' )
-            ->setDefinition(
-                new InputDefinition( array(
-                    new InputArgument( 'slug', InputArgument::REQUIRED ),
-                    new InputArgument( 'git', InputArgument::REQUIRED ),
-                    new InputArgument( 'main_file', InputArgument::OPTIONAL ),
-                ) )
-            );
-    }
-
-    public function find_gnu_xargs(InputInterface $input, OutputInterface $output) {
-    	$options = array(
-    		'xargs',
-    		'gxargs',
-    	);
-
-		$helper = $this->getHelper( 'process' );
-
-		foreach ( $options as $option ) {
-			$process = new Process( $option . ' --version' );
-
-			$helper->run( $output, $process );
-
-			$xargs_version = trim( $process->getOutput() );
-
-			if ( false !== strpos( $xargs_version, 'GNU findutils' ) ) {
-				return $option;
-			}
-		}
-
-		return false;
-    }
-
-    public function find_gnu_grep(InputInterface $input, OutputInterface $output) {
-    	$options = array(
-    		'grep',
-    		'ggrep',
-    	);
+	/**
+	 * Execute.
+	 */
+	protected function execute( InputInterface $input, OutputInterface $output ) {
+		$io = new SymfonyStyle( $input, $output );
 
 		$helper = $this->getHelper( 'process' );
 
-		foreach ( $options as $option ) {
-			$process = new Process( $option . ' --version' );
+		$xargs = Helper::get_gnu_xargs( $helper, $output );
 
-			$helper->run( $output, $process );
+		if ( false === $xargs ) {
+			$io->error( 'Could not find GNU `xargs`, maybe try `brew install findutils`.' );
 
-			$xargs_version = trim( $process->getOutput() );
-
-			if ( false !== strpos( $xargs_version, 'GNU grep' ) ) {
-				return $option;
-			}
+			return 1;
 		}
 
-		return false;
-    }
+		$grep = Helper::get_gnu_grep( $helper, $output );
 
+		if ( false === $grep ) {
+			$io->error( 'Could not find GNU `grep`, maybe try `brew install grep`.' );
 
-    protected function execute(InputInterface $input, OutputInterface $output)
-    {
-		$io = new SymfonyStyle($input, $output);
+			return 1;
+		}
 
-    	$xargs = $this->find_gnu_xargs( $input, $output );
+		$slug      = $input->getArgument( 'slug' );
+		$git       = $input->getArgument( 'git' );
+		$main_file = $input->getArgument( 'main_file' );
 
-    	if ( false === $xargs ) {
-    		$io->error( 'Could not find GNU `xargs`, maybe try `brew install findutils`.' );
+		if ( empty( $main_file ) ) {
+			$main_file = sprintf( '%s.php', $slug );
+		}
 
-    		return 1;
-    	}
+		$svn_url = sprintf(
+			'https://plugins.svn.wordpress.org/%s',
+			$slug
+		);
 
-    	$grep = $this->find_gnu_grep( $input, $output );
+		$relative_path_git   = 'git/' . $slug;
+		$relative_path_build = 'build/' . $slug;
+		$relative_path_zip   = 'zip/' . $slug;
+		$relative_path_svn   = 'svn/' . $slug;
 
-    	if ( false === $grep ) {
-    		$io->error( 'Could not find GNU `grep`, maybe try `brew install grep`.' );
-
-    		return 1;
-    	}
-
-    	$slug      = $input->getArgument( 'slug' );
-    	$git       = $input->getArgument( 'git' );
-    	$main_file = $input->getArgument( 'main_file' );
-
-    	if ( empty( $main_file ) ) {
-    		$main_file = sprintf( '%s.php', $slug );
-    	}
-
-    	$svn_url = sprintf(
-    		'https://plugins.svn.wordpress.org/%s',
-    		$slug
-    	);
-
-    	$relative_path_git   = 'git/' . $slug;
-    	$relative_path_build = 'build/' . $slug;
-    	$relative_path_zip   = 'zip/' . $slug;
-    	$relative_path_svn   = 'svn/' . $slug;
-
-    	$io->title( sprintf( 'Deploy `%s`', $slug ) );
+		$io->title( sprintf( 'Deploy `%s`', $slug ) );
 
 		$io->table(
 			array(
@@ -135,9 +106,7 @@ class DeployCommand extends Command
 				array( 'Build path', $relative_path_build ),
 				array( 'ZIP path', $relative_path_zip ),
 			)
-    	);
-
-		$helper = $this->getHelper( 'process' );
+		);
 
 		$process = new Process( array( 'git', 'pull' ), $relative_path_git );
 
@@ -246,7 +215,7 @@ class DeployCommand extends Command
 			'rm -r %s',
 			$relative_path_build
 		);
-		
+
 		$process = new Process( $command );
 
 		$helper->run( $output, $process );
@@ -256,7 +225,7 @@ class DeployCommand extends Command
 			'mkdir %s',
 			$relative_path_build
 		);
-		
+
 		$process = new Process( $command );
 
 		$helper->run( $output, $process );
@@ -267,7 +236,7 @@ class DeployCommand extends Command
 			$relative_path_git . '/',
 			$relative_path_build . '/'
 		);
-		
+
 		$process = new Process( $command );
 
 		$helper->run( $output, $process );
@@ -277,7 +246,7 @@ class DeployCommand extends Command
 			'mkdir %s',
 			$relative_path_zip
 		);
-		
+
 		$process = new Process( $command );
 
 		$helper->run( $output, $process );
@@ -290,7 +259,7 @@ class DeployCommand extends Command
 			realpath( $relative_file_zip ),
 			'' . $slug . '/*'
 		);
-		
+
 		$process = new Process( $command, 'build' );
 
 		$helper->run( $output, $process );
@@ -310,26 +279,9 @@ class DeployCommand extends Command
 			$relative_file_zip,
 			$s3_link
 		);
-		
+
 		$process = new Process( $command );
 
 		$helper->run( $output, $process );
-    }
+	}
 }
-
-$application->add( new DeployCommand() );
-
-$application->register( 'echo' )
-	->addArgument( 'foo', InputArgument::OPTIONAL, 'The directory' )
-	->addOption( 'bar', null, InputOption::VALUE_REQUIRED )
-	->setCode( function( InputInterface $input, OutputInterface $output ) {
-		$helper = $this->getHelper( 'process' );
-
-		$process = new Process( array( 'figlet', 'Pronamic' ) );
-
-		$helper->run( $output, 'figlet Symfony' );
-	} );
-
-// $application->setDefaultCommand( 'echo', true );
-
-$application->run();

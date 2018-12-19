@@ -7,6 +7,14 @@
             "email": "info@pronamic.eu"
         }
     ],
+    "autoload": {
+        "psr-4": {
+            "Pronamic\\Deployer\\": "src/"
+        }
+    },
+    "bin": [
+        "bin/pronamic-deployer"
+    ],
     "require": {
         "league/climate": "^3.3",
         "symfony/yaml": "^4.0",
@@ -17,8 +25,8 @@
         "mustangostang/spyc": "^0.6.2",
         "league/uri": "^5.3"
     },
-    "bin": [
-        "bin/wp-build",
-        "bin/wp-deploy"
-    ]
+    "require-dev": {
+        "wp-coding-standards/wpcs": "^1.2",
+        "dealerdirect/phpcodesniffer-composer-installer": "^0.5.0"
+    }
 }
