@@ -3,20 +3,10 @@
 ## Examples
 
 ```sh
-bin/wp-build -s pronamic-events -g https://github.com/pronamic/wp-pronamic-events.git
-bin/wp-build -s pronamic-ideal -g https://github.com/pronamic/wp-pronamic-ideal.git
-bin/wp-build -s easycruit -g https://gitlab.com/pronamic-plugins/easycruit.git
-```
-
-```sh
-bin/wp-deploy -s pronamic-events -g https://github.com/pronamic/wp-pronamic-events.git
-bin/wp-deploy -s pronamic-ideal -g https://github.com/pronamic/wp-pronamic-ideal.git
-bin/wp-deploy -s easycruit -g https://gitlab.com/pronamic-plugins/easycruit.git
-```
-
-```sh
-bin/pronamic-deployer deploy easycruit https://gitlab.com/pronamic-plugins/easycruit.git -vvv
-bin/pronamic-deployer deploy pronamic-ideal https://github.com/pronamic/wp-pronamic-ideal.git -vvv
+bin/pronamic-deployer deploy easycruit https://gitlab.com/pronamic-plugins/easycruit.git --to-s3 -vvv
+bin/pronamic-deployer deploy pronamic-client https://github.com/pronamic/wp-pronamic-client.git --to-s3 --to-wp-org -vvv
+bin/pronamic-deployer deploy pronamic-events https://github.com/pronamic/wp-pronamic-events.git --to-s3 --to-wp-org -vvv
+bin/pronamic-deployer deploy pronamic-ideal https://github.com/pronamic/wp-pronamic-ideal.git --to-s3 --to-wp-org -vvv
 ```
 
 ## Subversion checkout

@@ -45,6 +45,20 @@ class DeployCommand extends Command {
 					)
 				)
 			);
+
+		$this->addOption(
+			'to-wp-org',
+			null,
+			InputOption::VALUE_NONE,
+			'Do you want to publish to WordPress.org?'
+		);
+
+		$this->addOption(
+			'to-s3',
+			null,
+			InputOption::VALUE_NONE,
+			'Do you want to publish to S3?'
+		);
 	}
 
 	/**
@@ -71,9 +85,28 @@ class DeployCommand extends Command {
 			return 1;
 		}
 
+		$cut = Helper::get_gnu_cut( $helper, $output );
+
+		if ( false === $cut ) {
+			$io->error( 'Could not find GNU `cut`, maybe try `brew install coreutils`.' );
+
+			return 1;
+		}
+
+		$tr = Helper::get_gnu_tr( $helper, $output );
+
+		if ( false === $tr ) {
+			$io->error( 'Could not find GNU `tr`, maybe try `brew install coreutils`.' );
+
+			return 1;
+		}
+
 		$slug      = $input->getArgument( 'slug' );
 		$git       = $input->getArgument( 'git' );
 		$main_file = $input->getArgument( 'main_file' );
+
+		$to_wp_org = $input->getOption( 'to-wp-org' );
+		$to_s3     = $input->getOption( 'to-s3' );
 
 		if ( empty( $main_file ) ) {
 			$main_file = sprintf( '%s.php', $slug );
@@ -131,7 +164,7 @@ class DeployCommand extends Command {
 				'{print $NF}'
 			),
 			sprintf(
-				"tr -d '%s'",
+				$tr . " -d '%s'",
 				'\r'
 			),
 		);
@@ -155,7 +188,7 @@ class DeployCommand extends Command {
 				'{print $NF}'
 			),
 			sprintf(
-				"tr -d '%s'",
+				$tr . " -d '%s'",
 				'\r'
 			),
 		);
@@ -180,26 +213,6 @@ class DeployCommand extends Command {
 		}
 
 		$version = $version_main_file;
-
-		// Subversion - Trunk
-		$command = sprintf(
-			'svn update %s --set-depth infinity',
-			$relative_path_svn . '/trunk'
-		);
-
-		$process = new Process( $command );
-
-		$helper->run( $output, $process );
-
-		// Subversion - Assets
-		$command = sprintf(
-			'svn update %s --set-depth infinity',
-			$relative_path_svn . '/assets'
-		);
-
-		$process = new Process( $command );
-
-		$helper->run( $output, $process );
 
 		// Composer
 		if ( is_readable( $relative_path_git . '/composer.json' ) ) {
@@ -242,6 +255,8 @@ class DeployCommand extends Command {
 		$helper->run( $output, $process );
 
 		// ZIP - Create ZIP directory.
+		$io->section( 'ZIP' );
+
 		$command = sprintf(
 			'mkdir %s',
 			$relative_path_zip
@@ -264,24 +279,146 @@ class DeployCommand extends Command {
 
 		$helper->run( $output, $process );
 
+		// Subversion
+		if ( $to_wp_org ) {
+			$io->section( 'WordPress.org SVN' );
+
+			// Subversion - Trunk
+			$command = sprintf(
+				'svn update %s --set-depth infinity',
+				$relative_path_svn . '/trunk'
+			);
+
+			$process = new Process( $command );
+
+			$helper->run( $output, $process );
+
+			// Subversion - Assets
+			$command = sprintf(
+				'svn update %s --set-depth infinity',
+				$relative_path_svn . '/assets'
+			);
+
+			$process = new Process( $command );
+
+			$helper->run( $output, $process );
+
+			// Subversion - Check tag
+			$command = sprintf(
+				'svn info %s',
+				$svn_url . '/tags/' . $version
+			);
+
+			$process = new Process( $command );
+
+			$helper->run( $output, $process );
+
+			$result = $process->getOutput();
+
+			if ( empty( $result ) ) {
+				$io->success( 'Subversion tag does not exists.' );
+
+				// Subversion - Sync trunk.
+				$command = sprintf(
+					'rsync --recursive --delete --verbose %s %s',
+					$relative_path_build . '/',
+					$relative_path_svn . '/trunk/'
+				);
+
+				$process = new Process( $command );
+
+				$helper->run( $output, $process );
+
+				// Subversion - Delete.
+				$commands = array(
+					sprintf(
+						'svn status %s',
+						$relative_path_svn . '/trunk/'
+					),
+					$grep . " '^!'",
+					$cut . ' -c 9-',
+					$xargs . " -d '\\n' -i svn delete {}@"
+				);
+
+				$command = implode( ' | ', $commands );
+
+				$process = new Process( $command );
+
+				$helper->run( $output, $process );
+
+				// Subversion - Add.
+				$commands = array(
+					sprintf(
+						'svn status ./$SVN_PATH/trunk/',
+						$relative_path_svn . '/trunk/'
+					),
+					$grep . " '^?'",
+					$cut . ' -c 9-',
+					$xargs . " -d '\\n' -i svn add {}@"
+				);
+
+				$command = implode( ' | ', $commands );
+
+				$process = new Process( $command );
+
+				$helper->run( $output, $process );
+
+				// Subversion - Commit.
+				$command = sprintf(
+					"svn commit %s -m '%s'",
+					$relative_path_svn . '/trunk/',
+					'Update'
+				);
+
+				$process = new Process( $command );
+
+				$helper->run( $output, $process );
+
+				// Subversion - Tag.
+				$command = sprintf(
+					'svn cp %s %s -m "%s"',
+					$svn_url . '/trunk',
+					$svn_url . '/tags/' . $version,
+					sprintf(
+						'Tagging version %s for release.',
+						$version
+					)
+				);
+
+				$process = new Process( $command );
+
+				$helper->run( $output, $process );
+			} else {
+				$io->warning(
+					sprintf(
+						'Tag %s already exists on %s.',
+						$version,
+						$svn_url . '/tags/'
+					)
+				);
+			}
+		}
+
 		// AWS S3
-		$io->section( '☁️  AWS S3' );
+		if ( $to_s3 ) {
+			$io->section( 'AWS S3' );
 
-		$s3_link = sprintf(
-			's3://downloads.pronamic.eu/plugins/%s/%s.%s.zip',
-			$slug,
-			$slug,
-			$version
-		);
+			$s3_link = sprintf(
+				's3://downloads.pronamic.eu/plugins/%s/%s.%s.zip',
+				$slug,
+				$slug,
+				$version
+			);
 
-		$command = sprintf(
-			'aws s3 cp %s %s --acl public-read',
-			$relative_file_zip,
-			$s3_link
-		);
+			$command = sprintf(
+				'aws s3 cp %s %s --acl public-read',
+				$relative_file_zip,
+				$s3_link
+			);
 
-		$process = new Process( $command );
+			$process = new Process( $command );
 
-		$helper->run( $output, $process );
+			$helper->run( $output, $process );
+		}
 	}
 }

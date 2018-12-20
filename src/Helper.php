@@ -22,18 +22,13 @@ use Symfony\Component\Process\Process;
  */
 class Helper {
 	/**
-	 * Get GNU xargs.
+	 * Get GNU.
 	 *
 	 * @param
 	 * @param
 	 * @return string|false
 	 */
-	public static function get_gnu_xargs( $helper, OutputInterface $output ) {
-		$options = array(
-			'xargs',
-			'gxargs',
-		);
-
+	private static function get_gnu( $options, $identifier, $helper, OutputInterface $output ) {
 		foreach ( $options as $option ) {
 			$process = new Process( $option . ' --version' );
 
@@ -41,12 +36,31 @@ class Helper {
 
 			$result = $process->getOutput();
 
-			if ( false !== strpos( $result, 'GNU findutils' ) ) {
+			if ( false !== strpos( $result, $identifier ) ) {
 				return $option;
 			}
 		}
 
 		return false;
+	}
+
+	/**
+	 * Get GNU xargs.
+	 *
+	 * @param
+	 * @param
+	 * @return string|false
+	 */
+	public static function get_gnu_xargs( $helper, OutputInterface $output ) {
+		return self::get_gnu(
+			array(
+				'xargs',
+				'gxargs',
+			),
+			'GNU findutils',
+			$helper,
+			$output
+		);
 	}
 
 	/**
@@ -57,23 +71,71 @@ class Helper {
 	 * @return string|false
 	 */
 	public static function get_gnu_grep( $helper, OutputInterface $output ) {
-		$options = array(
-			'grep',
-			'ggrep',
+		return self::get_gnu(
+			array(
+				'grep',
+				'ggrep',
+			),
+			'GNU grep',
+			$helper,
+			$output
 		);
+	}
 
-		foreach ( $options as $option ) {
-			$process = new Process( $option . ' --version' );
+	/**
+	 * Get GNU cat.
+	 *
+	 * @param
+	 * @param
+	 * @return string|false
+	 */
+	public static function get_gnu_cat( $helper, OutputInterface $output ) {
+		return self::get_gnu(
+			array(
+				'cat',
+				'gcat',
+			),
+			'GNU coreutils',
+			$helper,
+			$output
+		);
+	}
 
-			$helper->run( $output, $process );
+	/**
+	 * Get GNU cat.
+	 *
+	 * @param
+	 * @param
+	 * @return string|false
+	 */
+	public static function get_gnu_cut( $helper, OutputInterface $output ) {
+		return self::get_gnu(
+			array(
+				'cut',
+				'gcut',
+			),
+			'GNU coreutils',
+			$helper,
+			$output
+		);
+	}
 
-			$result = $process->getOutput();
-
-			if ( false !== strpos( $result, 'GNU grep' ) ) {
-				return $option;
-			}
-		}
-
-		return false;
+	/**
+	 * Get GNU tr.
+	 *
+	 * @param
+	 * @param
+	 * @return string|false
+	 */
+	public static function get_gnu_tr( $helper, OutputInterface $output ) {
+		return self::get_gnu(
+			array(
+				'tr',
+				'gtr',
+			),
+			'GNU coreutils',
+			$helper,
+			$output
+		);
 	}
 }
