@@ -1,3 +1,0 @@
-# ZIP
-
-ZIP folder.

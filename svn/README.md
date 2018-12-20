@@ -1,3 +1,0 @@
-# Subversion
-
-Subversion folder.

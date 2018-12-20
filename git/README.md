@@ -1,3 +1,0 @@
-# Git
-
-Git folder.

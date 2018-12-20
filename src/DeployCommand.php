@@ -19,6 +19,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Process\Process;
 
 /**
@@ -69,6 +70,8 @@ class DeployCommand extends Command {
 
 		$helper = $this->getHelper( 'process' );
 
+		$filesystem = new Filesystem();
+
 		$xargs = Helper::get_gnu_xargs( $helper, $output );
 
 		if ( false === $xargs ) {
@@ -105,6 +108,16 @@ class DeployCommand extends Command {
 		$git       = $input->getArgument( 'git' );
 		$main_file = $input->getArgument( 'main_file' );
 
+		$relative_path_git   = 'deploy/git/' . $slug;
+		$relative_path_build = 'deploy/build/' . $slug;
+		$relative_path_zip   = 'deploy/zip/' . $slug;
+		$relative_path_svn   = 'deploy/svn/' . $slug;
+
+		$filesystem->mkdir( $relative_path_git );
+		$filesystem->mkdir( $relative_path_build );
+		$filesystem->mkdir( $relative_path_zip );
+		$filesystem->mkdir( $relative_path_svn );
+
 		$to_wp_org = $input->getOption( 'to-wp-org' );
 		$to_s3     = $input->getOption( 'to-s3' );
 
@@ -116,11 +129,6 @@ class DeployCommand extends Command {
 			'https://plugins.svn.wordpress.org/%s',
 			$slug
 		);
-
-		$relative_path_git   = 'git/' . $slug;
-		$relative_path_build = 'build/' . $slug;
-		$relative_path_zip   = 'zip/' . $slug;
-		$relative_path_svn   = 'svn/' . $slug;
 
 		$io->title( sprintf( 'Deploy `%s`', $slug ) );
 
@@ -141,6 +149,27 @@ class DeployCommand extends Command {
 			)
 		);
 
+		$result = $io->confirm( 'OK?', true );
+
+		if ( ! $result ) {
+			return;
+		}
+
+		// Git.
+		$io->section( 'Git' );
+
+		if ( ! is_dir( $relative_path_git . '/.git' ) ) {
+			$command = sprintf(
+				'git clone %s %s',
+				$git,
+				$relative_path_git
+			);
+
+			$process = new Process( $command );
+
+			$helper->run( $output, $process );
+		}
+
 		$process = new Process( array( 'git', 'pull' ), $relative_path_git );
 
 		$helper->run( $output, $process );
@@ -152,6 +181,9 @@ class DeployCommand extends Command {
 		$process = new Process( array( 'git', 'pull' ), $relative_path_git );
 
 		$helper->run( $output, $process );
+
+		// Version.
+		$io->section( 'Version' );
 
 		$commands = array(
 			sprintf(
@@ -201,6 +233,23 @@ class DeployCommand extends Command {
 
 		$version_readme_txt = trim( $process->getOutput() );
 
+		$io->table(
+			array(
+				'File',
+				'Version',
+			),
+			array(
+				array(
+					'readme.txt',
+					$version_readme_txt,
+				),
+				array(
+					$main_file,
+					$version_main_file,
+				),
+			)
+		);
+
 		if ( $version_readme_txt !== $version_main_file ) {
 			$io->error(
 				sprintf(
@@ -213,6 +262,18 @@ class DeployCommand extends Command {
 		}
 
 		$version = $version_main_file;
+
+		if ( empty( $version ) ) {
+			$io->error( 'Version is empty. Exiting…' );
+
+			return 1;
+		}
+
+		$result = $io->confirm( 'OK?', true );
+
+		if ( ! $result ) {
+			return;
+		}
 
 		// Composer
 		if ( is_readable( $relative_path_git . '/composer.json' ) ) {
@@ -254,34 +315,36 @@ class DeployCommand extends Command {
 
 		$helper->run( $output, $process );
 
-		// ZIP - Create ZIP directory.
+		// ZIP
 		$io->section( 'ZIP' );
 
-		$command = sprintf(
-			'mkdir %s',
-			$relative_path_zip
-		);
-
-		$process = new Process( $command );
-
-		$helper->run( $output, $process );
-
-		// ZIP
 		$relative_file_zip = $relative_path_zip . '/' . $slug . '.' . $version . '.zip';
 
 		$command = sprintf(
 			'zip --recurse-paths %s %s',
-			realpath( $relative_file_zip ),
+			getcwd() . '/' . $relative_file_zip,
 			'' . $slug . '/*'
 		);
 
-		$process = new Process( $command, 'build' );
+		$process = new Process( $command, dirname( $relative_path_build ) );
 
 		$helper->run( $output, $process );
 
 		// Subversion
 		if ( $to_wp_org ) {
 			$io->section( 'WordPress.org SVN' );
+
+			if ( ! is_dir( $relative_path_svn . '/.svn' ) ) {
+				$command = sprintf(
+					'svn checkout %s %s --depth immediates',
+					$svn_url,
+					$relative_path_svn
+				);
+
+				$process = new Process( $command );
+
+				$helper->run( $output, $process );
+			}
 
 			// Subversion - Trunk
 			$command = sprintf(
@@ -290,6 +353,7 @@ class DeployCommand extends Command {
 			);
 
 			$process = new Process( $command );
+			$process->setTimeout( 3600 );
 
 			$helper->run( $output, $process );
 
@@ -316,6 +380,7 @@ class DeployCommand extends Command {
 			$result = $process->getOutput();
 
 			if ( empty( $result ) ) {
+
 				$io->success( 'Subversion tag does not exists.' );
 
 				// Subversion - Sync trunk.
