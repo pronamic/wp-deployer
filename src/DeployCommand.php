@@ -167,20 +167,20 @@ class DeployCommand extends Command {
 
 			$process = new Process( $command );
 
-			$helper->run( $output, $process );
+			$helper->mustRun( $output, $process );
 		}
 
 		$process = new Process( array( 'git', 'pull' ), $relative_path_git );
 
-		$helper->run( $output, $process );
+		$helper->mustRun( $output, $process );
 
 		$process = new Process( array( 'git', 'checkout', 'master' ), $relative_path_git );
 
-		$helper->run( $output, $process );
+		$helper->mustRun( $output, $process );
 
 		$process = new Process( array( 'git', 'pull' ), $relative_path_git );
 
-		$helper->run( $output, $process );
+		$helper->mustRun( $output, $process );
 
 		// Version.
 		$io->section( 'Version' );
@@ -205,7 +205,7 @@ class DeployCommand extends Command {
 
 		$process = new Process( $command );
 
-		$helper->run( $output, $process );
+		$helper->mustRun( $output, $process );
 
 		$version_main_file = trim( $process->getOutput() );
 
@@ -229,7 +229,7 @@ class DeployCommand extends Command {
 
 		$process = new Process( $command );
 
-		$helper->run( $output, $process );
+		$helper->mustRun( $output, $process );
 
 		$version_readme_txt = trim( $process->getOutput() );
 
@@ -281,7 +281,7 @@ class DeployCommand extends Command {
 
 			$process = new Process( $command, $relative_path_git );
 
-			$helper->run( $output, $process );
+			$helper->mustRun( $output, $process );
 		}
 
 		// Build - Empty build directory.
@@ -292,7 +292,7 @@ class DeployCommand extends Command {
 
 		$process = new Process( $command );
 
-		$helper->run( $output, $process );
+		$helper->mustRun( $output, $process );
 
 		// Build - Create build directory.
 		$command = sprintf(
@@ -302,7 +302,7 @@ class DeployCommand extends Command {
 
 		$process = new Process( $command );
 
-		$helper->run( $output, $process );
+		$helper->mustRun( $output, $process );
 
 		// Build - Sync.
 		$command = sprintf(
@@ -313,7 +313,7 @@ class DeployCommand extends Command {
 
 		$process = new Process( $command );
 
-		$helper->run( $output, $process );
+		$helper->mustRun( $output, $process );
 
 		// ZIP
 		$io->section( 'ZIP' );
@@ -328,7 +328,7 @@ class DeployCommand extends Command {
 
 		$process = new Process( $command, dirname( $relative_path_build ) );
 
-		$helper->run( $output, $process );
+		$helper->mustRun( $output, $process );
 
 		// Subversion
 		if ( $to_wp_org ) {
@@ -342,8 +342,9 @@ class DeployCommand extends Command {
 				);
 
 				$process = new Process( $command );
+				$process->setTty( true );
 
-				$helper->run( $output, $process );
+				$helper->mustRun( $output, $process );
 			}
 
 			// Subversion - Trunk
@@ -355,7 +356,7 @@ class DeployCommand extends Command {
 			$process = new Process( $command );
 			$process->setTimeout( 3600 );
 
-			$helper->run( $output, $process );
+			$helper->mustRun( $output, $process );
 
 			// Subversion - Assets
 			$command = sprintf(
@@ -365,7 +366,7 @@ class DeployCommand extends Command {
 
 			$process = new Process( $command );
 
-			$helper->run( $output, $process );
+			$helper->mustRun( $output, $process );
 
 			// Subversion - Check tag
 			$command = sprintf(
@@ -380,7 +381,6 @@ class DeployCommand extends Command {
 			$result = $process->getOutput();
 
 			if ( empty( $result ) ) {
-
 				$io->success( 'Subversion tag does not exists.' );
 
 				// Subversion - Sync trunk.
@@ -392,7 +392,7 @@ class DeployCommand extends Command {
 
 				$process = new Process( $command );
 
-				$helper->run( $output, $process );
+				$helper->mustRun( $output, $process );
 
 				// Subversion - Delete.
 				$commands = array(
@@ -409,7 +409,7 @@ class DeployCommand extends Command {
 
 				$process = new Process( $command );
 
-				$helper->run( $output, $process );
+				$helper->mustRun( $output, $process );
 
 				// Subversion - Add.
 				$commands = array(
@@ -426,7 +426,7 @@ class DeployCommand extends Command {
 
 				$process = new Process( $command );
 
-				$helper->run( $output, $process );
+				$helper->mustRun( $output, $process );
 
 				// Subversion - Commit.
 				$command = sprintf(
@@ -437,7 +437,7 @@ class DeployCommand extends Command {
 
 				$process = new Process( $command );
 
-				$helper->run( $output, $process );
+				$helper->mustRun( $output, $process );
 
 				// Subversion - Tag.
 				$command = sprintf(
@@ -452,7 +452,7 @@ class DeployCommand extends Command {
 
 				$process = new Process( $command );
 
-				$helper->run( $output, $process );
+				$helper->mustRun( $output, $process );
 			} else {
 				$io->warning(
 					sprintf(
@@ -483,7 +483,7 @@ class DeployCommand extends Command {
 
 			$process = new Process( $command );
 
-			$helper->run( $output, $process );
+			$helper->mustRun( $output, $process );
 		}
 	}
 }
