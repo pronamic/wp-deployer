@@ -414,7 +414,7 @@ class DeployCommand extends Command {
 				// Subversion - Add.
 				$commands = array(
 					sprintf(
-						'svn status ./$SVN_PATH/trunk/',
+						'svn status %s',
 						$relative_path_svn . '/trunk/'
 					),
 					$grep . " '^?'",
@@ -436,6 +436,7 @@ class DeployCommand extends Command {
 				);
 
 				$process = new Process( $command );
+				$process->setTty( true );
 
 				$helper->mustRun( $output, $process );
 
@@ -451,6 +452,7 @@ class DeployCommand extends Command {
 				);
 
 				$process = new Process( $command );
+				$process->setTty( true );
 
 				$helper->mustRun( $output, $process );
 			} else {
