@@ -8,6 +8,7 @@ bin/pronamic-deployer deploy pronamic-client https://github.com/pronamic/wp-pron
 bin/pronamic-deployer deploy pronamic-events https://github.com/pronamic/wp-pronamic-events.git --to-s3 --to-wp-org -vvv
 bin/pronamic-deployer deploy pronamic-ideal https://github.com/pronamic/wp-pronamic-ideal.git --to-s3 --to-wp-org -vvv
 bin/pronamic-deployer deploy woocommerce-bulk-product-variations https://gitlab.com/pronamic-plugins/woocommerce-bulk-product-variations.git --to-s3 -vvv
+bin/pronamic-deployer deploy pronamic-pay-adyen https://github.com/wp-pay-gateways/adyen.git --to-s3 -vvv
 ```
 
 ## Subversion checkout
