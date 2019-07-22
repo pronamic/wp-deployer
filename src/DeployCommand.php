@@ -48,6 +48,14 @@ class DeployCommand extends Command {
 			);
 
 		$this->addOption(
+			'branch',
+			null,
+			InputOption::VALUE_REQUIRED,
+			'Which branch do you want to use?',
+			'master'
+		);
+
+		$this->addOption(
 			'to-wp-org',
 			null,
 			InputOption::VALUE_NONE,
@@ -118,6 +126,7 @@ class DeployCommand extends Command {
 		$filesystem->mkdir( $relative_path_zip );
 		$filesystem->mkdir( $relative_path_svn );
 
+		$branch    = $input->getOption( 'branch' );
 		$to_wp_org = $input->getOption( 'to-wp-org' );
 		$to_s3     = $input->getOption( 'to-s3' );
 
@@ -174,7 +183,7 @@ class DeployCommand extends Command {
 
 		$helper->mustRun( $output, $process );
 
-		$process = new Process( array( 'git', 'checkout', 'master' ), $relative_path_git );
+		$process = new Process( array( 'git', 'checkout', $branch ), $relative_path_git );
 
 		$helper->mustRun( $output, $process );
 
