@@ -108,6 +108,9 @@ phpcs.ruleset.xml
 phpdoc.xml
 phpdoc.dist.xml
 
+# PHPLint (https://github.com/overtrue/phplint)
+.phplint.yml
+
 # PHP Mess Detector (https://phpmd.org/)
 phpmd.ruleset.xml
 
