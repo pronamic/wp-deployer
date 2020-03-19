@@ -30,8 +30,11 @@ CODE_OF_CONDUCT.md
 /vendor/bin/
 /vendor/*/*/composer.json
 /vendor/*/*/composer.lock
-/vendor/*/*/documentation
-/vendor/*/*/tests
+/vendor/*/*/documentation/
+/vendor/*/*/tests/
+
+# Composer bin plugin (https://github.com/bamarni/composer-bin-plugin)
+/vendor/*/*/vendor-bin/
 
 # Eclipse (https://www.eclipse.org/)
 .buildpath
