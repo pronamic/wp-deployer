@@ -290,6 +290,8 @@ class DeployCommand extends Command {
 
 			$process = new Process( $command, $relative_path_git );
 
+			$process->setTimeout( 3600 );
+
 			$helper->mustRun( $output, $process );
 		}
 
