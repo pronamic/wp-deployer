@@ -68,6 +68,13 @@ class DeployCommand extends Command {
 			InputOption::VALUE_NONE,
 			'Do you want to publish to S3?'
 		);
+
+		$this->addOption(
+			'non-interactive',
+			null,
+			InputOption::VALUE_NONE,
+			'Is user interaction possible?',
+		);
 	}
 
 	/**
@@ -126,9 +133,10 @@ class DeployCommand extends Command {
 		$filesystem->mkdir( $relative_path_zip );
 		$filesystem->mkdir( $relative_path_svn );
 
-		$branch    = $input->getOption( 'branch' );
-		$to_wp_org = $input->getOption( 'to-wp-org' );
-		$to_s3     = $input->getOption( 'to-s3' );
+		$branch          = $input->getOption( 'branch' );
+		$to_wp_org       = $input->getOption( 'to-wp-org' );
+		$to_s3           = $input->getOption( 'to-s3' );
+		$non_interactive = $input->getOption( 'non-interactive' );
 
 		if ( empty( $main_file ) ) {
 			$main_file = sprintf( '%s.php', $slug );
@@ -158,10 +166,12 @@ class DeployCommand extends Command {
 			)
 		);
 
-		$result = $io->confirm( 'OK?', true );
+		if ( ! $non_interactive ) {
+			$result = $io->confirm( 'OK?', true );
 
-		if ( ! $result ) {
-			return;
+			if ( ! $result ) {
+				return;
+			}
 		}
 
 		// Git.
@@ -278,10 +288,12 @@ class DeployCommand extends Command {
 			return 1;
 		}
 
-		$result = $io->confirm( 'OK?', true );
+		if ( ! $non_interactive ) {
+			$result = $io->confirm( 'OK?', true );
 
-		if ( ! $result ) {
-			return;
+			if ( ! $result ) {
+				return;
+			}
 		}
 
 		// Composer
