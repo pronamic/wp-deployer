@@ -73,7 +73,7 @@ class DeployCommand extends Command {
 			'non-interactive',
 			null,
 			InputOption::VALUE_NONE,
-			'Is user interaction possible?',
+			'Is user interaction possible?'
 		);
 	}
 
