@@ -290,7 +290,8 @@ class DeployCommand extends Command {
 
 			$process = new Process( $command, $relative_path_git );
 
-			$process->setTimeout( 3600 );
+			// To disable the timeout, set this value to null.
+			$process->setTimeout( null );
 
 			$helper->mustRun( $output, $process );
 		}
@@ -365,7 +366,9 @@ class DeployCommand extends Command {
 			);
 
 			$process = new Process( $command );
-			$process->setTimeout( 3600 );
+
+			// To disable the timeout, set this value to null.
+			$process->setTimeout( null );
 
 			$helper->mustRun( $output, $process );
 
@@ -495,6 +498,9 @@ class DeployCommand extends Command {
 			);
 
 			$process = new Process( $command );
+
+			// To disable the timeout, set this value to null.
+			$process->setTimeout( null );
 
 			$helper->mustRun( $output, $process );
 		}
