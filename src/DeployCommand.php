@@ -68,6 +68,13 @@ class DeployCommand extends Command {
 			InputOption::VALUE_NONE,
 			'Do you want to publish to S3?'
 		);
+
+		$this->addOption(
+			'non-interactive',
+			null,
+			InputOption::VALUE_NONE,
+			'Is user interaction possible?'
+		);
 	}
 
 	/**
@@ -126,9 +133,10 @@ class DeployCommand extends Command {
 		$filesystem->mkdir( $relative_path_zip );
 		$filesystem->mkdir( $relative_path_svn );
 
-		$branch    = $input->getOption( 'branch' );
-		$to_wp_org = $input->getOption( 'to-wp-org' );
-		$to_s3     = $input->getOption( 'to-s3' );
+		$branch          = $input->getOption( 'branch' );
+		$to_wp_org       = $input->getOption( 'to-wp-org' );
+		$to_s3           = $input->getOption( 'to-s3' );
+		$non_interactive = $input->getOption( 'non-interactive' );
 
 		if ( empty( $main_file ) ) {
 			$main_file = sprintf( '%s.php', $slug );
@@ -158,10 +166,12 @@ class DeployCommand extends Command {
 			)
 		);
 
-		$result = $io->confirm( 'OK?', true );
+		if ( ! $non_interactive ) {
+			$result = $io->confirm( 'OK?', true );
 
-		if ( ! $result ) {
-			return;
+			if ( ! $result ) {
+				return;
+			}
 		}
 
 		// Git.
@@ -278,10 +288,12 @@ class DeployCommand extends Command {
 			return 1;
 		}
 
-		$result = $io->confirm( 'OK?', true );
+		if ( ! $non_interactive ) {
+			$result = $io->confirm( 'OK?', true );
 
-		if ( ! $result ) {
-			return;
+			if ( ! $result ) {
+				return;
+			}
 		}
 
 		// Composer
@@ -346,6 +358,17 @@ class DeployCommand extends Command {
 		if ( $to_wp_org ) {
 			$io->section( 'WordPress.org SVN' );
 
+			// Authentication
+			$env_wp_org_username = getenv( 'WP_ORG_USERNAME' );
+			$env_wp_org_password = getenv( 'WP_ORG_PASSWORD' );
+
+			$svn_auth = '';
+
+			if ( ! empty( $env_wp_org_username ) && ! empty( $env_wp_org_password ) ) {
+				$svn_auth = '--no-auth-cache --username $WP_ORG_USERNAME --password $WP_ORG_PASSWORD';
+			}
+
+			// Checkout
 			if ( ! is_dir( $relative_path_svn . '/.svn' ) ) {
 				$command = sprintf(
 					'svn checkout %s %s --depth immediates',
@@ -444,7 +467,8 @@ class DeployCommand extends Command {
 
 				// Subversion - Commit.
 				$command = sprintf(
-					"svn commit %s -m '%s'",
+					"svn commit %s %s -m '%s'",
+					$svn_auth,
 					$relative_path_svn . '/trunk/',
 					'Update'
 				);
@@ -456,7 +480,8 @@ class DeployCommand extends Command {
 
 				// Subversion - Tag.
 				$command = sprintf(
-					'svn cp %s %s -m "%s"',
+					'svn cp %s %s %s -m "%s"',
+					$svn_auth,
 					$svn_url . '/trunk',
 					$svn_url . '/tags/' . $version,
 					sprintf(
