@@ -137,13 +137,6 @@ scoper.inc.php
 # Webpack (https://webpack.js.org/)
 webpack.config.js
 
-# WordPress Pay
-/vendor/wp-pay*/*/js/src/
-/vendor/wp-pay*/*/fonts/src/
-/vendor/wp-pay*/*/images/src/
-/vendor/wp-pay*/*/sass/
-/vendor/wp-pay*/*/scss/
-
 # WP-CLI (https://wp-cli.org/)
 wp-cli.yml
 
