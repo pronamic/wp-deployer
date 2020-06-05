@@ -116,6 +116,7 @@ phpdoc.dist.xml
 
 # PHP Mess Detector (https://phpmd.org/)
 phpmd.ruleset.xml
+phpmd.xml.dist
 
 # PHPUnit (https://phpunit.de/)
 phpunit.xml
@@ -135,6 +136,13 @@ scoper.inc.php
 
 # Webpack (https://webpack.js.org/)
 webpack.config.js
+
+# WordPress Pay
+/vendor/wp-pay*/*/js/src/
+/vendor/wp-pay*/*/fonts/src/
+/vendor/wp-pay*/*/images/src/
+/vendor/wp-pay*/*/sass/
+/vendor/wp-pay*/*/scss/
 
 # WP-CLI (https://wp-cli.org/)
 wp-cli.yml
