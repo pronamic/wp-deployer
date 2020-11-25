@@ -86,6 +86,9 @@ CODE_OF_CONDUCT.md
 # Travis CI (https://travis-ci.org/)
 .travis.yml
 
+# GitHub
+.github
+
 # Grunt (https://gruntjs.com/)
 Gruntfile.js
 
