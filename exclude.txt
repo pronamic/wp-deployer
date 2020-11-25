@@ -62,6 +62,7 @@ CODE_OF_CONDUCT.md
 
 # stylelint (https://stylelint.io/)
 .stylelintrc
+.stylelintrc.json
 
 # EditorConfig (https://editorconfig.org/)
 .editorconfig
