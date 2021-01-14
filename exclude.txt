@@ -139,6 +139,10 @@ psalm.xml.dist
 # PHP-Scoper (https://github.com/humbug/php-scoper)
 scoper.inc.php
 
+# IntelliJ's project specific settings files
+# @link https://github.com/github/gitignore/blob/master/Global/JetBrains.gitignore
+.idea
+
 # Webpack (https://webpack.js.org/)
 webpack.config.js
 
