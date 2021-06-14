@@ -1,4 +1,14 @@
-# Deployer
+<h1 align="center">Pronamic WordPress Deployer</h3>
+
+<p align="center">
+	Console application to <strong>build</strong> and <strong>deploy</strong> WordPress solutions to the <strong>WordPress.org repository</strong> and <strong>AWS S3</strong>.
+</p>
+
+## Table of contents
+
+- [Examples](#examples)
+- [Alternatives](#alternatives)
+- [Links](#links)
 
 ## Examples
 
@@ -11,6 +21,17 @@ bin/pronamic-deployer deploy pronamic-ideal https://github.com/pronamic/wp-prona
 bin/pronamic-deployer deploy woocommerce-bulk-product-variations https://gitlab.com/pronamic-plugins/woocommerce-bulk-product-variations.git --to-s3 -vvv
 bin/pronamic-deployer deploy pronamic-pay-adyen https://github.com/wp-pay-gateways/adyen.git --to-s3 -vvv
 ```
+
+## Alternatives
+
+Here is a list of alternatives that we found. However, none of these satisfied our requirements.
+
+*If you know other similar projects, feel free to edit this section!*
+
+- [GitHub Actions for WordPress!](https://github.com/10up/actions-wordpress) by [10up](https://github.com/10up)
+- [WordPress Plugin Directory Deployment Script](https://github.com/GaryJones/wordpress-plugin-svn-deploy) by [Gary Jones](https://github.com/GaryJones)
+- [WordPress Plugin SVN Deploy](https://github.com/nk-o/action-wordpress-plugin-deploy) by [Nikita](https://github.com/nk-o)
+- [sudar/wp-plugin-in-github](https://github.com/sudar/wp-plugin-in-github) by [Sudar Muthu](https://github.com/sudar)
 
 ## Subversion checkout
 
