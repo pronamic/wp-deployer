@@ -26,7 +26,7 @@ bin/wp-deployer deploy pronamic-pay-contact-form-7 https://github.com/pronamic/w
 bin/wp-deployer deploy pronamic-pay-digiwallet https://github.com/pronamic/wp-pronamic-pay-digiwallet.git --branch=main --to-s3 -vvv
 bin/wp-deployer deploy pronamic-pay-fundraising https://github.com/pronamic/wp-pronamic-pay-fundraising.git --to-s3 -vvv
 bin/wp-deployer deploy pronamic-pay-paypal https://github.com/pronamic/wp-pronamic-pay-paypal.git --to-s3 -vvv
-bin/wp-deployer deploy pronamic-pay-payvision https://github.com/pronamic/wp-pronamic-pay-payvision.git --to-s3 -vvv
+bin/wp-deployer deploy pronamic-pay-payvision https://github.com/pronamic/wp-pronamic-pay-payvision.git --branch=main --to-s3 -vvv
 ```
 
 ## Alternatives
