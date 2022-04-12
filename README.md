@@ -13,13 +13,20 @@
 ## Examples
 
 ```sh
-bin/pronamic-deployer deploy easycruit https://gitlab.com/pronamic-plugins/easycruit.git --to-s3 -vvv
-bin/pronamic-deployer deploy pronamic-client https://github.com/pronamic/wp-pronamic-client.git --to-s3 --to-wp-org -vvv
-bin/pronamic-deployer deploy pronamic-events https://github.com/pronamic/wp-pronamic-events.git --to-s3 --to-wp-org -vvv
-bin/pronamic-deployer deploy pronamic-ideal https://github.com/pronamic/wp-pronamic-ideal.git --to-s3 --to-wp-org -vvv
-bin/pronamic-deployer deploy pronamic-ideal https://github.com/pronamic/wp-pronamic-ideal.git --branch=develop --to-s3 -vvv
-bin/pronamic-deployer deploy woocommerce-bulk-product-variations https://gitlab.com/pronamic-plugins/woocommerce-bulk-product-variations.git --to-s3 -vvv
-bin/pronamic-deployer deploy pronamic-pay-adyen https://github.com/wp-pay-gateways/adyen.git --to-s3 -vvv
+bin/wp-deployer deploy easycruit https://gitlab.com/pronamic-plugins/easycruit.git --to-s3 -vvv
+bin/wp-deployer deploy pronamic-client https://github.com/pronamic/wp-pronamic-client.git --to-s3 --to-wp-org -vvv
+bin/wp-deployer deploy pronamic-events https://github.com/pronamic/wp-pronamic-events.git --to-s3 --to-wp-org -vvv
+bin/wp-deployer deploy pronamic-ideal https://github.com/pronamic/wp-pronamic-ideal.git --to-s3 --to-wp-org -vvv
+bin/wp-deployer deploy pronamic-ideal https://github.com/pronamic/wp-pronamic-ideal.git --branch=develop --to-s3 -vvv
+bin/wp-deployer deploy woocommerce-bulk-product-variations https://gitlab.com/pronamic-plugins/woocommerce-bulk-product-variations.git --to-s3 -vvv
+bin/wp-deployer deploy pronamic-pay-adyen https://github.com/wp-pay-gateways/adyen.git --to-s3 -vvv
+bin/wp-deployer deploy pronamic-pay-adyen https://github.com/wp-pay-gateways/adyen.git --to-s3 -vvv
+bin/wp-deployer deploy pronamic-pay-contact-form-7 https://github.com/pronamic/wp-pronamic-pay-contact-form-7.git --to-s3 -vvv
+bin/wp-deployer deploy pronamic-pay-contact-form-7 https://github.com/pronamic/wp-pronamic-pay-contact-form-7.git --to-s3 -vvv
+bin/wp-deployer deploy pronamic-pay-digiwallet https://github.com/pronamic/wp-pronamic-pay-digiwallet.git --branch=main --to-s3 -vvv
+bin/wp-deployer deploy pronamic-pay-fundraising https://github.com/pronamic/wp-pronamic-pay-fundraising.git --to-s3 -vvv
+bin/wp-deployer deploy pronamic-pay-paypal https://github.com/pronamic/wp-pronamic-pay-paypal.git --to-s3 -vvv
+bin/wp-deployer deploy pronamic-pay-payvision https://github.com/pronamic/wp-pronamic-pay-payvision.git --to-s3 -vvv
 ```
 
 ## Alternatives
