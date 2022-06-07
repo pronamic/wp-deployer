@@ -139,6 +139,9 @@ psalm.xml.dist
 # PHP-Scoper (https://github.com/humbug/php-scoper)
 scoper.inc.php
 
+# pNpm (https://pnpm.io/)
+pnpm-lock.yaml
+
 # IntelliJ's project specific settings files
 # @link https://github.com/github/gitignore/blob/master/Global/JetBrains.gitignore
 .idea
