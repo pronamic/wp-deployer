@@ -6,6 +6,7 @@ require __DIR__.'/../vendor/autoload.php';
 
 use Acme\Command\DefaultCommand;
 use Pronamic\Deployer\DeployCommand;
+use Pronamic\Deployer\VersionCommand;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -19,6 +20,7 @@ use Symfony\Component\Process\Process;
 $application = new Application( 'Pronamic deployer.', '1.0.0' );
 
 $application->add( new DeployCommand() );
+$application->add( new VersionCommand() );
 
 $application->register( 'echo' )
 	->addArgument( 'foo', InputArgument::OPTIONAL, 'The directory' )

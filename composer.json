@@ -28,5 +28,10 @@
     "require-dev": {
         "wp-coding-standards/wpcs": "^1.2",
         "dealerdirect/phpcodesniffer-composer-installer": "^0.7.1"
+    },
+    "config": {
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true
+        }
     }
 }
