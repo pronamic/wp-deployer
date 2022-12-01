@@ -52,7 +52,7 @@ class DeployCommand extends Command {
 			null,
 			InputOption::VALUE_REQUIRED,
 			'Which branch do you want to use?',
-			'master'
+			'main'
 		);
 
 		$this->addOption(
