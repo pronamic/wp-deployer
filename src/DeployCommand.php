@@ -347,7 +347,7 @@ class DeployCommand extends Command {
 		$command = sprintf(
 			'zip --recurse-paths %s %s',
 			escapeshellarg( getcwd() . '/' . $relative_file_zip ),
-			escapeshellarg( '' . $slug . '/*' )
+			'' . $slug . '/*'
 		);
 
 		$process = new Process( $command, dirname( $relative_path_build ) );
