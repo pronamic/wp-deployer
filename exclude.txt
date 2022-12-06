@@ -152,6 +152,9 @@ webpack.config.js
 # WP-CLI (https://wp-cli.org/)
 wp-cli.yml
 
+# wp-env (https://github.com/WordPress/gutenberg/tree/trunk/packages/env)
+.wp-env.json
+
 # Other
 /build/
 /deploy/
