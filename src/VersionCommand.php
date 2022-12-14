@@ -46,7 +46,7 @@ class VersionCommand extends Command {
 	protected function execute( InputInterface $input, OutputInterface $output ) {
 		$io = new SymfonyStyle( $input, $output );
 
-		$helper = $this->getHelper( 'process' );
+		$process_helper = $this->getHelper( 'process' );
 
 		$filesystem = new Filesystem();
 
@@ -154,8 +154,6 @@ class VersionCommand extends Command {
 			)
 		);
 
-    	$helper = $this->getHelper( 'question' );
-
     	/**
     	 * New version.
     	 * 
@@ -244,6 +242,22 @@ class VersionCommand extends Command {
 			$position = strpos( $data, $search );
 
 			if ( false === $position ) {
+				/**
+				 * @link https://git-scm.com/docs/pretty-formats
+				 * @link https://git-scm.com/book/en/v2/Git-Basics-Viewing-the-Commit-History#pretty_format
+				 * @link https://git-scm.com/book/en/v2/Git-Basics-Viewing-the-Commit-History
+				 * @link https://github.com/cookpete/auto-changelog#custom-templates
+				 */
+				$command = 'git log --pretty=oneline -n10';
+
+				$process = new Process( $command );
+
+				$process_helper->mustRun( $output, $process );
+
+				$changelog = $process->getOutput();
+
+				var_dump( $changelog );
+
 				throw new \Exception( \sprintf( 'Could not find section for version `%s` in `CHANGELOG.md` file.', $new_version ) );
 			}
 		}
@@ -352,8 +366,6 @@ class VersionCommand extends Command {
 		$file_package_json = $cwd . '/package.json';
 
 		if ( is_readable( $file_package_json ) ) {
-			$process_helper = $this->getHelper( 'process' );
-
 			$command = sprintf(
 				'npm pkg set version=%s',
 				$new_version
