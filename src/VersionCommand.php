@@ -97,7 +97,62 @@ class VersionCommand extends Command {
 			}
 		}
 
+		$file_headers = new FileHeaders();
+
+		/**
+		 * If type = wordpress-plugin update plugin file.
+		 * How do we find the main plugin file?
+		 * Check of version header value exists?
+		 * 
+		 * @link https://github.com/WordPress/gutenberg/search?q=pluginEntryPoint
+		 * @link https://docs.npmjs.com/cli/v8/configuring-npm/package-json#man
+		 * @link https://developer.wordpress.org/reference/functions/get_plugins/
+		 * @link https://developer.wordpress.org/reference/functions/get_plugin_data/
+		 * @link https://developer.wordpress.org/reference/functions/get_file_data/
+		 */
+		$plugins = [];
+
+		if ( \in_array( $type, [ '', 'wordpress-plugin' ], true ) ) {
+			foreach ( \glob( $cwd . '/*.php' ) as $file ) {
+				$headers = $file_headers->get_headers( $file );
+
+				if ( \array_key_exists( 'Plugin Name', $headers ) ) {
+					$plugins[ $file ] = $headers;
+				}
+			}
+		}
+
+		/**
+		 * Multiple plugins is not recommended.
+		 * 
+		 * Only one file in the plugin’s folder should have the header
+		 * comment — if the plugin has multiple PHP files, only one of
+		 * those files should have the header comment.
+		 * 
+		 * @link https://developer.wordpress.org/plugins/plugin-basics/
+		 */
+		if ( count( $plugins ) > 1 ) {
+			$io->note( 'Found multiple plugins, only one file in the plugin’s folder should have the header comment.' );
+		}
+
+		foreach ( $plugins as $file => $headers ) {
+			if ( \array_key_exists( 'Version', $headers ) ) {
+				$version = $headers['Version'];
+			}
+		}
+
 		$io->title( 'Version' );
+
+		$io->table(
+			array(
+				'Key',
+				'Value',
+			),
+			array(
+				array( 'Type', $type ),
+				array( 'Version', $version ),
+			)
+		);
 
     	$helper = $this->getHelper( 'question' );
 
@@ -107,63 +162,55 @@ class VersionCommand extends Command {
     	 * @link https://docs.npmjs.com/cli/v8/commands/npm-version#description
     	 * @link https://github.com/npm/node-semver#functions
     	 */
-		$new_version = '';
+    	$bump_method = $io->choice( 'Select bump methpd', [
+    		'input',
+			'major',
+			'minor',
+			'patch',
+			'premajor',
+			'preminor',
+			'prepatch',
+			'prerelease',
+			'from-git',
+		], 'patch' );
 
-    	if ( false ) {
-	    	$bump_method = $io->choice( 'Select bump methpd', [
-	    		'input',
-				'major',
-				'minor',
-				'patch',
-				'premajor',
-				'preminor',
-				'prepatch',
-				'prerelease',
-				'from-git',
-			], 'patch' );
+		$semver = new SemanticVersion( $version );
 
-			switch ( $bump_method ) {
-				case 'input':
-					$new_version = $io->ask( 'New version?' );
+		switch ( $bump_method ) {
+			case 'input':
+				$new_version = $io->ask( 'New version?' );
 
-					break;
-				case 'major':
-					$io->error( 'Bump method `major` not implemented.' );
+				break;
+			case 'major':
+			case 'minor':
+			case 'patch':
+				$new_version = $semver->inc( $bump_method );
 
-					return 1;
-				case 'minor':
-					$io->error( 'Bump method `minor` not implemented.' );
+				break;
+			case 'premajor':
+				$io->error( 'Bump method `premajor` not implemented.' );
 
-					return 1;
-				case 'patch':
-					$io->error( 'Bump method `patch` not implemented.' );
+				return 1;
+			case 'preminor':
+				$io->error( 'Bump method `preminor` not implemented.' );
 
-					return 1;
-				case 'premajor':
-					$io->error( 'Bump method `premajor` not implemented.' );
+				return 1;
+			case 'prepatch':
+				$io->error( 'Bump method `prepatch` not implemented.' );
 
-					return 1;
-				case 'preminor':
-					$io->error( 'Bump method `preminor` not implemented.' );
+				return 1;
+			case 'prerelease':
+				$io->error( 'Bump method `prerelease` not implemented.' );
 
-					return 1;
-				case 'prepatch':
-					$io->error( 'Bump method `prepatch` not implemented.' );
+				return 1;
+			case 'from-git':
+				$io->error( 'Bump method `from-git` not implemented.' );
 
-					return 1;
-				case 'prerelease':
-					$io->error( 'Bump method `prerelease` not implemented.' );
+				return 1;
+			default:
+				$new_version = $bump_method;
 
-					return 1;
-				case 'from-git':
-					$io->error( 'Bump method `from-git` not implemented.' );
-
-					return 1;
-				default:
-					$new_version = $bump_method;
-
-					break;
-			}
+				break;
 		}
 
 		$io->section( 'Details' );
@@ -181,41 +228,15 @@ class VersionCommand extends Command {
 		);
 
 		/**
-		 * If type = wordpress-plugin update plugin file.
-		 * How do we find the main plugin file?
-		 * Check of version header value exists?
-		 * 
-		 * @link https://github.com/WordPress/gutenberg/search?q=pluginEntryPoint
-		 * @link https://docs.npmjs.com/cli/v8/configuring-npm/package-json#man
-		 * @link https://developer.wordpress.org/reference/functions/get_plugins/
-		 * @link https://developer.wordpress.org/reference/functions/get_plugin_data/
-		 * @link https://developer.wordpress.org/reference/functions/get_file_data/
+		 * Plugins.
 		 */
-		if ( \in_array( $type, [ '', 'wordpress-plugin' ], true ) ) {
-			$file_headers = new FileHeaders();
-
-			$plugins = [];
-
-			foreach ( \glob( $cwd . '/*.php' ) as $file ) {
-				$headers = $file_headers->get_headers( $file );
-
-				if ( \array_key_exists( 'Plugin Name', $headers ) ) {
-					$plugins[ $file ] = $headers;
-				}
-			}
-
-			/**
-			 * Multiple plugins is not recommended.
-			 * 
-			 * Only one file in the plugin’s folder should have the header
-			 * comment — if the plugin has multiple PHP files, only one of
-			 * those files should have the header comment.
-			 * 
-			 * @link https://developer.wordpress.org/plugins/plugin-basics/
-			 */
-			if ( count( $plugins ) > 1 ) {
-				$io->note( 'Found multiple plugins, only one file in the plugin’s folder should have the header comment.' );
-			}
+		foreach ( $plugins as $file => $headers ) {
+			$file_headers->set_headers(
+				$file,
+				[
+					'Version' => $new_version,
+				]
+			);
 		}
 
 		/**
@@ -233,8 +254,6 @@ class VersionCommand extends Command {
 
 		if ( \in_array( $type, [ '', 'wordpress-theme' ], true ) ) {
 			if ( is_readable( $file_style ) ) {
-				$file_headers = new FileHeaders();
-
 				$headers = $file_headers->get_headers( $file_style );
 
 				if ( ! \array_key_exists( 'Theme Name', $headers ) ) {
@@ -244,6 +263,13 @@ class VersionCommand extends Command {
 				if ( ! \array_key_exists( 'Version', $headers ) ) {
 					$io->note( 'The `Version` header is missing in the `style.css` file.' );
 				}
+
+				$file_headers->set_headers(
+					$file_style,
+					[
+						'Version' => $new_version,
+					]
+				);
 			}
 		}
 
@@ -256,12 +282,44 @@ class VersionCommand extends Command {
 		$file_readme_txt = $cwd . '/readme.txt';
 
 		if ( is_readable( $file_readme_txt ) ) {
-			
+			$headers = $file_headers->get_headers( $file_readme_txt );
+
+			if ( ! \array_key_exists( 'Stable tag', $headers ) ) {
+				$io->note( 'The `Stable tag` header is missing in the `readme.txt` file.' );
+			}
+
+			/**
+			 * The 'Stable tag' only needs to be updated after tagging
+			 * within the WordPress.org subversion repository.
+			 */
+			$file_headers->set_headers(
+				$file_readme_txt,
+				[
+					'Stable tag' => $new_version,
+				]
+			);
 		}
 
 		/**
 		 * If CHANGELOG.md check if new version is part of it?
 		 */
+		$file_changelog_md = $cwd . '/CHANGELOG.md';
+
+		if ( ! is_readable( $file_changelog_md ) ) {
+			$io->note( 'It is a good idea to keep track of the changes in a `CHANGELOG.md` file: https://keepachangelog.com/.' );
+		}
+
+		if ( is_readable( $file_changelog_md ) ) {
+			$data = file_get_contents( $file_changelog_md );
+
+			$search = '## [' . $new_version . '] - ';
+
+			$position = strpos( $data, $search );
+
+			if ( false === $position ) {
+				throw new \Exception( \sprintf( 'Could not find section for version `%s` in `CHANGELOG.md` file.', $new_version ) );
+			}
+		}
 
 		/**
 		 * If changelog is missing add commits / pull requests to CHANGELOG.md?
