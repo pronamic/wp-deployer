@@ -45,13 +45,21 @@ class FileHeaders {
 			$before = \substr( $line, 0, $colon_position );
 			$after  = \substr( $line, $colon_position + 1 );
 
-			$key   = \rtrim( \ltrim( $before, " \n\r\t\v\x00\/*#" ) );
-			$value = \trim( $after );
+			$key   = $this->trim_key( $before );
+			$value = $this->trim_value( $after );
 
 			$headers[ $key ] = $value;
 		}
 
 		return $headers;
+	}
+
+	private function trim_key( $value ) {
+		return \rtrim( \ltrim( $value, " \n\r\t\v\x00\/*#" ) );
+	}
+
+	private function trim_value( $value ) {
+		return \trim( $value );
 	}
 
 	public function set_headers( $file, $headers ) {
@@ -71,8 +79,8 @@ class FileHeaders {
 			$before = \substr( $line, 0, $colon_position );
 			$after  = \substr( $line, $colon_position + 1 );
 
-			$key   = \rtrim( \ltrim( $before, " \n\r\t\v\x00\/*#" ) );
-			$value = \trim( $after );
+			$key   = $this->trim_key( $before );
+			$value = $this->trim_value( $after );
 
 			if ( \array_key_exists( $key, $headers ) ) {
 				$value_old = $value;
@@ -80,7 +88,7 @@ class FileHeaders {
 
 				$line = $before . ':' . str_replace( $value_old, $value_new, $after );
 
-				$lines[ $i ] = $Line;
+				$lines[ $i ] = $line;
 			}
 		}
 
