@@ -107,59 +107,63 @@ class VersionCommand extends Command {
     	 * @link https://docs.npmjs.com/cli/v8/commands/npm-version#description
     	 * @link https://github.com/npm/node-semver#functions
     	 */
-    	$bump_method = $io->choice( 'Select bump methpd', [
-    		'input',
-			'major',
-			'minor',
-			'patch',
-			'premajor',
-			'preminor',
-			'prepatch',
-			'prerelease',
-			'from-git',
-		], 'patch' );
+		$new_version = '';
 
-		switch ( $bump_method ) {
-			case 'input':
-				$new_version = $io->ask( 'New version?' );
+    	if ( false ) {
+	    	$bump_method = $io->choice( 'Select bump methpd', [
+	    		'input',
+				'major',
+				'minor',
+				'patch',
+				'premajor',
+				'preminor',
+				'prepatch',
+				'prerelease',
+				'from-git',
+			], 'patch' );
 
-				break;
-			case 'major':
-				$io->error( 'Bump method `major` not implemented.' );
+			switch ( $bump_method ) {
+				case 'input':
+					$new_version = $io->ask( 'New version?' );
 
-				return 1;
-			case 'minor':
-				$io->error( 'Bump method `minor` not implemented.' );
+					break;
+				case 'major':
+					$io->error( 'Bump method `major` not implemented.' );
 
-				return 1;
-			case 'patch':
-				$io->error( 'Bump method `patch` not implemented.' );
+					return 1;
+				case 'minor':
+					$io->error( 'Bump method `minor` not implemented.' );
 
-				return 1;
-			case 'premajor':
-				$io->error( 'Bump method `premajor` not implemented.' );
+					return 1;
+				case 'patch':
+					$io->error( 'Bump method `patch` not implemented.' );
 
-				return 1;
-			case 'preminor':
-				$io->error( 'Bump method `preminor` not implemented.' );
+					return 1;
+				case 'premajor':
+					$io->error( 'Bump method `premajor` not implemented.' );
 
-				return 1;
-			case 'prepatch':
-				$io->error( 'Bump method `prepatch` not implemented.' );
+					return 1;
+				case 'preminor':
+					$io->error( 'Bump method `preminor` not implemented.' );
 
-				return 1;
-			case 'prerelease':
-				$io->error( 'Bump method `prerelease` not implemented.' );
+					return 1;
+				case 'prepatch':
+					$io->error( 'Bump method `prepatch` not implemented.' );
 
-				return 1;
-			case 'from-git':
-				$io->error( 'Bump method `from-git` not implemented.' );
+					return 1;
+				case 'prerelease':
+					$io->error( 'Bump method `prerelease` not implemented.' );
 
-				return 1;
-			default:
-				$new_version = $bump_method;
+					return 1;
+				case 'from-git':
+					$io->error( 'Bump method `from-git` not implemented.' );
 
-				break;
+					return 1;
+				default:
+					$new_version = $bump_method;
+
+					break;
+			}
 		}
 
 		$io->section( 'Details' );
@@ -183,13 +187,65 @@ class VersionCommand extends Command {
 		 * 
 		 * @link https://github.com/WordPress/gutenberg/search?q=pluginEntryPoint
 		 * @link https://docs.npmjs.com/cli/v8/configuring-npm/package-json#man
+		 * @link https://developer.wordpress.org/reference/functions/get_plugins/
+		 * @link https://developer.wordpress.org/reference/functions/get_plugin_data/
+		 * @link https://developer.wordpress.org/reference/functions/get_file_data/
 		 */
+		if ( \in_array( $type, [ '', 'wordpress-plugin' ], true ) ) {
+			$file_headers = new FileHeaders();
+
+			$plugins = [];
+
+			foreach ( \glob( $cwd . '/*.php' ) as $file ) {
+				$headers = $file_headers->get_headers( $file );
+
+				if ( \array_key_exists( 'Plugin Name', $headers ) ) {
+					$plugins[ $file ] = $headers;
+				}
+			}
+
+			/**
+			 * Multiple plugins is not recommended.
+			 * 
+			 * Only one file in the plugin’s folder should have the header
+			 * comment — if the plugin has multiple PHP files, only one of
+			 * those files should have the header comment.
+			 * 
+			 * @link https://developer.wordpress.org/plugins/plugin-basics/
+			 */
+			if ( count( $plugins ) > 1 ) {
+				$io->note( 'Found multiple plugins, only one file in the plugin’s folder should have the header comment.' );
+			}
+		}
 
 		/**
 		 * If type = wordpress-theme update style.css file.
 		 *
 		 * Check of version header value exists?
 		 */
+		$file_style = $cwd . '/style.css';
+
+		if ( 'wordpress-theme' === $type ) {
+			if ( ! is_readable( $file_style ) ) {
+				$io->note( 'The `style.css` file is missing.' );
+			}
+		}
+
+		if ( \in_array( $type, [ '', 'wordpress-theme' ], true ) ) {
+			if ( is_readable( $file_style ) ) {
+				$file_headers = new FileHeaders();
+
+				$headers = $file_headers->get_headers( $file_style );
+
+				if ( ! \array_key_exists( 'Theme Name', $headers ) ) {
+					$io->note( 'The `Theme Name` header is missing in the `style.css` file.' );
+				}
+
+				if ( ! \array_key_exists( 'Version', $headers ) ) {
+					$io->note( 'The `Version` header is missing in the `style.css` file.' );
+				}
+			}
+		}
 
 		/**
 		 * If type = wordpress-plugin or type = wordpress-theme
@@ -197,6 +253,11 @@ class VersionCommand extends Command {
 		 * 
 		 * Check if "Stable tag" exists?
 		 */
+		$file_readme_txt = $cwd . '/readme.txt';
+
+		if ( is_readable( $file_readme_txt ) ) {
+			
+		}
 
 		/**
 		 * If CHANGELOG.md check if new version is part of it?
