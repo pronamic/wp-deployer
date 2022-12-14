@@ -1,38 +1,35 @@
 #!/usr/bin/env php
 <?php
-// application.php
 
-require __DIR__.'/../vendor/autoload.php';
+namespace Pronamic\Deployer;
 
-use Acme\Command\DefaultCommand;
-use Pronamic\Deployer\DeployCommand;
-use Pronamic\Deployer\VersionCommand;
+/**
+ * Autoload.
+ *
+ * @link https://stackoverflow.com/questions/12241903/script-in-dependency-needs-path-to-composer-autoloader
+ * @link https://gist.github.com/tburry/90ae5ba5bfa9140cfb53
+ */
+$paths = array(
+    __DIR__ . '/../vendor/autoload.php', // locally
+    __DIR__ . '/../../../autoload.php' // dependency
+);
+
+foreach ( $paths as $path ) {
+	if ( \is_readable( $path ) ) {
+		require_once $path;
+
+		break;
+	}
+}
+
+/**
+ * Use statements.
+ */
 use Symfony\Component\Console\Application;
-use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputDefinition;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Style\SymfonyStyle;
-use Symfony\Component\Process\Process;
 
 $application = new Application( 'Pronamic deployer.', '1.0.0' );
 
 $application->add( new DeployCommand() );
 $application->add( new VersionCommand() );
-
-$application->register( 'echo' )
-	->addArgument( 'foo', InputArgument::OPTIONAL, 'The directory' )
-	->addOption( 'bar', null, InputOption::VALUE_REQUIRED )
-	->setCode( function( InputInterface $input, OutputInterface $output ) {
-		$helper = $this->getHelper( 'process' );
-
-		$process = new Process( array( 'figlet', 'Pronamic' ) );
-
-		$helper->run( $output, 'figlet Symfony' );
-	} );
-
-// $application->setDefaultCommand( 'echo', true );
 
 $application->run();
