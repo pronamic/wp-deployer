@@ -228,6 +228,27 @@ class VersionCommand extends Command {
 		);
 
 		/**
+		 * If CHANGELOG.md check if new version is part of it?
+		 */
+		$file_changelog_md = $cwd . '/CHANGELOG.md';
+
+		if ( ! is_readable( $file_changelog_md ) ) {
+			$io->note( 'It is a good idea to keep track of the changes in a `CHANGELOG.md` file: https://keepachangelog.com/.' );
+		}
+
+		if ( is_readable( $file_changelog_md ) ) {
+			$data = file_get_contents( $file_changelog_md );
+
+			$search = '## [' . $new_version . '] - ';
+
+			$position = strpos( $data, $search );
+
+			if ( false === $position ) {
+				throw new \Exception( \sprintf( 'Could not find section for version `%s` in `CHANGELOG.md` file.', $new_version ) );
+			}
+		}
+
+		/**
 		 * Plugins.
 		 */
 		foreach ( $plugins as $file => $headers ) {
@@ -298,27 +319,6 @@ class VersionCommand extends Command {
 					'Stable tag' => $new_version,
 				]
 			);
-		}
-
-		/**
-		 * If CHANGELOG.md check if new version is part of it?
-		 */
-		$file_changelog_md = $cwd . '/CHANGELOG.md';
-
-		if ( ! is_readable( $file_changelog_md ) ) {
-			$io->note( 'It is a good idea to keep track of the changes in a `CHANGELOG.md` file: https://keepachangelog.com/.' );
-		}
-
-		if ( is_readable( $file_changelog_md ) ) {
-			$data = file_get_contents( $file_changelog_md );
-
-			$search = '## [' . $new_version . '] - ';
-
-			$position = strpos( $data, $search );
-
-			if ( false === $position ) {
-				throw new \Exception( \sprintf( 'Could not find section for version `%s` in `CHANGELOG.md` file.', $new_version ) );
-			}
 		}
 
 		/**
