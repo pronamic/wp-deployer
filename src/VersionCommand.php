@@ -349,6 +349,20 @@ class VersionCommand extends Command {
 		 * If package.json exists use `npm version`?
 		 * Or `npm pkg set $new_version`?
 		 */
+		$file_package_json = $cwd . '/package.json';
+
+		if ( is_readable( $file_package_json ) ) {
+			$process_helper = $this->getHelper( 'process' );
+
+			$command = sprintf(
+				'npm pkg set version=%s',
+				$new_version
+			);
+
+			$process = new Process( $command );
+
+			$process_helper->mustRun( $output, $process );
+		}
 
 		/**
 		 * GitHub CLI, create concept release?
