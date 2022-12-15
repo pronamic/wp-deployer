@@ -45,16 +45,6 @@ class ChangelogEntry {
 		$this->date      = new DateTimeImmutable();
 	}
 
-	public function generate_body() {
-		$body = '';
-
-		foreach ( $this->commits as $commit ) {
-			$body .= '- ' . $this->change_present_to_past_tense( $commit->title_line ) . "\n";
-		}
-
-		return $body;
-	}
-
 	public function render() {
 		\ob_start();
 
@@ -65,26 +55,6 @@ class ChangelogEntry {
 		$output = ob_get_clean();
 
 		return $output;
-	}
-
-	public function change_present_to_past_tense( $text ) {
-		$patterns = [
-			'add'    => '/^Add /',
-			'create' => '/^Create /',
-			'fix'    => '/^Fix /',
-			'update' => '/^Update /',
-			'remove' => '/^Remove /',
-		];
-
-		$replacements = [
-			'add'    => 'Added ',
-			'create' => 'Created ',
-			'fix'    => 'Fixed ',
-			'update' => 'Updated ',
-			'remove' => 'Removed ',
-		];
-
-		return \preg_replace( $patterns, $replacements, $text );
 	}
 
 	public function get_version_compare() {

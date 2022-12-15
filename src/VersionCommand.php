@@ -259,33 +259,7 @@ class VersionCommand extends Command {
 
 				$changelog_entry->version_previous = $version;
 
-				/**
-				 * @link https://git-scm.com/docs/pretty-formats
-				 * @link https://git-scm.com/book/en/v2/Git-Basics-Viewing-the-Commit-History#pretty_format
-				 * @link https://git-scm.com/book/en/v2/Git-Basics-Viewing-the-Commit-History
-				 * @link https://github.com/cookpete/auto-changelog#custom-templates
-				 */
-				$command = 'git --no-pager log --pretty=oneline -n10';
-
-				$process = new Process( $command );
-
-				$process_helper->mustRun( $output, $process );
-
-				$git_log = $process->getOutput();
-
-				$lines = explode( "\n", trim( $git_log ) );
-
-				foreach ( $lines as $line ) {
-					$hash       = substr( $line, 0, 40 );
-					$title_line = substr( $line, 40 + 1 );
-
-					$commit = new GitCommit( $hash );
-					$commit->title_line = $title_line;
-
-					$changelog_entry->commits[] = $commit;
-				}
-
-				$changelog_entry->body = $changelog_entry->generate_body();
+				$changelog_entry->body .= $this->add_git_log( $cwd, $version, $output );
 
 				if ( isset( $composer_json ) ) {
 					$changelog_entry->body .= $this->add_composer_updates( $cwd, $version, $output );
@@ -459,6 +433,8 @@ class VersionCommand extends Command {
 		 */
 		$components = \parse_url( $url );
 
+		$host = $components['host'];
+
 		$path = $components['path'];
 
 		$organisation = strtok( $path, '/' );
@@ -470,6 +446,70 @@ class VersionCommand extends Command {
 			'organisation' => $organisation,
 			'repository'   => $repository,
 		];
+	}
+
+	public function change_present_to_past_tense( $text ) {
+		$patterns = [
+			'add'    => '/^Add /',
+			'create' => '/^Create /',
+			'fix'    => '/^Fix /',
+			'update' => '/^Update /',
+			'remove' => '/^Remove /',
+		];
+
+		$replacements = [
+			'add'    => 'Added ',
+			'create' => 'Created ',
+			'fix'    => 'Fixed ',
+			'update' => 'Updated ',
+			'remove' => 'Removed ',
+		];
+
+		return \preg_replace( $patterns, $replacements, $text );
+	}
+
+	public function add_git_log( $cwd, $version, $output ) {
+		$process_helper = $this->getHelper( 'process' );
+
+		/**
+		 * @link https://git-scm.com/docs/pretty-formats
+		 * @link https://git-scm.com/book/en/v2/Git-Basics-Viewing-the-Commit-History#pretty_format
+		 * @link https://git-scm.com/book/en/v2/Git-Basics-Viewing-the-Commit-History
+		 * @link https://github.com/cookpete/auto-changelog#custom-templates
+		 */
+		$command = 'git --no-pager log --pretty=oneline -n10';
+
+		$process = new Process( $command, $cwd );
+
+		$process_helper->mustRun( $output, $process );
+
+		$git_log = $process->getOutput();
+
+		$lines = explode( "\n", trim( $git_log ) );
+
+		$commits = [];
+
+		foreach ( $lines as $line ) {
+			$hash       = substr( $line, 0, 40 );
+			$title_line = substr( $line, 40 + 1 );
+
+			$commit = new GitCommit( $hash );
+			$commit->title_line = $title_line;
+
+			$commits[] = $commit;
+		}
+
+		$content = "\n";
+
+		$content .= '### Commits' . "\n";
+
+		$content .= "\n";
+
+		foreach ( $commits as $commit ) {
+			$content .= '- ' . $this->change_present_to_past_tense( $commit->title_line ) . "\n";
+		}
+
+		return $content;
 	}
 
 	public function add_composer_updates( $cwd, $version, $output ) {
