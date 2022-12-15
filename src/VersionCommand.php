@@ -235,28 +235,49 @@ class VersionCommand extends Command {
 		}
 
 		if ( is_readable( $file_changelog_md ) ) {
-			$data = file_get_contents( $file_changelog_md );
+			$changelog = new Changelog( $file_changelog_md );
 
-			$search = '## [' . $new_version . '] - ';
+			if ( ! $changelog->has_entry( $new_version ) ) {
+				$changelog_entry = new ChangelogEntry( $new_version );
 
-			$position = strpos( $data, $search );
-
-			if ( false === $position ) {
 				/**
 				 * @link https://git-scm.com/docs/pretty-formats
 				 * @link https://git-scm.com/book/en/v2/Git-Basics-Viewing-the-Commit-History#pretty_format
 				 * @link https://git-scm.com/book/en/v2/Git-Basics-Viewing-the-Commit-History
 				 * @link https://github.com/cookpete/auto-changelog#custom-templates
 				 */
-				$command = 'git log --pretty=oneline -n10';
+				$command = 'git --no-pager log --pretty=oneline -n10';
 
 				$process = new Process( $command );
 
 				$process_helper->mustRun( $output, $process );
 
-				$changelog = $process->getOutput();
+				$git_log = $process->getOutput();
 
-				var_dump( $changelog );
+				$lines = explode( "\n", trim( $git_log ) );
+
+				foreach ( $lines as $line ) {
+					$hash       = substr( $line, 0, 40 );
+					$title_line = substr( $line, 40 + 1 );
+
+					$commit = new GitCommit( $hash );
+					$commit->title_line = $title_line;
+
+					$changelog_entry->commits[] = $commit;
+				}
+
+				$changelog_entry->body =$changelog_entry->generate_body();
+
+				$process = new Process( 'subl -', null, null, $changelog_entry->body );
+
+				$process_helper->mustRun( $output, $process );
+
+				$changelog_entry->body = $process->getOutput();
+
+				$changelog_entry_string = trim( $changelog_entry->render() ) . "\n\n";
+
+				$changelog->insert( $changelog->get_insert_position(), $changelog_entry_string );
+				$changelog->save();
 
 				throw new \Exception( \sprintf( 'Could not find section for version `%s` in `CHANGELOG.md` file.', $new_version ) );
 			}
