@@ -161,15 +161,15 @@ class VersionCommand extends Command {
     	 * @link https://github.com/npm/node-semver#functions
     	 */
     	$bump_method = $io->choice( 'Select bump methpd', [
-    		'input',
+    		// 'input',
 			'major',
 			'minor',
 			'patch',
-			'premajor',
-			'preminor',
-			'prepatch',
-			'prerelease',
-			'from-git',
+			// 'premajor',
+			// 'preminor',
+			// 'prepatch',
+			// 'prerelease',
+			// 'from-git',
 		], 'patch' );
 
 		$semver = new SemanticVersion( $version );
