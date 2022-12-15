@@ -95,10 +95,6 @@ Gruntfile.js
 # Bower (https://bower.io/)
 bower.json
 
-# NPM (https://www.npmjs.com/)
-package-lock.json
-package.json
-
 # Yarn (https://yarnpkg.com/)
 yarn.lock
 
