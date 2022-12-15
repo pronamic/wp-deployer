@@ -1,0 +1,6 @@
+{
+    "name": "pronamic/plugin",
+    "require": {
+        "php": ">=8",
+    }
+}
