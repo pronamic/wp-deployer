@@ -1,6 +1,7 @@
 {
     "name": "pronamic/plugin",
     "require": {
-        "php": ">=8"
+        "php": ">=8",
+        "pronamic/wp-number": "^1.0"
     }
 }
