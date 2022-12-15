@@ -246,19 +246,9 @@ class VersionCommand extends Command {
 
 			$url = $process->getOutput();
 
-			/**
-			 * Parse URL.
-			 *
-			 * @link https://github.com/jonschlinkert/parse-github-url
-			 */
-			$components = \parse_url( $url );
+			$components = $this->parse_git_url( $url );
 
-			$path = $components['path'];
-
-			$organisation = strtok( $path, '/' );
-			$repository   = strtok( '.' );
-
-			$url_repository = 'https://' . $components['host'] . '/' . $organisation . '/' . $repository;
+			$url_repository = 'https://' . $components['host'] . '/' . $components['organisation'] . '/' . $components['repository'];
 
 			$changelog = new Changelog( $file_changelog_md );
 
@@ -436,6 +426,52 @@ class VersionCommand extends Command {
 		 */
 	}
 
+	/**
+	 * Parse git URL.
+	 *
+	 * @param string $url URL.
+	 * @return string
+	 */
+	private function parse_git_url( $url ) {
+		/**
+		 * Parse GitHub SSH notation.
+		 * 
+		 * git@github.com:organisation/repository.git
+		 */
+		if ( str_starts_with( $url, 'git@github.com:' ) ) {
+			$user = strtok( $url, '@' );
+			$host = strtok( ':' );
+			$organisation = strtok( '/' );
+			$repository   = strtok( '.git' );
+
+			return [
+				'user'         => $user,
+				'host'         => $host,
+				'organisation' => $organisation,
+				'repository'   => $repository,
+			];
+		}
+
+		/**
+		 * Parse URL.
+		 *
+		 * @link https://github.com/jonschlinkert/parse-github-url
+		 */
+		$components = \parse_url( $url );
+
+		$path = $components['path'];
+
+		$organisation = strtok( $path, '/' );
+		$repository   = strtok( '.' );
+
+		return [
+			'user'         => '',
+			'host'         => $host,
+			'organisation' => $organisation,
+			'repository'   => $repository,
+		];
+	}
+
 	public function add_composer_updates( $cwd, $version, $output ) {
 		$composer_json_file = $cwd . '/composer.json';
 
@@ -455,11 +491,13 @@ class VersionCommand extends Command {
 			return '';
 		}
 
+		$process_helper = $this->getHelper( 'process' );
+
 		$object = 'tags/' . $version . ':composer.lock';
 
 		$process = new Process( 'git show ' . $object, $cwd  );
 
-		$process_helper->mustRun( $output, $process );
+		$process_helper->run( $output, $process );
 
 		$composer_lock_old = json_decode( $process->getOutput() );
 		$composer_lock_new = json_decode( file_get_contents( $cwd . '/composer.lock' ) );
@@ -472,12 +510,40 @@ class VersionCommand extends Command {
 			return '';
 		}
 
-		foreach ( $composer_json->require as $key => $value ) {
-			echo $key, PHP_EOL;
-			echo $value, PHP_EOL;
-			echo PHP_EOL;
+		$map_old = [];
+		$map_new = [];
 
-			exit;
+		foreach ( $composer_lock_old->packages as $package ) {
+			$map_old[ $package->name ] = $package->version;
 		}
+
+		foreach ( $composer_lock_new->packages as $package ) {
+			$map_new[ $package->name ] = $package->version;
+		}
+
+		$content = "\n";
+
+		$content .= '### Composer' . "\n";
+
+		$content .= "\n";
+
+		foreach ( $composer_json->require as $key => $value ) {
+			if ( ! array_key_exists( $key, $map_old ) ) {
+				continue;
+			}
+
+			if ( ! array_key_exists( $key, $map_new ) ) {
+				continue;
+			}
+
+			$version_old = $map_old[ $key ];
+			$version_new = $map_new[ $key ];
+
+			if ( $version_old !== $version_new ) {
+				$content .= \sprintf( 'Updated `%s` from `%s` to `%s`.', $key, $version_old, $version_new ) . PHP_EOL;
+			}
+		}
+
+		return $content;
 	}
 }
