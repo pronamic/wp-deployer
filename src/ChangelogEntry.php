@@ -20,7 +20,11 @@ use DateTimeImmutable;
  * @since   1.0.0
  */
 class ChangelogEntry {
+	public $changelog;
+
 	public $version;
+
+	public $version_previous = '';
 
 	public $date;
 
@@ -28,14 +32,17 @@ class ChangelogEntry {
 
 	public $commits = [];
 
+	public $url;
+
 	/**
 	 * Construct changelog entry.
 	 * 
 	 * @param string $version Version.
 	 */
-	public function __construct( $version ) {
-		$this->version = $version;
-		$this->date    = new DateTimeImmutable();
+	public function __construct( $changelog, $version ) {
+		$this->changelog = $changelog;
+		$this->version   = $version;
+		$this->date      = new DateTimeImmutable();
 	}
 
 	public function generate_body() {
@@ -78,5 +85,21 @@ class ChangelogEntry {
 		];
 
 		return \preg_replace( $patterns, $replacements, $text );
+	}
+
+	public function get_version_compare() {
+		if ( '' === $this->version_previous ) {
+			return $this->version;
+		}
+
+		return $this->version_previous . '...' . $this->version;
+	}
+
+	public function get_link() {
+		if ( '' === $this->version_previous ) {
+			return $this->url . '/releases/tag/' . $this->version;
+		}
+
+		return $this->url . '/compare/' . $this->version_previous . '...' . $this->version;
 	}
 }

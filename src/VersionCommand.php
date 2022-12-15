@@ -235,10 +235,39 @@ class VersionCommand extends Command {
 		}
 
 		if ( is_readable( $file_changelog_md ) ) {
+			/**
+			 * Remote URL.
+			 * 
+			 * @link https://github.com/cookpete/auto-changelog/blob/0991f17ce936a9db490e2ad1a04121755038b78d/src/remote.js
+			 */
+			$process = new Process( 'git remote get-url origin', $cwd );
+
+			$process_helper->mustRun( $output, $process );
+
+			$url = $process->getOutput();
+
+			/**
+			 * Parse URL.
+			 *
+			 * @link https://github.com/jonschlinkert/parse-github-url
+			 */
+			$components = \parse_url( $url );
+
+			$path = $components['path'];
+
+			$organisation = strtok( $path, '/' );
+			$repository   = strtok( '.' );
+
+			$url_repository = 'https://' . $components['host'] . '/' . $organisation . '/' . $repository;
+
 			$changelog = new Changelog( $file_changelog_md );
 
 			if ( ! $changelog->has_entry( $new_version ) ) {
-				$changelog_entry = new ChangelogEntry( $new_version );
+				$changelog_entry = $changelog->new_entry( $new_version );
+
+				$changelog_entry->url = $url_repository;
+
+				$changelog_entry->version_previous = $version;
 
 				/**
 				 * @link https://git-scm.com/docs/pretty-formats

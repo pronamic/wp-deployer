@@ -33,6 +33,10 @@ class Changelog {
 		$this->data = \file( $file );
 	}
 
+	public function new_entry( $version ) {
+		return new ChangelogEntry( $this, $version );
+	}
+
 	public function has_entry( $version ) {
 		$search = '[' . $version . ']';
 
