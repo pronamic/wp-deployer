@@ -306,9 +306,8 @@ class VersionCommand extends Command {
 				$changelog_entry_string = trim( $changelog_entry->render() ) . "\n\n";
 
 				$changelog->insert( $changelog->get_insert_position(), $changelog_entry_string );
-				$changelog->save();
 
-				throw new \Exception( \sprintf( 'Could not find section for version `%s` in `CHANGELOG.md` file.', $new_version ) );
+				$changelog->save();
 			}
 		}
 
