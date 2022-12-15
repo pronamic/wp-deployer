@@ -1,5 +1,5 @@
 # Composer
-/vendor/
+vendor/
 
 # Deploy
 /deploy/
