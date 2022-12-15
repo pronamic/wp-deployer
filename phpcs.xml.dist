@@ -1,14 +1,11 @@
 <?xml version="1.0"?>
 
 <ruleset name="Pronamic Deployer rules">
-	<file>src</file>
+	<file>.</file>
 
-	<arg name="colors"/>
-	<arg name="extensions" value="php" />
-	<arg value="sp" />
+	<exclude-pattern type="relative">^deploy/*</exclude-pattern>
 
-	<rule ref="WordPress">
-		<exclude name="WordPress.Files.FileName.InvalidClassFileName" />
-		<exclude name="WordPress.Files.FileName.NotHyphenatedLowercase" />
+	<rule ref="PronamicWP">
+
 	</rule>
 </ruleset>

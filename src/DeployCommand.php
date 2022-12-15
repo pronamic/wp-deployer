@@ -39,11 +39,11 @@ class DeployCommand extends Command {
 			->setDescription( 'Deploy.' )
 			->setDefinition(
 				new InputDefinition(
-					array(
+					[
 						new InputArgument( 'slug', InputArgument::REQUIRED ),
 						new InputArgument( 'git', InputArgument::REQUIRED ),
 						new InputArgument( 'main_file', InputArgument::OPTIONAL ),
-					)
+					]
 				)
 			);
 
@@ -150,20 +150,20 @@ class DeployCommand extends Command {
 		$io->title( sprintf( 'Deploy `%s`', $slug ) );
 
 		$io->table(
-			array(
+			[
 				'Key',
 				'Value',
-			),
-			array(
-				array( 'Slug', $slug ),
-				array( 'Git', $git ),
-				array( 'Main file', $main_file ),
-				array( 'SVN URL', $svn_url ),
-				array( 'SVN path', $relative_path_svn ),
-				array( 'Git path', $relative_path_git ),
-				array( 'Build path', $relative_path_build ),
-				array( 'ZIP path', $relative_path_zip ),
-			)
+			],
+			[
+				[ 'Slug', $slug ],
+				[ 'Git', $git ],
+				[ 'Main file', $main_file ],
+				[ 'SVN URL', $svn_url ],
+				[ 'SVN path', $relative_path_svn ],
+				[ 'Git path', $relative_path_git ],
+				[ 'Build path', $relative_path_build ],
+				[ 'ZIP path', $relative_path_zip ],
+			]
 		);
 
 		if ( ! $non_interactive ) {
@@ -189,22 +189,22 @@ class DeployCommand extends Command {
 			$helper->mustRun( $output, $process );
 		}
 
-		$process = new Process( array( 'git', 'pull' ), $relative_path_git );
+		$process = new Process( [ 'git', 'pull' ], $relative_path_git );
 
 		$helper->mustRun( $output, $process );
 
-		$process = new Process( array( 'git', 'checkout', $branch ), $relative_path_git );
+		$process = new Process( [ 'git', 'checkout', $branch ], $relative_path_git );
 
 		$helper->mustRun( $output, $process );
 
-		$process = new Process( array( 'git', 'pull' ), $relative_path_git );
+		$process = new Process( [ 'git', 'pull' ], $relative_path_git );
 
 		$helper->mustRun( $output, $process );
 
 		// Version.
 		$io->section( 'Version' );
 
-		$commands = array(
+		$commands = [
 			sprintf(
 				$grep . ' -i "Version:" %s',
 				$relative_path_git . '/' . $main_file
@@ -218,7 +218,7 @@ class DeployCommand extends Command {
 				$tr . " -d '%s'",
 				'\r'
 			),
-		);
+		];
 
 		$command = implode( ' | ', $commands );
 
@@ -228,7 +228,7 @@ class DeployCommand extends Command {
 
 		$version_main_file = trim( $process->getOutput() );
 
-		$commands = array(
+		$commands = [
 			sprintf(
 				$grep . ' -i "Stable tag:" %s',
 				$relative_path_git . '/readme.txt'
@@ -242,7 +242,7 @@ class DeployCommand extends Command {
 				$tr . " -d '%s'",
 				'\r'
 			),
-		);
+		];
 
 		$command = implode( ' | ', $commands );
 
@@ -253,20 +253,20 @@ class DeployCommand extends Command {
 		$version_readme_txt = trim( $process->getOutput() );
 
 		$io->table(
-			array(
+			[
 				'File',
 				'Version',
-			),
-			array(
-				array(
+			],
+			[
+				[
 					'readme.txt',
 					$version_readme_txt,
-				),
-				array(
+				],
+				[
 					$main_file,
 					$version_main_file,
-				),
-			)
+				],
+			]
 		);
 
 		if ( $version_readme_txt !== $version_main_file ) {
@@ -432,15 +432,15 @@ class DeployCommand extends Command {
 				$helper->mustRun( $output, $process );
 
 				// Subversion - Delete.
-				$commands = array(
+				$commands = [
 					sprintf(
 						'svn status %s',
 						$relative_path_svn . '/trunk/'
 					),
 					$grep . " '^!'",
 					$cut . ' -c 9-',
-					$xargs . " -d '\\n' -i svn delete {}@"
-				);
+					$xargs . " -d '\\n' -i svn delete {}@",
+				];
 
 				$command = implode( ' | ', $commands );
 
@@ -449,15 +449,15 @@ class DeployCommand extends Command {
 				$helper->mustRun( $output, $process );
 
 				// Subversion - Add.
-				$commands = array(
+				$commands = [
 					sprintf(
 						'svn status %s',
 						$relative_path_svn . '/trunk/'
 					),
 					$grep . " '^?'",
 					$cut . ' -c 9-',
-					$xargs . " -d '\\n' -i svn add {}@"
-				);
+					$xargs . " -d '\\n' -i svn add {}@",
+				];
 
 				$command = implode( ' | ', $commands );
 

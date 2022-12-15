@@ -32,7 +32,7 @@ class SemanticVersion {
 
 		if ( false !== $position_plus ) {
 			$value = substr( $value, 0, $position_plus );
-			$build  = substr( $value, $position_plus + 1 );
+			$build = substr( $value, $position_plus + 1 );
 		}
 
 		$position_dash = strpos( $value, '-' );

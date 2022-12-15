@@ -144,33 +144,37 @@ class VersionCommand extends Command {
 		$io->title( 'Version' );
 
 		$io->table(
-			array(
+			[
 				'Key',
 				'Value',
-			),
-			array(
-				array( 'Type', $type ),
-				array( 'Version', $version ),
-			)
+			],
+			[
+				[ 'Type', $type ],
+				[ 'Version', $version ],
+			]
 		);
 
-    	/**
-    	 * New version.
-    	 * 
-    	 * @link https://docs.npmjs.com/cli/v8/commands/npm-version#description
-    	 * @link https://github.com/npm/node-semver#functions
-    	 */
-    	$bump_method = $io->choice( 'Select bump methpd', [
-    		// 'input',
-			'major',
-			'minor',
-			'patch',
+		/**
+		 * New version.
+		 * 
+		 * @link https://docs.npmjs.com/cli/v8/commands/npm-version#description
+		 * @link https://github.com/npm/node-semver#functions
+		 */
+		$bump_method = $io->choice(
+			'Select bump methpd',
+			[
+				// 'input',
+				'major',
+				'minor',
+				'patch',
 			// 'premajor',
 			// 'preminor',
 			// 'prepatch',
 			// 'prerelease',
 			// 'from-git',
-		], 'patch' );
+			],
+			'patch' 
+		);
 
 		$semver = new SemanticVersion( $version );
 
@@ -214,15 +218,15 @@ class VersionCommand extends Command {
 		$io->section( 'Details' );
 
 		$io->table(
-			array(
+			[
 				'Key',
 				'Value',
-			),
-			array(
-				array( 'Type', $type ),
-				array( 'Version', $version ),
-				array( 'New Version', $new_version ),
-			)
+			],
+			[
+				[ 'Type', $type ],
+				[ 'Version', $version ],
+				[ 'New Version', $new_version ],
+			]
 		);
 
 		/**
@@ -413,8 +417,8 @@ class VersionCommand extends Command {
 		 * git@github.com:organisation/repository.git
 		 */
 		if ( str_starts_with( $url, 'git@github.com:' ) ) {
-			$user = strtok( $url, '@' );
-			$host = strtok( ':' );
+			$user         = strtok( $url, '@' );
+			$host         = strtok( ':' );
 			$organisation = strtok( '/' );
 			$repository   = strtok( '.git' );
 
@@ -497,7 +501,7 @@ class VersionCommand extends Command {
 			$hash       = substr( $line, 0, 40 );
 			$title_line = substr( $line, 40 + 1 );
 
-			$commit = new GitCommit( $hash );
+			$commit             = new GitCommit( $hash );
 			$commit->title_line = $title_line;
 
 			$commits[] = $commit;
@@ -539,7 +543,7 @@ class VersionCommand extends Command {
 
 		$object = 'tags/' . $version . ':composer.lock';
 
-		$process = new Process( 'git show ' . $object, $cwd  );
+		$process = new Process( 'git show ' . $object, $cwd );
 
 		$process_helper->run( $output, $process );
 

@@ -47,7 +47,7 @@ class Changelog {
 
 			if ( str_contains( $line, $search ) ) {
 				return true;
-			}			
+			}           
 		}
 
 		return false;

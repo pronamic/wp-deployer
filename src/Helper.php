@@ -53,10 +53,10 @@ class Helper {
 	 */
 	public static function get_gnu_xargs( $helper, OutputInterface $output ) {
 		return self::get_gnu(
-			array(
+			[
 				'xargs',
 				'gxargs',
-			),
+			],
 			'GNU findutils',
 			$helper,
 			$output
@@ -72,10 +72,10 @@ class Helper {
 	 */
 	public static function get_gnu_grep( $helper, OutputInterface $output ) {
 		return self::get_gnu(
-			array(
+			[
 				'grep',
 				'ggrep',
-			),
+			],
 			'GNU grep',
 			$helper,
 			$output
@@ -91,10 +91,10 @@ class Helper {
 	 */
 	public static function get_gnu_cat( $helper, OutputInterface $output ) {
 		return self::get_gnu(
-			array(
+			[
 				'cat',
 				'gcat',
-			),
+			],
 			'GNU coreutils',
 			$helper,
 			$output
@@ -110,10 +110,10 @@ class Helper {
 	 */
 	public static function get_gnu_cut( $helper, OutputInterface $output ) {
 		return self::get_gnu(
-			array(
+			[
 				'cut',
 				'gcut',
-			),
+			],
 			'GNU coreutils',
 			$helper,
 			$output
@@ -129,10 +129,10 @@ class Helper {
 	 */
 	public static function get_gnu_tr( $helper, OutputInterface $output ) {
 		return self::get_gnu(
-			array(
+			[
 				'tr',
 				'gtr',
-			),
+			],
 			'GNU coreutils',
 			$helper,
 			$output
