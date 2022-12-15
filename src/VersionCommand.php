@@ -55,6 +55,51 @@ class VersionCommand extends Command {
 		$composer_json_file = $cwd . '/composer.json';
 		$package_json_file  = $cwd . '/package.json';
 
+		$io->title( 'Pronamic Deployer version' );
+
+		/**
+		 * Confirm release.
+		 */
+		$result = $io->confirm( 'Release?', true );
+
+		if ( false === $result ) {
+			return 1;
+		}
+
+		/**
+		 * Confirm git pull.
+		 */
+		$io->note( 'Fetch remote repository with `git pull`.' );
+
+		$process = new Process( 'git pull', $cwd );
+
+		$process->mustRun();
+
+		$io->text( $process->getOutput() );
+
+		$result = $io->confirm( 'Git pull ok?', true );
+
+		if ( false === $result ) {
+			return 1;
+		}
+
+		/**
+		 * Confirm git status.
+		 */
+		$io->note( 'Check repository status with `git status`.' );
+
+		$process = new Process( 'git status', $cwd );
+
+		$process->mustRun();
+
+		$io->text( $process->getOutput() );
+
+		$result = $io->confirm( 'Git status ok?', true );
+
+		if ( false === $result ) {
+			return 1;
+		}
+
 		/**
 		 * Detect type.
 		 * 
