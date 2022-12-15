@@ -477,11 +477,15 @@ class VersionCommand extends Command {
 		 * @link https://git-scm.com/book/en/v2/Git-Basics-Viewing-the-Commit-History
 		 * @link https://github.com/cookpete/auto-changelog#custom-templates
 		 */
-		$command = 'git --no-pager log --pretty=oneline -n10';
+		$command = 'git --no-pager log --pretty=oneline tags/' . $version . '..HEAD';
 
 		$process = new Process( $command, $cwd );
 
-		$process_helper->mustRun( $output, $process );
+		$process_helper->run( $output, $process );
+
+		if ( ! $process->isSuccessful() ) {
+			return '';
+		}
 
 		$git_log = $process->getOutput();
 
