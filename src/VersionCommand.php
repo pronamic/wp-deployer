@@ -295,7 +295,11 @@ class VersionCommand extends Command {
 					$changelog_entry->commits[] = $commit;
 				}
 
-				$changelog_entry->body =$changelog_entry->generate_body();
+				$changelog_entry->body = $changelog_entry->generate_body();
+
+				if ( isset( $composer_json ) ) {
+					$changelog_entry->body .= $this->add_composer_updates( $cwd, $version, $output );
+				}
 
 				$process = new Process( 'subl -', null, null, $changelog_entry->body );
 
@@ -430,5 +434,50 @@ class VersionCommand extends Command {
 		 * 
 		 * @link https://cli.github.com/
 		 */
+	}
+
+	public function add_composer_updates( $cwd, $version, $output ) {
+		$composer_json_file = $cwd . '/composer.json';
+
+		if ( ! is_readable( $composer_json_file ) ) {
+			return '';
+		}
+
+		$data = file_get_contents( $composer_json_file );
+
+		$composer_json = json_decode( $data );
+
+		if ( ! is_object( $composer_json ) ) {
+			return '';
+		}
+
+		if ( ! \property_exists( $composer_json, 'require' ) ) {
+			return '';
+		}
+
+		$object = 'tags/' . $version . ':composer.lock';
+
+		$process = new Process( 'git show ' . $object, $cwd  );
+
+		$process_helper->mustRun( $output, $process );
+
+		$composer_lock_old = json_decode( $process->getOutput() );
+		$composer_lock_new = json_decode( file_get_contents( $cwd . '/composer.lock' ) );
+
+		if ( ! is_object( $composer_lock_old ) ) {
+			return '';
+		}
+
+		if ( ! is_object( $composer_lock_new ) ) {
+			return '';
+		}
+
+		foreach ( $composer_json->require as $key => $value ) {
+			echo $key, PHP_EOL;
+			echo $value, PHP_EOL;
+			echo PHP_EOL;
+
+			exit;
+		}
 	}
 }
