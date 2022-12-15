@@ -15,4 +15,4 @@
 
 Full set of changes: [`<?php echo $changelog_entry->get_version_compare(); ?>`][<?php echo $changelog_entry->version; ?>]
 
-[<?php echo $changelog_entry->version; ?>][<?php echo $changelog_entry->get_link(); ?>]
+[<?php echo $changelog_entry->version; ?>]: <?php echo $changelog_entry->get_link(); ?>
