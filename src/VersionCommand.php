@@ -317,11 +317,35 @@ class VersionCommand extends Command {
 					$changelog_entry->body .= $this->add_composer_updates( $cwd, $version, $output );
 				}
 
-				$process = new Process( 'subl -', null, null, $changelog_entry->body );
+				$choice    = '';
+				$iteration = 0;
 
-				$process_helper->mustRun( $output, $process );
+				while ( 'ok' !== $choice ) {
+					$iteration++;
 
-				$changelog_entry->body = $process->getOutput();
+					$io->title( 'Changelog (🔁 ' . $iteration . ')' );
+					
+					$io->text( $changelog_entry->body );
+
+					$choice = $io->choice(
+						'Is the above changelog OK?',
+						[
+							'ok',
+							'subl',
+						],
+						'subl' 
+					);
+
+					if ( 'subl' === $choice ) {
+						$process = new Process( 'subl -', null, null, $changelog_entry->body );
+
+						$process_helper->mustRun( $output, $process );
+
+						$changelog_entry->body = $process->getOutput();
+					}
+
+
+				}
 
 				$changelog_entry_string = trim( $changelog_entry->render() ) . "\n\n";
 
