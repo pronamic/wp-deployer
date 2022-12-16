@@ -578,7 +578,7 @@ class VersionCommand extends Command {
 		$content .= "\n";
 
 		foreach ( $commits as $commit ) {
-			$commit_url = $url . '/commits/' . $commit->hash;
+			$commit_url = $url . '/commit/' . $commit->hash;
 
 			$content .= '- ';
 			$content .= $this->change_present_to_past_tense( $commit->title_line );
