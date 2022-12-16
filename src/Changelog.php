@@ -40,8 +40,9 @@ class Changelog {
 	public function get_entry( $version ) {
 		$search = '[' . $version . ']';
 
-		$start = null;
-		$end   = null;
+		$start   = null;
+		$end     = null;
+		$heading = null;
 
 		foreach ( $this->data as $i => $line ) {
 			if ( ! \str_starts_with( $line, '## ' ) ) {
@@ -55,11 +56,26 @@ class Changelog {
 			}
 
 			if ( null === $start && \str_contains( $line, $search ) ) {
+				$title = $line;
 				$start = $i;
 			}
 		}
 
-		$body = array_slice( $this->data, $start, $end - $start );
+		if ( null === $start ) {
+			return null;
+		}
+
+		if ( null === $end ) {
+			return null;
+		}
+
+		$body = array_slice( $this->data, $start + 1, $end - $start - 1 );
+
+		$entry = new ChangelogEntry( $this, $version );
+
+		$entry->body = trim( implode( '', $body ) );
+
+		return $entry;
 	}
 
 	public function has_entry( $version ) {

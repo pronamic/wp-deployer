@@ -57,6 +57,10 @@ class ChangelogEntry {
 		return $output;
 	}
 
+	public function get_lines() {
+		return explode( "\n", $this->body );
+	}
+
 	public function get_version_compare() {
 		if ( '' === $this->version_previous ) {
 			return $this->version;

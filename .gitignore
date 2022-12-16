@@ -3,3 +3,6 @@ vendor/
 
 # Deploy
 /deploy/
+
+# PHPUnit
+/.phpunit.result.cache

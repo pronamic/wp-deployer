@@ -733,7 +733,7 @@ class VersionCommand extends Command {
 			$version_new = $map_new[ $key ];
 
 			if ( $version_old !== $version_new ) {
-				$content .= \sprintf( 'Updated `%s` from `%s` to `%s`.', $key, $version_old, $version_new ) . PHP_EOL;
+				$content .= \sprintf( '- Updated `%s` from `%s` to `%s`.', $key, $version_old, $version_new ) . "\n";
 
 				$package_changelog_file = $cwd . '/vendor/' . $key . '/CHANGELOG.md';
 
@@ -746,7 +746,13 @@ class VersionCommand extends Command {
 						$version = 'Unreleased';
 					}
 
-					$changelog_entry = $package_changelog->get_entry( $version );
+					$entry = $package_changelog->get_entry( $version );
+
+					if ( null !== $entry ) {
+						foreach ( $entry->get_lines() as $line ) {
+							$content .= "\t" . $line . "\n";
+						}
+					}
 				}
 			}
 		}
