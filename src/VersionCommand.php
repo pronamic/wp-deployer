@@ -659,6 +659,20 @@ class VersionCommand extends Command {
 
 			if ( $version_old !== $version_new ) {
 				$content .= \sprintf( 'Updated `%s` from `%s` to `%s`.', $key, $version_old, $version_new ) . PHP_EOL;
+
+				$package_changelog_file = $cwd . '/vendor/' . $key . '/CHANGELOG.md';
+
+				if ( is_readable( $package_changelog_file ) ) {
+					$package_changelog = new Changelog( $package_changelog_file );
+
+					$version = $version_new;
+
+					if ( str_starts_with( $value, 'dev-' ) ) {
+						$version = 'Unreleased';
+					}
+
+					$changelog_entry = $package_changelog->get_entry( $version );
+				}
 			}
 		}
 
