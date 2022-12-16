@@ -268,7 +268,8 @@ class VersionCommand extends Command {
 				'Value',
 			],
 			[
-				[ 'Working Directory', $cwd ],
+				[ 'Directory', $cwd ],
+				[ 'Branch', $branch ],
 				[ 'Type', $type ],
 				[ 'Version', $version ],
 				[ 'New Version', $new_version ],
