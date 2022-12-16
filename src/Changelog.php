@@ -37,6 +37,31 @@ class Changelog {
 		return new ChangelogEntry( $this, $version );
 	}
 
+	public function get_entry( $version ) {
+		$search = '[' . $version . ']';
+
+		$start = null;
+		$end   = null;
+
+		foreach ( $this->data as $i => $line ) {
+			if ( ! \str_starts_with( $line, '## ' ) ) {
+				continue;
+			}
+
+			if ( null !== $start ) {
+				$end = $i;
+
+				break;
+			}
+
+			if ( null === $start && \str_contains( $line, $search ) ) {
+				$start = $i;
+			}
+		}
+
+		$body = array_slice( $this->data, $start, $end - $start );
+	}
+
 	public function has_entry( $version ) {
 		$search = '[' . $version . ']';
 
@@ -47,7 +72,7 @@ class Changelog {
 
 			if ( str_contains( $line, $search ) ) {
 				return true;
-			}           
+			}
 		}
 
 		return false;
