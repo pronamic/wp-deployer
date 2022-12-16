@@ -67,38 +67,24 @@ class VersionCommand extends Command {
 		}
 
 		/**
-		 * Confirm git pull.
+		 * Git pull.
 		 */
-		$io->note( 'Fetch remote repository with `git pull`.' );
-
 		$process = new Process( 'git pull', $cwd );
 
-		$process->mustRun();
-
-		$io->text( $process->getOutput() );
-
-		$result = $io->confirm( 'Git pull ok?', true );
-
-		if ( false === $result ) {
-			return 1;
-		}
+		$process_helper->mustRun( $output, $process );
 
 		/**
-		 * Confirm git status.
+		 * Git status.
+		 * 
+		 * @link https://unix.stackexchange.com/questions/155046/determine-if-git-working-directory-is-clean-from-a-script
 		 */
-		$io->note( 'Check repository status with `git status`.' );
+		$process = new Process( 'git status --porcelain', $cwd );
 
-		$process = new Process( 'git status', $cwd );
+		$process_helper->mustRun( $output, $process );
 
-		$process->mustRun();
+		$git_status = $process->getOutput();
 
-		$io->text( $process->getOutput() );
-
-		$result = $io->confirm( 'Git status ok?', true );
-
-		if ( false === $result ) {
-			return 1;
-		}
+		var_dump( $git_status );
 
 		/**
 		 * Detect type.
