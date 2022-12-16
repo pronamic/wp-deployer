@@ -305,7 +305,7 @@ class VersionCommand extends Command {
 
 				$changelog_entry->version_previous = $version;
 
-				$changelog_entry->body .= $this->add_git_log( $cwd, $version, $output );
+				$changelog_entry->body .= $this->add_git_log( $cwd, $version, $output, $url_repository );
 
 				if ( isset( $composer_json ) ) {
 					$changelog_entry->body .= $this->add_composer_updates( $cwd, $version, $output );
@@ -536,7 +536,7 @@ class VersionCommand extends Command {
 		return \preg_replace( $patterns, $replacements, $text );
 	}
 
-	public function add_git_log( $cwd, $version, $output ) {
+	public function add_git_log( $cwd, $version, $output, $url ) {
 		$process_helper = $this->getHelper( 'process' );
 
 		/**
@@ -578,7 +578,12 @@ class VersionCommand extends Command {
 		$content .= "\n";
 
 		foreach ( $commits as $commit ) {
-			$content .= '- ' . $this->change_present_to_past_tense( $commit->title_line ) . "\n";
+			$commit_url = $url . '/commits/' . $commit->hash;
+
+			$content .= '- ';
+			$content .= $this->change_present_to_past_tense( $commit->title_line );
+			$content .= ' ([' . substr( $commit->hash, 0, 7 ) . '](' . $commit_url . '))';
+			$content .= "\n";
 		}
 
 		return $content;
