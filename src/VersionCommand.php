@@ -59,6 +59,8 @@ class VersionCommand extends Command {
 
 		/**
 		 * Git pull.
+		 * 
+		 * @link https://git-scm.com/docs/git-pull
 		 */
 		$process = new Process( 'git pull', $cwd );
 
@@ -67,13 +69,14 @@ class VersionCommand extends Command {
 		/**
 		 * Git status.
 		 * 
+		 * @link https://git-scm.com/docs/git-status
 		 * @link https://unix.stackexchange.com/questions/155046/determine-if-git-working-directory-is-clean-from-a-script
 		 */
 		$process = new Process( 'git status --porcelain', $cwd );
 
 		$process_helper->mustRun( $output, $process );
 
-		$git_status = $process->getOutput();
+		$git_status = trim( $process->getOutput() );
 
 		if ( '' !== $git_status ) {
 			$io->text( $git_status );
@@ -86,6 +89,7 @@ class VersionCommand extends Command {
 		/**
 		 * Git branch.
 		 * 
+		 * @link https://git-scm.com/docs/git-branch
 		 * @link https://stackoverflow.com/questions/6245570/how-do-i-get-the-current-branch-name-in-git
 		 */
 		$process = new Process( 'git branch --show-current', $cwd );
