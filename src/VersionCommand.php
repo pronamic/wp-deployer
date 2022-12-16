@@ -68,23 +68,11 @@ class VersionCommand extends Command {
 
 		/**
 		 * Git status.
-		 * 
-		 * @link https://git-scm.com/docs/git-status
-		 * @link https://unix.stackexchange.com/questions/155046/determine-if-git-working-directory-is-clean-from-a-script
-		 * @link https://github.com/npm/cli/blob/7018b3d46e10ea4d9d81a478dbdf114b6505ed36/workspaces/libnpmversion/lib/enforce-clean.js
 		 */
-		$process = new Process( 'git status --porcelain', $cwd );
+		$result = $this->check_working_directory_git_status( $cwd, $input, $output );
 
-		$process_helper->mustRun( $output, $process );
-
-		$git_status = $process->getOutput();
-
-		if ( '' !== $git_status ) {
-			$io->text( $git_status );
-
-			$io->error( 'Working tree status not empty (`git status`).' );
-
-			//return 1;
+		if ( false === $result ) {
+			return 1;
 		}
 
 		/**
@@ -594,6 +582,35 @@ class VersionCommand extends Command {
 		}
 
 		return $content;
+	}
+
+	private function check_working_directory_git_status( $cwd, $input, $output ) {
+		$io = new SymfonyStyle( $input, $output );
+
+		$process_helper = $this->getHelper( 'process' );
+
+		/**
+		 * Git status.
+		 * 
+		 * @link https://git-scm.com/docs/git-status
+		 * @link https://unix.stackexchange.com/questions/155046/determine-if-git-working-directory-is-clean-from-a-script
+		 * @link https://github.com/npm/cli/blob/7018b3d46e10ea4d9d81a478dbdf114b6505ed36/workspaces/libnpmversion/lib/enforce-clean.js
+		 */
+		$process = new Process( 'git status --porcelain', $cwd );
+
+		$process_helper->mustRun( $output, $process );
+
+		$git_status = $process->getOutput();
+
+		if ( '' !== $git_status ) {
+			$io->text( $git_status );
+
+			$io->note( 'Working tree status not empty (`git status`).' );
+
+			return $io->confirm( 'Continue with open working tree?', false );
+		}
+
+		return true;
 	}
 
 	private function check_composer_non_comparable_versions( $cwd, $io ) {
