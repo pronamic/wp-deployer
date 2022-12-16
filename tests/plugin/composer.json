@@ -2,6 +2,7 @@
     "name": "pronamic/plugin",
     "require": {
         "php": ">=8",
+        "pronamic/wp-html": "dev-develop",
         "pronamic/wp-number": "^1.0"
     }
 }

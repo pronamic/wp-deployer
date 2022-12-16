@@ -84,7 +84,7 @@ class VersionCommand extends Command {
 
 			$io->error( 'Working tree status not empty (`git status`).' );
 
-			return 1;
+			//return 1;
 		}
 
 		/**
@@ -119,6 +119,12 @@ class VersionCommand extends Command {
 
 			if ( property_exists( $composer_json, 'type' ) ) {
 				$type = $composer_json->type;
+			}
+
+			$result = $this->check_composer_non_comparable_versions( $cwd, $io );
+
+			if ( false === $result ) {
+				return 1;
 			}
 		}
 
@@ -588,6 +594,58 @@ class VersionCommand extends Command {
 		}
 
 		return $content;
+	}
+
+	private function check_composer_non_comparable_versions( $cwd, $io ) {
+		$composer_json_file = $cwd . '/composer.json';
+		$composer_lock_file = $cwd . '/composer.lock';
+
+		if ( ! is_readable( $composer_json_file ) ) {
+			return true;
+		}
+
+		if ( ! is_readable( $composer_lock_file ) ) {
+			return  true;
+		}
+
+		$composer_json = json_decode( file_get_contents( $composer_json_file ) );
+		$composer_lock = json_decode( file_get_contents( $composer_lock_file ) );
+
+		$packages = [];
+
+		foreach ( $composer_lock->packages as $package ) {
+			if ( ! property_exists( $composer_json->require, $package->name ) ) {
+				contine;
+			}
+
+			if ( str_starts_with( $package->version, 'dev-' ) ) {
+				$packages[] = $package;
+			}
+		}
+
+		if ( count( $packages ) > 0 ) {
+			$io->note( 'Detected non comparable Composer package versions.' );
+
+			$io->table(
+				[
+					'Package',
+					'Version'
+				],
+				array_map(
+					function( $package ) {
+						return [
+							$package->name,
+							$package->version,
+						];
+					},
+					$packages
+				)
+			);
+
+			return $io->confirm( 'Continue with non comparable Composer package versions?', false );
+		}
+
+		return true;
 	}
 
 	public function add_composer_updates( $cwd, $version, $output ) {
