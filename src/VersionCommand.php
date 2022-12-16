@@ -58,15 +58,6 @@ class VersionCommand extends Command {
 		$io->title( 'Pronamic Deployer version' );
 
 		/**
-		 * Confirm release.
-		 */
-		$result = $io->confirm( 'Release?', true );
-
-		if ( false === $result ) {
-			return 1;
-		}
-
-		/**
 		 * Git pull.
 		 */
 		$process = new Process( 'git pull', $cwd );
@@ -84,7 +75,24 @@ class VersionCommand extends Command {
 
 		$git_status = $process->getOutput();
 
-		var_dump( $git_status );
+		if ( '' !== $git_status ) {
+			$io->text( $git_status );
+
+			$io->error( 'Working tree status not empty (`git status`).' );
+
+			return 1;
+		}
+
+		/**
+		 * Git branch.
+		 * 
+		 * @link https://stackoverflow.com/questions/6245570/how-do-i-get-the-current-branch-name-in-git
+		 */
+		$process = new Process( 'git branch --show-current', $cwd );
+
+		$process_helper->mustRun( $output, $process );
+
+		$branch = $process->getOutput();
 
 		/**
 		 * Detect type.
@@ -180,7 +188,8 @@ class VersionCommand extends Command {
 				'Value',
 			],
 			[
-				[ 'Working Directory', $cwd ],
+				[ 'Directory', $cwd ],
+				[ 'Branch', $branch ],
 				[ 'Type', $type ],
 				[ 'Version', $version ],
 			]
