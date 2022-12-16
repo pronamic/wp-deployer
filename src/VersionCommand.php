@@ -615,7 +615,7 @@ class VersionCommand extends Command {
 
 		foreach ( $composer_lock->packages as $package ) {
 			if ( ! property_exists( $composer_json->require, $package->name ) ) {
-				contine;
+				continue;
 			}
 
 			if ( str_starts_with( $package->version, 'dev-' ) ) {
