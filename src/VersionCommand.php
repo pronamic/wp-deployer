@@ -343,8 +343,6 @@ class VersionCommand extends Command {
 
 						$changelog_entry->body = $process->getOutput();
 					}
-
-
 				}
 
 				$changelog_entry_string = trim( $changelog_entry->render() ) . "\n\n";
