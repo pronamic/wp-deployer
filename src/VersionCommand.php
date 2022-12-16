@@ -484,7 +484,7 @@ class VersionCommand extends Command {
 			$user         = strtok( $url, '@' );
 			$host         = strtok( ':' );
 			$organisation = strtok( '/' );
-			$repository   = strtok( '.git' );
+			$repository   = strtok( '.' );
 
 			return [
 				'user'         => $user,
