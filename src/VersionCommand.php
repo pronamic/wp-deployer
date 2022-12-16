@@ -76,7 +76,7 @@ class VersionCommand extends Command {
 
 		$process_helper->mustRun( $output, $process );
 
-		$git_status = trim( $process->getOutput() );
+		$git_status = $process->getOutput();
 
 		if ( '' !== $git_status ) {
 			$io->text( $git_status );
@@ -96,7 +96,7 @@ class VersionCommand extends Command {
 
 		$process_helper->mustRun( $output, $process );
 
-		$branch = $process->getOutput();
+		$branch = trim( $process->getOutput() );
 
 		/**
 		 * Detect type.
