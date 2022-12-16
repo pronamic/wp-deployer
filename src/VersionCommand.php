@@ -71,6 +71,7 @@ class VersionCommand extends Command {
 		 * 
 		 * @link https://git-scm.com/docs/git-status
 		 * @link https://unix.stackexchange.com/questions/155046/determine-if-git-working-directory-is-clean-from-a-script
+		 * @link https://github.com/npm/cli/blob/7018b3d46e10ea4d9d81a478dbdf114b6505ed36/workspaces/libnpmversion/lib/enforce-clean.js
 		 */
 		$process = new Process( 'git status --porcelain', $cwd );
 
