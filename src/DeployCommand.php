@@ -188,7 +188,7 @@ class DeployCommand extends Command {
 				$relative_path_git
 			);
 
-			$process = new Process( $command );
+			$process = Process::fromShellCommandline( $command );
 
 			$helper->mustRun( $output, $process );
 		}
@@ -226,7 +226,7 @@ class DeployCommand extends Command {
 
 		$command = implode( ' | ', $commands );
 
-		$process = new Process( $command );
+		$process = Process::fromShellCommandline( $command );
 
 		$helper->mustRun( $output, $process );
 
@@ -250,7 +250,7 @@ class DeployCommand extends Command {
 
 		$command = implode( ' | ', $commands );
 
-		$process = new Process( $command );
+		$process = Process::fromShellCommandline( $command );
 
 		$helper->mustRun( $output, $process );
 
@@ -304,7 +304,7 @@ class DeployCommand extends Command {
 		if ( is_readable( $relative_path_git . '/composer.json' ) ) {
 			$command = 'composer install --no-dev --prefer-dist --optimize-autoloader';
 
-			$process = new Process( $command, $relative_path_git );
+			$process = Process::fromShellCommandline( $command, $relative_path_git );
 
 			// To disable the timeout, set this value to null.
 			$process->setTimeout( null );
@@ -318,7 +318,7 @@ class DeployCommand extends Command {
 			$relative_path_build
 		);
 
-		$process = new Process( $command );
+		$process = Process::fromShellCommandline( $command );
 
 		$helper->mustRun( $output, $process );
 
@@ -328,7 +328,7 @@ class DeployCommand extends Command {
 			$relative_path_build
 		);
 
-		$process = new Process( $command );
+		$process = Process::fromShellCommandline( $command );
 
 		$helper->mustRun( $output, $process );
 
@@ -339,7 +339,7 @@ class DeployCommand extends Command {
 			$relative_path_build . '/'
 		);
 
-		$process = new Process( $command );
+		$process = Process::fromShellCommandline( $command );
 
 		$helper->mustRun( $output, $process );
 
@@ -354,7 +354,7 @@ class DeployCommand extends Command {
 			'' . $slug . '/*'
 		);
 
-		$process = new Process( $command, dirname( $relative_path_build ) );
+		$process = Process::fromShellCommandline( $command, dirname( $relative_path_build ) );
 
 		$helper->mustRun( $output, $process );
 
@@ -380,7 +380,7 @@ class DeployCommand extends Command {
 					$relative_path_svn
 				);
 
-				$process = new Process( $command );
+				$process = Process::fromShellCommandline( $command );
 				$process->setTty( true );
 
 				$helper->mustRun( $output, $process );
@@ -392,7 +392,7 @@ class DeployCommand extends Command {
 				$relative_path_svn . '/trunk'
 			);
 
-			$process = new Process( $command );
+			$process = Process::fromShellCommandline( $command );
 
 			// To disable the timeout, set this value to null.
 			$process->setTimeout( null );
@@ -405,7 +405,7 @@ class DeployCommand extends Command {
 				$relative_path_svn . '/assets'
 			);
 
-			$process = new Process( $command );
+			$process = Process::fromShellCommandline( $command );
 
 			$helper->mustRun( $output, $process );
 
@@ -415,7 +415,7 @@ class DeployCommand extends Command {
 				$svn_url . '/tags/' . $version
 			);
 
-			$process = new Process( $command );
+			$process = Process::fromShellCommandline( $command );
 
 			$helper->run( $output, $process );
 
@@ -431,7 +431,7 @@ class DeployCommand extends Command {
 					$relative_path_svn . '/trunk/'
 				);
 
-				$process = new Process( $command );
+				$process = Process::fromShellCommandline( $command );
 
 				$helper->mustRun( $output, $process );
 
@@ -448,7 +448,7 @@ class DeployCommand extends Command {
 
 				$command = implode( ' | ', $commands );
 
-				$process = new Process( $command );
+				$process = Process::fromShellCommandline( $command );
 
 				$helper->mustRun( $output, $process );
 
@@ -465,7 +465,7 @@ class DeployCommand extends Command {
 
 				$command = implode( ' | ', $commands );
 
-				$process = new Process( $command );
+				$process = Process::fromShellCommandline( $command );
 
 				$helper->mustRun( $output, $process );
 
@@ -477,7 +477,7 @@ class DeployCommand extends Command {
 					'Update'
 				);
 
-				$process = new Process( $command );
+				$process = Process::fromShellCommandline( $command );
 				$process->setTty( true );
 
 				$helper->mustRun( $output, $process );
@@ -494,7 +494,7 @@ class DeployCommand extends Command {
 					)
 				);
 
-				$process = new Process( $command );
+				$process = Process::fromShellCommandline( $command );
 				$process->setTty( true );
 
 				$helper->mustRun( $output, $process );
@@ -526,7 +526,7 @@ class DeployCommand extends Command {
 				$s3_link
 			);
 
-			$process = new Process( $command );
+			$process = Process::fromShellCommandline( $command );
 
 			// To disable the timeout, set this value to null.
 			$process->setTimeout( null );

@@ -33,7 +33,7 @@ class Helper {
 	 */
 	private static function get_gnu( $options, $identifier, $helper, OutputInterface $output ) {
 		foreach ( $options as $option ) {
-			$process = new Process( $option . ' --version' );
+			$process = new Process( [ $option, '--version' ] );
 
 			$helper->run( $output, $process );
 
