@@ -58,6 +58,10 @@ class VersionCommand extends Command {
 
 	/**
 	 * Execute.
+	 *
+	 * @param InputInterface  $input  Input interface.
+	 * @param OutputInterface $output Output interface.
+	 * @return int
 	 */
 	protected function execute( InputInterface $input, OutputInterface $output ) {
 		$io = new SymfonyStyle( $input, $output );
@@ -219,15 +223,9 @@ class VersionCommand extends Command {
 		$bump_method = $io->choice(
 			'Select bump methpd',
 			[
-				// 'input',
 				'major',
 				'minor',
 				'patch',
-			// 'premajor',
-			// 'preminor',
-			// 'prepatch',
-			// 'prerelease',
-			// 'from-git',
 			],
 			'patch' 
 		);
@@ -576,7 +574,7 @@ class VersionCommand extends Command {
 		/**
 		 * Parse GitHub SSH notation.
 		 * 
-		 * git@github.com:organisation/repository.git
+		 * Example: `git@github.com:organisation/repository.git`
 		 */
 		if ( str_starts_with( $url, 'git@github.com:' ) ) {
 			$user         = strtok( $url, '@' );
@@ -614,6 +612,12 @@ class VersionCommand extends Command {
 		];
 	}
 
+	/**
+	 * Change present to past tense.
+	 * 
+	 * @param string $text Text.
+	 * @return string
+	 */
 	public function change_present_to_past_tense( $text ) {
 		$patterns = [
 			'add'    => '/^Add /',
@@ -634,10 +638,21 @@ class VersionCommand extends Command {
 		return \preg_replace( $patterns, $replacements, $text );
 	}
 
+	/**
+	 * Add Git log.
+	 * 
+	 * @param string          $cwd     Directory.
+	 * @param string          $version Version.
+	 * @param OutputInterface $output  Output interface.
+	 * @param string          $url     URL.
+	 * @return bool
+	 */
 	public function add_git_log( $cwd, $version, $output, $url ) {
 		$process_helper = $this->getHelper( 'process' );
 
 		/**
+		 * Git log.
+		 *
 		 * @link https://git-scm.com/docs/pretty-formats
 		 * @link https://git-scm.com/book/en/v2/Git-Basics-Viewing-the-Commit-History#pretty_format
 		 * @link https://git-scm.com/book/en/v2/Git-Basics-Viewing-the-Commit-History
@@ -687,6 +702,14 @@ class VersionCommand extends Command {
 		return $content;
 	}
 
+	/**
+	 * Check working directory Git status.
+	 * 
+	 * @param string          $cwd    Directory.
+	 * @param InputInterface  $input  Input interface.
+	 * @param OutputInterface $output Output interface.
+	 * @return bool
+	 */
 	private function check_working_directory_git_status( $cwd, $input, $output ) {
 		$io = new SymfonyStyle( $input, $output );
 
@@ -716,6 +739,13 @@ class VersionCommand extends Command {
 		return true;
 	}
 
+	/**
+	 * Check Compsoer non comparable version.
+	 * 
+	 * @param string       $cwd Directory.
+	 * @param SymfonyStyle $io  Input/output style.
+	 * @return bool
+	 */
 	private function check_composer_non_comparable_versions( $cwd, $io ) {
 		$composer_json_file = $cwd . '/composer.json';
 		$composer_lock_file = $cwd . '/composer.lock';
@@ -768,6 +798,14 @@ class VersionCommand extends Command {
 		return true;
 	}
 
+	/**
+	 * Add composer updates.
+	 * 
+	 * @param string          $cwd     Directory.
+	 * @param string          $version Version.
+	 * @param OutputInterface $output  Output interface.
+	 * @return string
+	 */
 	public function add_composer_updates( $cwd, $version, $output ) {
 		$composer_json_file = $cwd . '/composer.json';
 

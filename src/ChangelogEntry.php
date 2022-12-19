@@ -20,24 +20,53 @@ use DateTimeImmutable;
  * @since   1.0.0
  */
 class ChangelogEntry {
+	/**
+	 * Changelog.
+	 * 
+	 * @var Changelog
+	 */
 	public $changelog;
 
+	/**
+	 * Version.
+	 * 
+	 * @var string
+	 */
 	public $version;
 
+	/**
+	 * Previous version.
+	 * 
+	 * @var string
+	 */
 	public $version_previous = '';
 
+	/**
+	 * Date.
+	 * 
+	 * @var DateTimeImmutable
+	 */
 	public $date;
 
+	/**
+	 * Body.
+	 * 
+	 * @var string
+	 */
 	public $body = '';
 
-	public $commits = [];
-
+	/**
+	 * URL.
+	 * 
+	 * @var string
+	 */
 	public $url;
 
 	/**
 	 * Construct changelog entry.
 	 * 
-	 * @param string $version Version.
+	 * @param Changelog $changelog Changelog.
+	 * @param string    $version   Version.
 	 */
 	public function __construct( $changelog, $version ) {
 		$this->changelog = $changelog;
@@ -45,6 +74,11 @@ class ChangelogEntry {
 		$this->date      = new DateTimeImmutable();
 	}
 
+	/**
+	 * Render.
+	 * 
+	 * @return string
+	 */
 	public function render() {
 		\ob_start();
 
@@ -57,10 +91,20 @@ class ChangelogEntry {
 		return $output;
 	}
 
+	/**
+	 * Get lines.
+	 * 
+	 * @return string[]
+	 */
 	public function get_lines() {
 		return explode( "\n", $this->body );
 	}
 
+	/**
+	 * Get version compare.
+	 * 
+	 * @return string
+	 */
 	public function get_version_compare() {
 		if ( '' === $this->version_previous ) {
 			return $this->version;
@@ -69,6 +113,11 @@ class ChangelogEntry {
 		return $this->version_previous . '...' . $this->version;
 	}
 
+	/**
+	 * Get link.
+	 * 
+	 * @return string
+	 */
 	public function get_link() {
 		if ( '' === $this->version_previous ) {
 			return $this->url . '/releases/tag/' . $this->version;

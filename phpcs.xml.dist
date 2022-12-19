@@ -11,5 +11,7 @@
 
 		<exclude name="WordPressVIPMinimum.Performance.FetchingRemoteData.FileGetContentsUnknown" />
 		<exclude name="WordPressVIPMinimum.Functions.RestrictedFunctions.file_ops_file_put_contents" />
+
+		<exclude name="WordPress.WP.AlternativeFunctions.parse_url_parse_url" />
 	</rule>
 </ruleset>
