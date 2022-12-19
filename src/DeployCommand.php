@@ -79,6 +79,10 @@ class DeployCommand extends Command {
 
 	/**
 	 * Execute.
+	 * 
+	 * @param InputInterface  $input   Input interface.
+	 * @param OutputInterface $output Output interface.
+	 * @return int
 	 */
 	protected function execute( InputInterface $input, OutputInterface $output ) {
 		$io = new SymfonyStyle( $input, $output );
@@ -529,5 +533,7 @@ class DeployCommand extends Command {
 
 			$helper->mustRun( $output, $process );
 		}
+
+		return 0;
 	}
 }
