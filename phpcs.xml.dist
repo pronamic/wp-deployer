@@ -7,6 +7,8 @@
 	<exclude-pattern type="relative">*/vendor/*</exclude-pattern>
 
 	<rule ref="PronamicWP">
+		<exclude name="WordPress.Security.EscapeOutput.OutputNotEscaped" />
+
 		<exclude name="WordPressVIPMinimum.Performance.FetchingRemoteData.FileGetContentsUnknown" />
 		<exclude name="WordPressVIPMinimum.Functions.RestrictedFunctions.file_ops_file_put_contents" />
 	</rule>
