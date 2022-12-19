@@ -488,6 +488,7 @@ class VersionCommand extends Command {
 		 * Git commit.
 		 * 
 		 * @link https://github.com/npm/cli/blob/7018b3d46e10ea4d9d81a478dbdf114b6505ed36/workspaces/libnpmversion/lib/index.js#L17
+		 * @link https://git-scm.com/docs/git-commit
 		 */
 		$message = \sprintf(
 			'v%s',
@@ -497,6 +498,32 @@ class VersionCommand extends Command {
 		$command = \sprintf(
 			'git commit -m %s',
 			\escapeshellarg( $message )
+		);
+
+		$process = new Process( $command, $cwd );
+
+		$process_helper->mustRun( $output, $process );
+
+		/**
+		 * Git tag.
+		 * 
+		 * @link https://github.com/npm/cli/blob/7018b3d46e10ea4d9d81a478dbdf114b6505ed36/workspaces/libnpmversion/lib/tag.js
+		 * @link https://git-scm.com/docs/git-tag
+		 */
+		$tagname = \sprintf(
+			'v%s',
+			$new_version
+		);
+
+		$message = \sprintf(
+			'v%s',
+			$new_version
+		);
+
+		$command = \sprintf(
+			'git tag -m %s %s',
+			\escapeshellarg( $message ),
+			\escapeshellarg( $tagname )
 		);
 
 		$process = new Process( $command, $cwd );
