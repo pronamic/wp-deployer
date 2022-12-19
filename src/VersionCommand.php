@@ -129,6 +129,12 @@ class VersionCommand extends Command {
 				$type = $composer_json->type;
 			}
 
+			$result = $this->check_composer_outdated( $cwd, $input, $output );
+
+			if ( false === $result ) {
+				return 1;
+			}
+
 			$result = $this->check_composer_non_comparable_versions( $cwd, $io );
 
 			if ( false === $result ) {
@@ -734,6 +740,38 @@ class VersionCommand extends Command {
 			$io->note( 'Working tree status not empty (`git status`).' );
 
 			return $io->confirm( 'Continue with open working tree?', false );
+		}
+
+		return true;
+	}
+
+	/**
+	 * Check Compsoer outdated.
+	 * 
+	 * @param string          $cwd    Directory.
+	 * @param InputInterface  $input  Input interface.
+	 * @param OutputInterface $output Output interface.
+	 * @return bool
+	 */
+	private function check_composer_outdated( $cwd, $input, $output ) {
+		$io = new SymfonyStyle( $input, $output );
+
+		$process_helper = $this->getHelper( 'process' );
+
+		$process = $this->new_process( 'composer outdated --direct --no-plugins --format json', $cwd );
+
+		$process_helper->mustRun( $output, $process );
+
+		$result = $process->getOutput();
+
+		if ( '' !== $result ) {
+			$process = $this->new_process( 'composer outdated', $cwd );
+			$process->setTty( true );
+			$process->mustRun();
+
+			$io->write( $process->getOutput() );
+
+			return $io->confirm( 'Continue with outdated Compsoer packages?', false );
 		}
 
 		return true;
