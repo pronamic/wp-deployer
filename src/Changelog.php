@@ -98,6 +98,8 @@ class Changelog {
 		$position = 0;
 
 		foreach ( $this->data as $i => $line ) {
+			$position = $i;
+
 			if ( ! str_starts_with( $line, '## ' ) ) {
 				continue;
 			}
@@ -106,7 +108,7 @@ class Changelog {
 				continue;
 			}
 
-			return $i;
+			return $position;
 		}
 
 		return $position;
