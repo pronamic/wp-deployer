@@ -296,7 +296,7 @@ class DeployCommand extends Command {
 			}
 		}
 
-		// Composer
+		// Composer.
 		if ( is_readable( $relative_path_git . '/composer.json' ) ) {
 			$command = 'composer install --no-dev --prefer-dist --optimize-autoloader';
 
@@ -339,7 +339,7 @@ class DeployCommand extends Command {
 
 		$helper->mustRun( $output, $process );
 
-		// ZIP
+		// ZIP.
 		$io->section( 'ZIP' );
 
 		$relative_file_zip = $relative_path_zip . '/' . $slug . '.' . $version . '.zip';
@@ -354,11 +354,11 @@ class DeployCommand extends Command {
 
 		$helper->mustRun( $output, $process );
 
-		// Subversion
+		// Subversion.
 		if ( $to_wp_org ) {
 			$io->section( 'WordPress.org SVN' );
 
-			// Authentication
+			// Authentication.
 			$env_wp_org_username = getenv( 'WP_ORG_USERNAME' );
 			$env_wp_org_password = getenv( 'WP_ORG_PASSWORD' );
 
@@ -368,7 +368,7 @@ class DeployCommand extends Command {
 				$svn_auth = '--no-auth-cache --username $WP_ORG_USERNAME --password $WP_ORG_PASSWORD';
 			}
 
-			// Checkout
+			// Checkout.
 			if ( ! is_dir( $relative_path_svn . '/.svn' ) ) {
 				$command = sprintf(
 					'svn checkout %s %s --depth immediates',
@@ -382,7 +382,7 @@ class DeployCommand extends Command {
 				$helper->mustRun( $output, $process );
 			}
 
-			// Subversion - Trunk
+			// Subversion - Trunk.
 			$command = sprintf(
 				'svn update %s --set-depth infinity',
 				$relative_path_svn . '/trunk'
@@ -395,7 +395,7 @@ class DeployCommand extends Command {
 
 			$helper->mustRun( $output, $process );
 
-			// Subversion - Assets
+			// Subversion - Assets.
 			$command = sprintf(
 				'svn update %s --set-depth infinity',
 				$relative_path_svn . '/assets'
@@ -405,7 +405,7 @@ class DeployCommand extends Command {
 
 			$helper->mustRun( $output, $process );
 
-			// Subversion - Check tag
+			// Subversion - Check tag.
 			$command = sprintf(
 				'svn info %s',
 				$svn_url . '/tags/' . $version
@@ -505,7 +505,7 @@ class DeployCommand extends Command {
 			}
 		}
 
-		// AWS S3
+		// AWS S3.
 		if ( $to_s3 ) {
 			$io->section( 'AWS S3' );
 

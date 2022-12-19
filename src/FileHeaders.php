@@ -23,6 +23,7 @@ class FileHeaders {
 	 * 
 	 * @param string $file Filename.
 	 * @return array<string, string>
+	 * @throws \Exception Throws an exception when file contents cannot be retrieved.
 	 */
 	public function get_headers( $file ) {
 		$file_data = \file_get_contents( $file, false, null, 0, 8 * 1024 );
@@ -54,16 +55,36 @@ class FileHeaders {
 		return $headers;
 	}
 
+	/**
+	 * Trim file header key.
+	 * 
+	 * @param string $value Key value.
+	 * @return string
+	 */
 	private function trim_key( $value ) {
 		return \rtrim( \ltrim( $value, " \n\r\t\v\x00\/*#" ) );
 	}
 
+	/**
+	 * Trim file header value.
+	 * 
+	 * @param string $value Value.
+	 * @return string
+	 */
 	private function trim_value( $value ) {
 		return \trim( $value );
 	}
 
+	/**
+	 * Set headers in file.
+	 * 
+	 * @param string                $file    File.
+	 * @param array<string, string> $headers Headers.
+	 * @return void
+	 * @throws \Exception Throws an exception when file contents cannot be retrieved.
+	 */
 	public function set_headers( $file, $headers ) {
-		$lines = file( $file );
+		$lines = \file( $file );
 
 		if ( false === $lines ) {
 			throw new \Exception( \sprintf( 'Could not read file: %s', $file ) );
@@ -86,12 +107,12 @@ class FileHeaders {
 				$value_old = $value;
 				$value_new = $headers[ $key ];
 
-				$line = $before . ':' . str_replace( $value_old, $value_new, $after );
+				$line = $before . ':' . \str_replace( $value_old, $value_new, $after );
 
 				$lines[ $i ] = $line;
 			}
 		}
 
-		file_put_contents( $file, implode( '', $lines ) );
+		\file_put_contents( $file, implode( '', $lines ) );
 	}
 }

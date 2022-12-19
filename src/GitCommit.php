@@ -18,8 +18,18 @@ namespace Pronamic\Deployer;
  * @since   1.0.0
  */
 class GitCommit {
+	/**
+	 * Hash.
+	 * 
+	 * @var string
+	 */
 	public $hash;
 
+	/**
+	 * Title line.
+	 * 
+	 * @var string
+	 */
 	public $title_line;
 
 	/**
