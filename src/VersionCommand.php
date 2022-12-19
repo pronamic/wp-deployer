@@ -317,12 +317,12 @@ class VersionCommand extends Command {
 				while ( 'ok' !== $choice ) {
 					$iteration++;
 
-					$io->title( 'Changelog (🔁 ' . $iteration . ')' );
-					
+					$io->title( 'Changelog' );
+
 					$io->text( $changelog_entry->body );
 
 					$choice = $io->choice(
-						'Is the above changelog OK?',
+						'🔁 ' . $iteration . ': Is the above changelog OK?',
 						[
 							'ok',
 							'subl',
