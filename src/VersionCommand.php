@@ -462,6 +462,33 @@ class VersionCommand extends Command {
 		}
 
 		/**
+		 * Git status.
+		 * 
+		 * @link https://git-scm.com/docs/git-status
+		 * @link https://unix.stackexchange.com/questions/155046/determine-if-git-working-directory-is-clean-from-a-script
+		 * @link https://github.com/npm/cli/blob/7018b3d46e10ea4d9d81a478dbdf114b6505ed36/workspaces/libnpmversion/lib/enforce-clean.js
+		 */
+		$process = new Process( 'git status', $cwd );
+
+		$process_helper->mustRun( $output, $process );
+
+		$io->section( 'Git add' );
+
+		$git_status = $process->getOutput();
+
+		$io->text( $git_status );
+
+		$result = $io->confirm( 'Upadate working tree?', true );
+
+		if ( false === $result ) {
+			return 1;
+		}
+
+		$process = new Process( 'git add --all', $cwd );
+
+		$process_helper->mustRun( $output, $process );
+
+		/**
 		 * GitHub CLI, create concept release?
 		 * 
 		 * @link https://cli.github.com/
