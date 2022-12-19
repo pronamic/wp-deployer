@@ -16,6 +16,11 @@ use Yoast\PHPUnitPolyfills\TestCases\TestCase;
  * Changelog test class
  */
 class ChangelogTest extends TestCase {
+    /**
+     * Test get entry.
+     * 
+     * @return void
+     */
 	public function test_get_entry() {
 		$file = __DIR__ . '/../plugin/CHANGELOG.md';
 
