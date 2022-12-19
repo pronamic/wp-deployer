@@ -11,7 +11,7 @@
  * Plugin Name:       Plugin Name
  * Plugin URI:        https://example.com/plugin-name
  * Description:       Description of the plugin.
- * Version:           1.0.0
+ * Version:           1.0.1
  * Requires at least: 5.2
  * Requires PHP:      7.2
  * Author:            Your Name

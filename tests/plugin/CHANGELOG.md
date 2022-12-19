@@ -15,6 +15,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Fixed foldouts in Dutch translation
 
+## [1.0.1] - 2022-12-19
+- Test.
+Full set of changes: [`1.0.0...1.0.1`][1.0.1]
+
+[1.0.1]: https://github.com/pronamic/wp-deployer/compare/1.0.0...1.0.1
+
 ## [1.1.0] - 2019-02-15
 
 ### Added
