@@ -23,6 +23,6 @@ class ChangelogTest extends TestCase {
 
 		$item = $changelog->get_entry( '1.1.0' );
 
-		var_dump( $item->body );
+		$this->assertNotNull( $item );
 	}
 }
