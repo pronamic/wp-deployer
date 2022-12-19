@@ -41,7 +41,7 @@ class VersionCommand extends Command {
 	}
 
 	private function new_process( $command, $cwd = null, $env = null, $input = null, $timeout = null ) {
-		$process = new Process( $command, $cwd, $env, $input, $timeout );
+		$process = Process::fromShellCommandline( $command, $cwd, $env, $input, $timeout );
 
 		return $process;
 	}
