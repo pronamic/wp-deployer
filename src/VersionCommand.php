@@ -337,7 +337,7 @@ class VersionCommand extends Command {
 					);
 
 					if ( 'subl' === $choice ) {
-						$process = $this->new_process( 'subl -', null, null, $changelog_entry->body );
+						$process = $this->new_process( 'subl -', $cwd, null, $changelog_entry->body );
 
 						$process_helper->mustRun( $output, $process );
 
@@ -510,6 +510,40 @@ class VersionCommand extends Command {
 		);
 
 		$process = $this->new_process( $command, $cwd );
+
+		$process_helper->mustRun( $output, $process );
+
+		/**
+		 * Git push.
+		 *
+		 * @link https://docs.npmjs.com/cli/v7/commands/npm-version
+		 */
+		$should_push = $io->confirm( 'Do you want to push the changes and tag?', true );
+
+		if ( ! $should_push ) {
+			return 0;
+		}
+
+		$process = $this->new_process( 'git push', $cwd );
+
+		$process_helper->mustRun( $output, $process );
+
+		$process = $this->new_process( 'git push --tags', $cwd );
+
+		$process_helper->mustRun( $output, $process );
+
+		/**
+		 * GitHub release.
+		 * 
+		 * @link https://cli.github.com/manual/gh_release_create
+		 */
+		$command = \sprintf(
+			'gh release create %s --title %s --notes-file -',
+			$tagname,
+			\escapeshellarg( $new_version )
+		);
+
+		$process = $this->new_process( $command, $cwd, null, $changelog_entry->body );
 
 		$process_helper->mustRun( $output, $process );
 
