@@ -484,7 +484,22 @@ class VersionCommand extends Command {
 			return 1;
 		}
 
-		$process = new Process( 'git add --all', $cwd );
+		/**
+		 * Git commit.
+		 * 
+		 * @link https://github.com/npm/cli/blob/7018b3d46e10ea4d9d81a478dbdf114b6505ed36/workspaces/libnpmversion/lib/index.js#L17
+		 */
+		$message = \sprintf(
+			'v%s',
+			$new_version
+		);
+
+		$command = \sprintf(
+			'git commit -m %s',
+			\escapeshellarg( $message )
+		);
+
+		$process = new Process( $command, $cwd );
 
 		$process_helper->mustRun( $output, $process );
 
