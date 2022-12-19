@@ -518,6 +518,8 @@ class VersionCommand extends Command {
 		 * 
 		 * @link https://cli.github.com/
 		 */
+
+		return 0;
 	}
 
 	/**
