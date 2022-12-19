@@ -18,12 +18,33 @@ namespace Pronamic\Deployer;
  * @since   1.0.0
  */
 class SemanticVersion {
+	/**
+	 * Major identifier.
+	 * 
+	 * @var int
+	 */
 	private $major;
 
+	/**
+	 * Minor identifier.
+	 * 
+	 * @var int
+	 */
 	private $minor;
 
+	/**
+	 * Patch identifier.
+	 * 
+	 * @var int
+	 */
 	private $patch;
 
+	/**
+	 * Construct semantic version.
+	 * 
+	 * @param string $value Semantic version value.
+	 * @throws \InvalidArgumentException Throws an exception if value does not meet https://semver.org/.
+	 */
 	public function __construct( $value ) {
 		$version_core = null;
 		$build        = null;
@@ -49,7 +70,7 @@ class SemanticVersion {
 		$parts = explode( '.', $version_core );
 
 		if ( 3 !== count( $parts ) ) {
-			throw new \Exception( 'Invalid semantic versioning.' );
+			throw new \InvalidArgumentException( 'Invalid semantic versioning.' );
 		}
 
 		$this->major = (int) $parts[0];
@@ -57,6 +78,13 @@ class SemanticVersion {
 		$this->patch = (int) $parts[2];
 	}
 
+	/**
+	 * Increase semantic version as specified.
+	 * 
+	 * @param string $release Release type.
+	 * @return string
+	 * @throws \InvalidArgumentException Throws an exception if release type is unknow or unsupported.
+	 */
 	public function inc( $release ) {
 		switch ( $release ) {
 			case 'major':
@@ -81,7 +109,7 @@ class SemanticVersion {
 					$this->patch + 1
 				);
 			default:
-				throw new \Exception( 'Unknow increment release type.' );
+				throw new \InvalidArgumentException( 'Unknow increment release type.' );
 		}
 	}
 }
