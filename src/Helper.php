@@ -10,6 +10,7 @@
 
 namespace Pronamic\Deployer;
 
+use Symfony\Component\Console\Helper\ProcessHelper;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Process\Process;
 
@@ -24,8 +25,10 @@ class Helper {
 	/**
 	 * Get GNU.
 	 *
-	 * @param
-	 * @param
+	 * @param string[]        $options    Options.
+	 * @param string          $identifier Identifier.
+	 * @param ProcessHelper   $helper     Process helper.
+	 * @param OutputInterface $output     Output interface.
 	 * @return string|false
 	 */
 	private static function get_gnu( $options, $identifier, $helper, OutputInterface $output ) {
@@ -47,8 +50,8 @@ class Helper {
 	/**
 	 * Get GNU xargs.
 	 *
-	 * @param
-	 * @param
+	 * @param ProcessHelper   $helper     Process helper.
+	 * @param OutputInterface $output     Output interface.
 	 * @return string|false
 	 */
 	public static function get_gnu_xargs( $helper, OutputInterface $output ) {
@@ -66,8 +69,8 @@ class Helper {
 	/**
 	 * Get GNU grep.
 	 *
-	 * @param
-	 * @param
+	 * @param ProcessHelper   $helper     Process helper.
+	 * @param OutputInterface $output     Output interface.
 	 * @return string|false
 	 */
 	public static function get_gnu_grep( $helper, OutputInterface $output ) {
@@ -85,8 +88,8 @@ class Helper {
 	/**
 	 * Get GNU cat.
 	 *
-	 * @param
-	 * @param
+	 * @param ProcessHelper   $helper     Process helper.
+	 * @param OutputInterface $output     Output interface.
 	 * @return string|false
 	 */
 	public static function get_gnu_cat( $helper, OutputInterface $output ) {
@@ -104,8 +107,8 @@ class Helper {
 	/**
 	 * Get GNU cat.
 	 *
-	 * @param
-	 * @param
+	 * @param ProcessHelper   $helper     Process helper.
+	 * @param OutputInterface $output     Output interface.
 	 * @return string|false
 	 */
 	public static function get_gnu_cut( $helper, OutputInterface $output ) {
@@ -123,8 +126,8 @@ class Helper {
 	/**
 	 * Get GNU tr.
 	 *
-	 * @param
-	 * @param
+	 * @param ProcessHelper   $helper     Process helper.
+	 * @param OutputInterface $output     Output interface.
 	 * @return string|false
 	 */
 	public static function get_gnu_tr( $helper, OutputInterface $output ) {

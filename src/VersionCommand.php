@@ -40,6 +40,16 @@ class VersionCommand extends Command {
 			->setDescription( 'Version.' );
 	}
 
+	/**
+	 * New process.
+	 * 
+	 * @param string      $command Command.
+	 * @param string|null $cwd     Directory.
+	 * @param string|null $env     Environment.
+	 * @param string|null $input   Input.
+	 * @param string|null $timeout Timout.
+	 * @return Process
+	 */
 	private function new_process( $command, $cwd = null, $env = null, $input = null, $timeout = null ) {
 		$process = Process::fromShellCommandline( $command, $cwd, $env, $input, $timeout );
 
