@@ -679,7 +679,7 @@ class VersionCommand extends Command {
 		}
 
 		if ( ! is_readable( $composer_lock_file ) ) {
-			return  true;
+			return true;
 		}
 
 		$composer_json = json_decode( file_get_contents( $composer_json_file ) );
@@ -703,7 +703,7 @@ class VersionCommand extends Command {
 			$io->table(
 				[
 					'Package',
-					'Version'
+					'Version',
 				],
 				array_map(
 					function( $package ) {
