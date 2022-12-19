@@ -40,6 +40,12 @@ class VersionCommand extends Command {
 			->setDescription( 'Version.' );
 	}
 
+	private function new_process( $command, $cwd = null, $env = null, $input = null, $timeout = null ) {
+		$process = new Process( $command, $cwd, $env, $input, $timeout );
+
+		return $process;
+	}
+
 	/**
 	 * Execute.
 	 */
@@ -62,7 +68,7 @@ class VersionCommand extends Command {
 		 * 
 		 * @link https://git-scm.com/docs/git-pull
 		 */
-		$process = new Process( 'git pull', $cwd );
+		$process = $this->new_process( 'git pull', $cwd );
 
 		$process_helper->mustRun( $output, $process );
 
@@ -81,7 +87,7 @@ class VersionCommand extends Command {
 		 * @link https://git-scm.com/docs/git-branch
 		 * @link https://stackoverflow.com/questions/6245570/how-do-i-get-the-current-branch-name-in-git
 		 */
-		$process = new Process( 'git branch --show-current', $cwd );
+		$process = $this->new_process( 'git branch --show-current', $cwd );
 
 		$process_helper->mustRun( $output, $process );
 
@@ -286,7 +292,7 @@ class VersionCommand extends Command {
 			 * 
 			 * @link https://github.com/cookpete/auto-changelog/blob/0991f17ce936a9db490e2ad1a04121755038b78d/src/remote.js
 			 */
-			$process = new Process( 'git remote get-url origin', $cwd );
+			$process = $this->new_process( 'git remote get-url origin', $cwd );
 
 			$process_helper->mustRun( $output, $process );
 
@@ -331,7 +337,7 @@ class VersionCommand extends Command {
 					);
 
 					if ( 'subl' === $choice ) {
-						$process = new Process( 'subl -', null, null, $changelog_entry->body );
+						$process = $this->new_process( 'subl -', null, null, $changelog_entry->body );
 
 						$process_helper->mustRun( $output, $process );
 
@@ -456,7 +462,7 @@ class VersionCommand extends Command {
 				$new_version
 			);
 
-			$process = new Process( $command );
+			$process = $this->new_process( $command, $cwd );
 
 			$process_helper->mustRun( $output, $process );
 		}
@@ -468,11 +474,9 @@ class VersionCommand extends Command {
 		 * @link https://unix.stackexchange.com/questions/155046/determine-if-git-working-directory-is-clean-from-a-script
 		 * @link https://github.com/npm/cli/blob/7018b3d46e10ea4d9d81a478dbdf114b6505ed36/workspaces/libnpmversion/lib/enforce-clean.js
 		 */
-		$process = new Process( 'git status', $cwd );
+		$process = $this->new_process( 'git status', $cwd );
 
 		$process_helper->mustRun( $output, $process );
-
-		$io->section( 'Git add' );
 
 		$git_status = $process->getOutput();
 
@@ -496,11 +500,11 @@ class VersionCommand extends Command {
 		);
 
 		$command = \sprintf(
-			'git commit -m %s',
+			'git commit --all -m %s',
 			\escapeshellarg( $message )
 		);
 
-		$process = new Process( $command, $cwd );
+		$process = $this->new_process( $command, $cwd );
 
 		$process_helper->mustRun( $output, $process );
 
@@ -526,7 +530,7 @@ class VersionCommand extends Command {
 			\escapeshellarg( $tagname )
 		);
 
-		$process = new Process( $command, $cwd );
+		$process = $this->new_process( $command, $cwd );
 
 		$process_helper->mustRun( $output, $process );
 
@@ -616,7 +620,7 @@ class VersionCommand extends Command {
 		 */
 		$command = 'git --no-pager log --pretty=oneline tags/' . $version . '..HEAD';
 
-		$process = new Process( $command, $cwd );
+		$process = $this->new_process( $command, $cwd );
 
 		$process_helper->run( $output, $process );
 
@@ -670,7 +674,7 @@ class VersionCommand extends Command {
 		 * @link https://unix.stackexchange.com/questions/155046/determine-if-git-working-directory-is-clean-from-a-script
 		 * @link https://github.com/npm/cli/blob/7018b3d46e10ea4d9d81a478dbdf114b6505ed36/workspaces/libnpmversion/lib/enforce-clean.js
 		 */
-		$process = new Process( 'git status --porcelain', $cwd );
+		$process = $this->new_process( 'git status --porcelain', $cwd );
 
 		$process_helper->mustRun( $output, $process );
 
@@ -762,7 +766,7 @@ class VersionCommand extends Command {
 
 		$object = 'tags/' . $version . ':composer.lock';
 
-		$process = new Process( 'git show ' . $object, $cwd );
+		$process = $this->new_process( 'git show ' . $object, $cwd );
 
 		$process_helper->run( $output, $process );
 
