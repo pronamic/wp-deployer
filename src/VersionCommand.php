@@ -762,9 +762,9 @@ class VersionCommand extends Command {
 
 		$process_helper->mustRun( $output, $process );
 
-		$result = $process->getOutput();
+		$result = json_decode( $process->getOutput() );
 
-		if ( '' !== $result ) {
+		if ( count( $result->installed ) > 0 ) {
 			$process = $this->new_process( 'composer outdated', $cwd );
 			$process->setTty( true );
 			$process->mustRun();
