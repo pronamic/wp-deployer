@@ -788,7 +788,58 @@ class VersionCommand extends Command {
 
 			$io->note( 'Detected tagnames without `v` prefix.' );
 
-			return $io->confirm( 'Continue?', false );
+			$choice = $io->choice(
+				'How to proceed?',
+				[
+					'exit',
+					'ignore',
+					'rename',
+				],
+				'exit' 
+			);
+
+			switch ( $choice ) {
+				case 'ignore':
+					return true;
+				case 'rename':
+					foreach ( $tag_list_no_prefix as $tagname ) {
+						$tag_old = $tagname;
+						$tag_new = 'v' . $tagname;
+
+						$command = \sprintf(
+							'git tag %s %s',
+							$tag_new,
+							$tag_old
+						);
+
+						$process = $this->new_process( $command, $cwd );
+
+						$process_helper->mustRun( $output, $process );
+
+						$command = \sprintf(
+							'git tag --delete %s',
+							$tag_old
+						);
+
+						$process = $this->new_process( $command, $cwd );
+
+						$process_helper->mustRun( $output, $process );
+					}
+
+					$command = \sprintf(
+						'git push --tags --prune origin %s',
+						\escapeshellarg( 'refs/tags/*' )
+					);
+
+					$process = $this->new_process( $command, $cwd );
+
+					$process_helper->mustRun( $output, $process );
+
+					return false;
+				case 'exit':
+				default:
+					return false;
+			}
 		}
 
 		return true;
