@@ -806,6 +806,7 @@ class VersionCommand extends Command {
 						$tag_old = $tagname;
 						$tag_new = 'v' . $tagname;
 
+						// Tag new.
 						$command = \sprintf(
 							'git tag %s %s',
 							$tag_new,
@@ -816,6 +817,18 @@ class VersionCommand extends Command {
 
 						$process_helper->mustRun( $output, $process );
 
+						// GitHub release edit (optional).
+						$command = \sprintf(
+							'gh release edit %s --tag %s',
+							$tag_old,
+							$tag_new
+						);
+
+						$process = $this->new_process( $command, $cwd );
+
+						$process_helper->run( $output, $process );
+
+						// Tag delete.
 						$command = \sprintf(
 							'git tag --delete %s',
 							$tag_old
