@@ -850,7 +850,7 @@ class VersionCommand extends Command {
 						$process_helper->run( $output, $process );
 					}
 
-					return false;
+					return true;
 				case 'exit':
 				default:
 					return false;
