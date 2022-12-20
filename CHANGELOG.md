@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.0] - 2022-12-20
+### Added
+
+- The `wp-deployer version` command now checks for outdated Composer packages. If there are any outdated packages, the user will have to confirm their use.
+
+Full set of changes: [`1.0.0...1.1.0`][1.1.0]
+
+[1.1.0]: https://github.com/pronamic/wp-deployer/compare/1.0.0...1.1.0
+
 ## [1.0.0] - 2022-12-20
 
 - First release.
