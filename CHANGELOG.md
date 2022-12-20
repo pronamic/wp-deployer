@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.1] - 2022-12-20
+### Fixed
+
+- Prefix tagnames in compare links with `v`.
+Full set of changes: [`1.1.0...1.1.1`][1.1.1]
+
+[1.1.1]: https://github.com/pronamic/wp-deployer/compare/v1.1.0...v1.1.1
+
 ## [1.1.0] - 2022-12-20
 ### Added
 
