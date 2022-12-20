@@ -758,11 +758,21 @@ class VersionCommand extends Command {
 
 		$process_helper = $this->getHelper( 'process' );
 
-		$process = $this->new_process( 'composer outdated --direct --no-plugins --format json', $cwd );
+		$command = 'composer outdated --direct --format json';
+
+		$process = $this->new_process( $command, $cwd );
 
 		$process_helper->mustRun( $output, $process );
 
 		$result = json_decode( $process->getOutput() );
+
+		if ( null === $result ) {
+			throw new \Exception( \sprintf( 'Unexpected response from `%s`.', $command ) );
+		}
+
+		if ( [] === $result ) {
+			throw new \Exception( 'No dependencies installed. Try running composer install or update.' );
+		}
 
 		if ( count( $result->installed ) > 0 ) {
 			$process = $this->new_process( 'composer outdated', $cwd );
@@ -837,6 +847,38 @@ class VersionCommand extends Command {
 	}
 
 	/**
+	 * Get previous tag.
+	 * 
+	 * @link https://stackoverflow.com/questions/17790123/shell-check-if-a-git-tag-exists-in-an-if-else-statement
+	 * @link https://git-scm.com/docs/git-tag
+	 */
+	private function get_previous_tagname( $cwd, $version, $output ) {
+		$process_helper = $this->getHelper( 'process' );
+
+		$tagnames = [
+			'v' . $version,
+			$version,
+		];
+
+		foreach ( $tagnames as $tagname ) {
+			$command = \sprintf(
+				'git --no-pager tag --list %s',
+				\escapeshellarg( $tagname )
+			);
+
+			$process = $this->new_process( $command, $cwd );
+
+			$process_helper->mustRun( $output, $process );
+
+			$result = $process->getOutput();
+
+			var_dump( $result );
+		}
+
+		exit;
+	}
+
+	/**
 	 * Add composer updates.
 	 * 
 	 * @param string          $cwd     Directory.
@@ -865,7 +907,13 @@ class VersionCommand extends Command {
 
 		$process_helper = $this->getHelper( 'process' );
 
-		$object = 'tags/' . $version . ':composer.lock';
+		$tagname = $this->get_previous_tagname( $cwd, $version, $output );
+
+		if ( '' === $tagname ) {
+			return '';
+		}
+
+		$object = 'tags/v' . $version . ':composer.lock';
 
 		$process = $this->new_process( 'git show ' . $object, $cwd );
 
