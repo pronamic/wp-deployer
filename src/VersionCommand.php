@@ -817,17 +817,6 @@ class VersionCommand extends Command {
 
 						$process_helper->mustRun( $output, $process );
 
-						// GitHub release edit (optional).
-						$command = \sprintf(
-							'gh release edit %s --tag %s',
-							$tag_old,
-							$tag_new
-						);
-
-						$process = $this->new_process( $command, $cwd );
-
-						$process_helper->run( $output, $process );
-
 						// Tag delete.
 						$command = \sprintf(
 							'git tag --delete %s',
@@ -847,6 +836,19 @@ class VersionCommand extends Command {
 					$process = $this->new_process( $command, $cwd );
 
 					$process_helper->mustRun( $output, $process );
+
+					// GitHub release edit (optional).
+					foreach ( $tag_list_no_prefix as $tagname ) {
+						$command = \sprintf(
+							'gh release edit %s --tag %s',
+							$tagname,
+							'v' . $tagname
+						);
+
+						$process = $this->new_process( $command, $cwd );
+
+						$process_helper->run( $output, $process );
+					}
 
 					return false;
 				case 'exit':
