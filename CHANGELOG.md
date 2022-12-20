@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.2] - 2022-12-20
+### Fixed
+
+- Changed `symfony` dependencies to `^6.0 || ^6.1 || ^6.2` for PHP `8.0` support.
+
+Full set of changes: [`1.1.1...1.1.2`][1.1.2]
+
+[1.1.2]: https://github.com/pronamic/wp-deployer/compare/v1.1.1...v1.1.2
+
 ## [1.1.1] - 2022-12-20
 ### Fixed
 
