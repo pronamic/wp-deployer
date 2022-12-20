@@ -847,38 +847,6 @@ class VersionCommand extends Command {
 	}
 
 	/**
-	 * Get previous tag.
-	 * 
-	 * @link https://stackoverflow.com/questions/17790123/shell-check-if-a-git-tag-exists-in-an-if-else-statement
-	 * @link https://git-scm.com/docs/git-tag
-	 */
-	private function get_previous_tagname( $cwd, $version, $output ) {
-		$process_helper = $this->getHelper( 'process' );
-
-		$tagnames = [
-			'v' . $version,
-			$version,
-		];
-
-		foreach ( $tagnames as $tagname ) {
-			$command = \sprintf(
-				'git --no-pager tag --list %s',
-				\escapeshellarg( $tagname )
-			);
-
-			$process = $this->new_process( $command, $cwd );
-
-			$process_helper->mustRun( $output, $process );
-
-			$result = $process->getOutput();
-
-			var_dump( $result );
-		}
-
-		exit;
-	}
-
-	/**
 	 * Add composer updates.
 	 * 
 	 * @param string          $cwd     Directory.
@@ -907,13 +875,9 @@ class VersionCommand extends Command {
 
 		$process_helper = $this->getHelper( 'process' );
 
-		$tagname = $this->get_previous_tagname( $cwd, $version, $output );
+		$tagname = 'v' . $version;
 
-		if ( '' === $tagname ) {
-			return '';
-		}
-
-		$object = 'tags/v' . $version . ':composer.lock';
+		$object = 'tags/' . $tagname . ':composer.lock';
 
 		$process = $this->new_process( 'git show ' . $object, $cwd );
 
