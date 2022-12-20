@@ -108,6 +108,18 @@ class VersionCommand extends Command {
 		$branch = trim( $process->getOutput() );
 
 		/**
+		 * Git tag list.
+		 * 
+		 * @link https://git-scm.com/docs/git-branch
+		 * @link https://stackoverflow.com/questions/6245570/how-do-i-get-the-current-branch-name-in-git
+		 */
+		$result = $this->check_git_tagnames( $cwd, $input, $output );
+
+		if ( false === $result ) {
+			return 1;
+		}
+
+		/**
 		 * Detect type.
 		 * 
 		 * @link https://getcomposer.org/doc/04-schema.md#type
@@ -740,6 +752,43 @@ class VersionCommand extends Command {
 			$io->note( 'Working tree status not empty (`git status`).' );
 
 			return $io->confirm( 'Continue with open working tree?', false );
+		}
+
+		return true;
+	}
+
+	/**
+	 * Check Git tag names.
+	 *
+	 * @param string          $cwd    Directory.
+	 * @param InputInterface  $input  Input interface.
+	 * @param OutputInterface $output Output interface.
+	 * @return bool
+	 */
+	private function check_git_tagnames( $cwd, $input, $output ) {
+		$io = new SymfonyStyle( $input, $output );
+
+		$process_helper = $this->getHelper( 'process' );
+
+		$process = $this->new_process( 'git --no-pager tag --list', $cwd );
+
+		$process_helper->mustRun( $output, $process );
+
+		$tag_list = \explode( "\n", \trim( $process->getOutput() ) );
+
+		$tag_list_no_prefix = array_filter(
+			$tag_list,
+			function( $tagname ) {
+				return ! \str_starts_with( $tagname, 'v' );
+			}
+		);
+
+		if ( count( $tag_list_no_prefix ) > 0 ) {
+			$io->listing( $tag_list_no_prefix );
+
+			$io->note( 'Detected tagnames without `v` prefix.' );
+
+			return $io->confirm( 'Continue?', false );
 		}
 
 		return true;
