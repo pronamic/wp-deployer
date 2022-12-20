@@ -120,9 +120,9 @@ class ChangelogEntry {
 	 */
 	public function get_link() {
 		if ( '' === $this->version_previous ) {
-			return $this->url . '/releases/tag/' . $this->version;
+			return $this->url . '/releases/tag/v' . $this->version;
 		}
 
-		return $this->url . '/compare/' . $this->version_previous . '...' . $this->version;
+		return $this->url . '/compare/v' . $this->version_previous . '...v' . $this->version;
 	}
 }
