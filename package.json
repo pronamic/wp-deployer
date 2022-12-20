@@ -1,0 +1,22 @@
+{
+  "name": "@pronamic/wp-deployer",
+  "version": "1.0.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pronamic/wp-deployer.git"
+  },
+  "keywords": [
+    "pronamic",
+    "deploy",
+    "release",
+    "deployer",
+    "composer",
+    "version"
+  ],
+  "author": "Pronamic",
+  "license": "GPL-3.0-or-later",
+  "bugs": {
+    "url": "https://github.com/pronamic/wp-deployer/issues"
+  },
+  "homepage": "https://github.com/pronamic/wp-deployer#readme"
+}
