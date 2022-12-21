@@ -303,6 +303,10 @@ class VersionCommand extends Command {
 			]
 		);
 
+		$result = $this->generate_composer_json_changelog( $cwd, $version, $output );
+		var_dump( $result );
+		exit;
+
 		/**
 		 * If CHANGELOG.md check if new version is part of it?
 		 */
@@ -959,6 +963,90 @@ class VersionCommand extends Command {
 		}
 
 		return true;
+	}
+
+	/**
+	 * Add composer updates.
+	 * 
+	 * @param string          $cwd     Directory.
+	 * @param string          $version Version.
+	 * @param OutputInterface $output  Output interface.
+	 * @return string
+	 */
+	public function generate_composer_json_changelog( $cwd, $version, $output ) {
+		$lines = [];
+
+		$file = 'composer.json';
+
+		$process_helper = $this->getHelper( 'process' );
+
+		$tagname = 'v' . $version;
+
+		$object = 'tags/' . $tagname . ':' . $file;
+
+		$process = $this->new_process( 'git show ' . $object, $cwd );
+
+		$process_helper->run( $output, $process );
+
+		$composer_json_old = json_decode( $process->getOutput() );
+		$composer_json_new = json_decode( file_get_contents( $cwd . '/' . $file ) );
+
+		if ( ! is_object( $composer_json_old ) ) {
+			return [];
+		}
+
+		if ( ! is_object( $composer_json_new ) ) {
+			return [];
+		}
+
+		$require_old = [];
+		$require_new = [];
+
+		if ( property_exists( $composer_json_old, 'require' ) ) {
+			$require_old = (array) $composer_json_old->require;
+		}
+
+		if ( property_exists( $composer_json_new, 'require' ) ) {
+			$require_new = (array) $composer_json_new->require;
+		}
+
+		$removed = array_diff_key( $require_old, $require_new );
+
+		foreach ( $removed as $key => $version_constraint ) {
+			$lines[ $key ] = \sprintf(
+				'Removed `%s` `%s`.',
+				$key,
+				$version_constraint
+			);
+		}
+
+		$added = array_diff_key( $require_new, $require_old );
+
+		foreach ( $added as $key => $version_constraint ) {
+			$lines[ $key ] = \sprintf(
+				'Added `%s` `%s`.',
+				$key,
+				$version_constraint
+			);
+		}
+
+		$changed = array_intersect_key( $require_new, $require_old );
+
+		foreach ( $changed as $key => $version_constraint ) {
+			$old = $require_old[ $key ];
+			$new = $require_new[ $key ];
+
+			if ( $old !== $new ) {
+				$lines[ $key ] = \sprintf(
+					'Changed `%s` from `%s` to `%s`.',
+					$key,
+					$old,
+					$new
+				);
+			}
+		}
+
+		return $lines;
 	}
 
 	/**
