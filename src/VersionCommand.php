@@ -1100,7 +1100,7 @@ class VersionCommand extends Command {
 					if ( str_contains( $package->source->url, 'github.com' ) ) {
 						$components = $this->parse_git_url( $package->source->url );
 
-						$url = 'https://' . $components['host'] . '/' . $components['organisation'] . '/' . $components['repository'] . 'releases/tag/v' . $version;
+						$url = 'https://' . $components['host'] . '/' . $components['organisation'] . '/' . $components['repository'] . '/releases/tag/v' . $version;
 
 						$content .= "\n";
 						$content .= "\t" . 'Release notes: ' . $url . "\n";
