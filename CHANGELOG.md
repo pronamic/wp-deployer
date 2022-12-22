@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.1] - 2022-12-22
+
+### Commits
+
+- Added Composer heading to changelog. ([0eb183d](https://github.com/pronamic/wp-deployer/commit/0eb183d6f6ce26415331fcb75caecc2af78fcf12))
+- Fixed GitHub release URL. ([34fc8c2](https://github.com/pronamic/wp-deployer/commit/34fc8c2c56bae2295310fb52a82f6b8b7a664daf))
+
+Full set of changes: [`1.2.0...1.2.1`][1.2.1]
+
+[1.2.1]: https://github.com/pronamic/wp-deployer/compare/v1.2.0...v1.2.1
+
 ## [1.2.0] - 2022-12-22
 - Improved detection of Composer changes.
 
