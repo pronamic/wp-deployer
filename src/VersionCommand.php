@@ -303,10 +303,6 @@ class VersionCommand extends Command {
 			]
 		);
 
-		$result = $this->generate_composer_json_changelog( $cwd, $version, $output );
-		var_dump( $result );
-		exit;
-
 		/**
 		 * If CHANGELOG.md check if new version is part of it?
 		 */
@@ -344,7 +340,7 @@ class VersionCommand extends Command {
 				$changelog_entry->body .= $this->add_git_log( $cwd, $version, $output, $url_repository );
 
 				if ( isset( $composer_json ) ) {
-					$changelog_entry->body .= $this->add_composer_updates( $cwd, $version, $output );
+					$changelog_entry->body .= $this->generate_composer_json_changelog( $cwd, $version, $output );
 				}
 
 				$choice    = '';
@@ -965,6 +961,26 @@ class VersionCommand extends Command {
 		return true;
 	}
 
+	private function get_composer_lock_packages( $json ) {
+		$data = json_decode( $json );
+
+		if ( ! is_object( $data ) ) {
+			return [];
+		}
+
+		if ( ! property_exists( $data, 'packages' ) ) {
+			return [];
+		}
+
+		$map = [];
+
+		foreach ( $data->packages as $package ) {
+			$map[ $package->name ] = $package;
+		}
+
+		return $map;
+	}
+
 	/**
 	 * Add composer updates.
 	 * 
@@ -999,6 +1015,18 @@ class VersionCommand extends Command {
 			return [];
 		}
 
+		// Composer `composer.lock`.
+		$file = 'composer.lock';
+
+		$object = 'tags/' . $tagname . ':' . $file;
+
+		$process = $this->new_process( 'git show ' . $object, $cwd );
+
+		$process_helper->run( $output, $process );
+
+		$lock_old = $this->get_composer_lock_packages( $process->getOutput() );
+		$lock_new = $this->get_composer_lock_packages( file_get_contents( $cwd . '/' . $file ) );
+
 		$require_old = [];
 		$require_new = [];
 
@@ -1014,7 +1042,7 @@ class VersionCommand extends Command {
 
 		foreach ( $removed as $key => $version_constraint ) {
 			$lines[ $key ] = \sprintf(
-				'Removed `%s` `%s`.',
+				'- Removed `%s` `%s`.',
 				$key,
 				$version_constraint
 			);
@@ -1024,7 +1052,7 @@ class VersionCommand extends Command {
 
 		foreach ( $added as $key => $version_constraint ) {
 			$lines[ $key ] = \sprintf(
-				'Added `%s` `%s`.',
+				'- Added `%s` `%s`.',
 				$key,
 				$version_constraint
 			);
@@ -1033,124 +1061,49 @@ class VersionCommand extends Command {
 		$changed = array_intersect_key( $require_new, $require_old );
 
 		foreach ( $changed as $key => $version_constraint ) {
-			$old = $require_old[ $key ];
-			$new = $require_new[ $key ];
+			$composer_json_old = $require_old[ $key ];
+			$composer_json_new = $require_new[ $key ];
 
-			if ( $old !== $new ) {
-				$lines[ $key ] = \sprintf(
-					'Changed `%s` from `%s` to `%s`.',
+			$composer_lock_old = null;
+			$composer_lock_new = null;
+
+			if ( array_key_exists( $key, $lock_old ) ) {
+				$composer_lock_old = $lock_old[ $key ]->version;
+			}
+
+			if ( array_key_exists( $key, $lock_new ) ) {
+				$composer_lock_new = $lock_new[ $key ]->version;
+			}
+
+			// https://getcomposer.org/doc/articles/versions.md#exact-version-constraint
+			$is_composer_json_changed = ( $composer_json_old !== $composer_json_new );
+			$is_composer_lock_changed = ( $composer_lock_old !== $composer_lock_new && null !== $composer_lock_old && null !== $composer_lock_new );
+
+			if ( $is_composer_json_changed || $is_composer_lock_changed ) {
+				$content = \sprintf(
+					'- Changed `%s` from `%s` to `%s`.',
 					$key,
-					$old,
-					$new
+					$composer_lock_old ?? $composer_json_old,
+					$composer_lock_new ?? $composer_json_new
 				);
-			}
-		}
 
-		return $lines;
-	}
+				if ( array_key_exists( $key, $lock_new ) ) {
+					$package = $lock_new[ $key ];
 
-	/**
-	 * Add composer updates.
-	 * 
-	 * @param string          $cwd     Directory.
-	 * @param string          $version Version.
-	 * @param OutputInterface $output  Output interface.
-	 * @return string
-	 */
-	public function add_composer_updates( $cwd, $version, $output ) {
-		$composer_json_file = $cwd . '/composer.json';
+					if ( str_contains( $package->source->url, 'github.com' ) ) {
+						$components = $this->parse_git_url( $package->source->url );
 
-		if ( ! is_readable( $composer_json_file ) ) {
-			return '';
-		}
+						$url = 'https://' . $components['host'] . '/' . $components['organisation'] . '/' . $components['repository'] . 'releases/tag/v' . $version;
 
-		$data = file_get_contents( $composer_json_file );
-
-		$composer_json = json_decode( $data );
-
-		if ( ! is_object( $composer_json ) ) {
-			return '';
-		}
-
-		if ( ! \property_exists( $composer_json, 'require' ) ) {
-			return '';
-		}
-
-		$process_helper = $this->getHelper( 'process' );
-
-		$tagname = 'v' . $version;
-
-		$object = 'tags/' . $tagname . ':composer.lock';
-
-		$process = $this->new_process( 'git show ' . $object, $cwd );
-
-		$process_helper->run( $output, $process );
-
-		$composer_lock_old = json_decode( $process->getOutput() );
-		$composer_lock_new = json_decode( file_get_contents( $cwd . '/composer.lock' ) );
-
-		if ( ! is_object( $composer_lock_old ) ) {
-			return '';
-		}
-
-		if ( ! is_object( $composer_lock_new ) ) {
-			return '';
-		}
-
-		$map_old = [];
-		$map_new = [];
-
-		foreach ( $composer_lock_old->packages as $package ) {
-			$map_old[ $package->name ] = $package->version;
-		}
-
-		foreach ( $composer_lock_new->packages as $package ) {
-			$map_new[ $package->name ] = $package->version;
-		}
-
-		$content = "\n";
-
-		$content .= '### Composer' . "\n";
-
-		$content .= "\n";
-
-		foreach ( $composer_json->require as $key => $value ) {
-			if ( ! array_key_exists( $key, $map_old ) ) {
-				continue;
-			}
-
-			if ( ! array_key_exists( $key, $map_new ) ) {
-				continue;
-			}
-
-			$version_old = $map_old[ $key ];
-			$version_new = $map_new[ $key ];
-
-			if ( $version_old !== $version_new ) {
-				$content .= \sprintf( '- Updated `%s` from `%s` to `%s`.', $key, $version_old, $version_new ) . "\n";
-
-				$package_changelog_file = $cwd . '/vendor/' . $key . '/CHANGELOG.md';
-
-				if ( is_readable( $package_changelog_file ) ) {
-					$package_changelog = new Changelog( $package_changelog_file );
-
-					$version = $version_new;
-
-					if ( str_starts_with( $value, 'dev-' ) ) {
-						$version = 'Unreleased';
-					}
-
-					$entry = $package_changelog->get_entry( $version );
-
-					if ( null !== $entry ) {
-						foreach ( $entry->get_lines() as $line ) {
-							$content .= "\t" . $line . "\n";
-						}
+						$content .= "\n";
+						$content .= "\t" . 'Release notes: ' . $url . "\n";
 					}
 				}
+
+				$lines[ $key ] = $content;
 			}
 		}
 
-		return $content;
+		return \implode( "\n", $lines );
 	}
 }
