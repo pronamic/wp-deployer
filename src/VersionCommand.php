@@ -1111,6 +1111,16 @@ class VersionCommand extends Command {
 			}
 		}
 
-		return \implode( "\n", $lines );
+		if ( 0 === \count( $lines ) ) {
+			return '';
+		}
+
+		$content = "\n";
+
+		$content .= '### Composer' . "\n";
+		$content .= "\n";
+		$content .= \implode( "\n", $lines );
+
+		return $content;
 	}
 }
