@@ -867,6 +867,7 @@ class VersionCommand extends Command {
 	 * @param InputInterface  $input  Input interface.
 	 * @param OutputInterface $output Output interface.
 	 * @return bool
+	 * @throws \Exception When `compsoer outdated` output is not JSON or an empty array.
 	 */
 	private function check_composer_outdated( $cwd, $input, $output ) {
 		$io = new SymfonyStyle( $input, $output );
@@ -961,6 +962,12 @@ class VersionCommand extends Command {
 		return true;
 	}
 
+	/**
+	 * Get cmoposer.lock packages map.
+	 * 
+	 * @param string $json JSON.
+	 * @return array
+	 */
 	private function get_composer_lock_packages( $json ) {
 		$data = json_decode( $json );
 
@@ -984,6 +991,7 @@ class VersionCommand extends Command {
 	/**
 	 * Add composer updates.
 	 * 
+	 * @link https://getcomposer.org/doc/articles/versions.md#exact-version-constraint
 	 * @param string          $cwd     Directory.
 	 * @param string          $version Version.
 	 * @param OutputInterface $output  Output interface.
@@ -1075,7 +1083,6 @@ class VersionCommand extends Command {
 				$composer_lock_new = $lock_new[ $key ]->version;
 			}
 
-			// https://getcomposer.org/doc/articles/versions.md#exact-version-constraint
 			$is_composer_json_changed = ( $composer_json_old !== $composer_json_new );
 			$is_composer_lock_changed = ( $composer_lock_old !== $composer_lock_new && null !== $composer_lock_old && null !== $composer_lock_new );
 
