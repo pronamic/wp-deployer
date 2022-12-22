@@ -1103,7 +1103,7 @@ class VersionCommand extends Command {
 						$url = 'https://' . $components['host'] . '/' . $components['organisation'] . '/' . $components['repository'] . '/releases/tag/v' . $version;
 
 						$content .= "\n";
-						$content .= "\t" . 'Release notes: ' . $url . "\n";
+						$content .= "\t" . 'Release notes: ' . $url;
 					}
 				}
 
