@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.0] - 2022-12-22
+- Improved detection of Composer changes.
+
+Full set of changes: [`1.1.2...1.2.0`][1.2.0]
+
+[1.2.0]: https://github.com/pronamic/wp-deployer/compare/v1.1.2...v1.2.0
+
 ## [1.1.2] - 2022-12-20
 ### Fixed
 
