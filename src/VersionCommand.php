@@ -120,6 +120,13 @@ class VersionCommand extends Command {
 		}
 
 		/**
+		 * Composer script `preversion`.
+		 * 
+		 * @link https://github.com/pronamic/wp-deployer/issues/5
+		 */
+		$this->run_compser_script( 'preversion', $cwd, $output );
+
+		/**
 		 * Detect type.
 		 * 
 		 * @link https://getcomposer.org/doc/04-schema.md#type
@@ -494,6 +501,13 @@ class VersionCommand extends Command {
 		}
 
 		/**
+		 * Composer script `version`.
+		 * 
+		 * @link https://github.com/pronamic/wp-deployer/issues/5
+		 */
+		$this->run_compser_script( 'version', $cwd, $output );
+
+		/**
 		 * Git commit.
 		 * 
 		 * @link https://github.com/npm/cli/blob/7018b3d46e10ea4d9d81a478dbdf114b6505ed36/workspaces/libnpmversion/lib/index.js#L17
@@ -574,10 +588,11 @@ class VersionCommand extends Command {
 		$process_helper->mustRun( $output, $process );
 
 		/**
-		 * GitHub CLI, create concept release?
+		 * Composer script `postversion`.
 		 * 
-		 * @link https://cli.github.com/
+		 * @link https://github.com/pronamic/wp-deployer/issues/5
 		 */
+		$this->run_compser_script( 'postversion', $cwd, $output );
 
 		return 0;
 	}
@@ -1136,5 +1151,43 @@ class VersionCommand extends Command {
 		$content .= \implode( "\n", $lines );
 
 		return $content;
+	}
+
+	/**
+	 * Run Composer script.
+	 * 
+	 * @param string          $script Script to run.
+	 * @param string          $cwd    Directory.
+	 * @param OutputInterface $output Output interface.
+	 * @return void
+	 */
+	private function run_compser_script( $script, $cwd, $output ) {
+		$composer_json_file = $cwd . '/composer.json';
+
+		if ( ! \is_readable( $composer_json_file ) ) {
+			return;
+		}
+
+		$json = file_get_contents( $composer_json_file );
+
+		$data = json_decode( $json );
+
+		if ( ! \is_object( $data ) ) {
+			return;
+		}
+
+		if ( ! \property_exists( $data, 'scripts' ) ) {
+			return;
+		}
+
+		if ( ! \property_exists( $script, $data->scripts ) ) {
+			return;
+		}
+
+		$process_helper = $this->getHelper( 'process' );
+
+		$process = $this->new_process( 'composer run-script ' . $script, $cwd );
+
+		$process_helper->mustRun( $output, $process );
 	}
 }
