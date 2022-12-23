@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.5] - 2022-12-23
+
+### Commits
+
+- Updated VersionCommand.php ([93678ca](https://github.com/pronamic/wp-deployer/commit/93678cabe0b43dd2103b9a649faeb44c199a054c))
+
+Full set of changes: [`1.2.4...1.2.5`][1.2.5]
+
+[1.2.5]: https://github.com/pronamic/wp-deployer/compare/v1.2.4...v1.2.5
+
 ## [1.2.4] - 2022-12-23
 
 ### Commits
