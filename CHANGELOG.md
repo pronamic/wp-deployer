@@ -12,11 +12,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Composer
 
 - Changed `symfony/console` from `^6.0 || ^6.1 || ^6.2` to `v6.0.16`.
-	Release notes: https://github.com/symfony/console/releases/tag/v1.2.1
+	Release notes: https://github.com/symfony/console/releases/tag/v6.0.16
 - Changed `symfony/filesystem` from `^6.0 || ^6.1 || ^6.2` to `v6.0.13`.
-	Release notes: https://github.com/symfony/filesystem/releases/tag/v1.2.1
+	Release notes: https://github.com/symfony/filesystem/releases/tag/v6.0.13
 - Changed `symfony/process` from `^6.0 || ^6.1 || ^6.2` to `v6.0.11`.
-	Release notes: https://github.com/symfony/process/releases/tag/v1.2.1
+	Release notes: https://github.com/symfony/process/releases/tag/v6.0.11
+
 Full set of changes: [`1.2.1...1.2.2`][1.2.2]
 
 [1.2.2]: https://github.com/pronamic/wp-deployer/compare/v1.2.1...v1.2.2
