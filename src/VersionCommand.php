@@ -779,6 +779,18 @@ class VersionCommand extends Command {
 		$tag_list_no_prefix = array_filter(
 			$tag_list,
 			function( $tagname ) {
+				if ( 
+					\in_array(
+						$tagname,
+						[
+							'nightly',
+						],
+						true
+					)
+				) {
+					
+				}
+
 				return ! \str_starts_with( $tagname, 'v' );
 			}
 		);
