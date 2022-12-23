@@ -1112,9 +1112,9 @@ class VersionCommand extends Command {
 					if ( str_contains( $package->source->url, 'github.com' ) ) {
 						$components = $this->parse_git_url( $package->source->url );
 
-						$v = $composer_lock_new ?? $composer_json_new;
+						$tagname = $package->version;
 
-						$url = 'https://' . $components['host'] . '/' . $components['organisation'] . '/' . $components['repository'] . '/releases/tag/v' . $v;
+						$url = 'https://' . $components['host'] . '/' . $components['organisation'] . '/' . $components['repository'] . '/releases/tag/' . $tagname;
 
 						$content .= "\n";
 						$content .= "\t" . 'Release notes: ' . $url;
