@@ -788,7 +788,7 @@ class VersionCommand extends Command {
 						true
 					)
 				) {
-					
+					return false;
 				}
 
 				return ! \str_starts_with( $tagname, 'v' );
