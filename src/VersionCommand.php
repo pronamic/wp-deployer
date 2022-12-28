@@ -246,7 +246,7 @@ class VersionCommand extends Command {
 		 * @link https://github.com/npm/node-semver#functions
 		 */
 		$bump_method = $io->choice(
-			'Select bump methpd',
+			'Select bump method',
 			[
 				'major',
 				'minor',
@@ -472,13 +472,13 @@ class VersionCommand extends Command {
 		 */
 
 		/**
-		 * If changelog is missing patch it from CHANGELOG.md to readm.txt.
+		 * If changelog is missing patch it from CHANGELOG.md to readme.txt.
 		 * 
 		 * Confirm the changelog.
 		 */
 
 		/**
-		 * Check if "Requires PHP" matches composer PHP requrement.
+		 * Check if "Requires PHP" matches composer PHP requirement.
 		 * 
 		 * @link https://mikemadison.net/blog/2020/11/17/configuring-php-version-with-composer
 		 */
@@ -888,7 +888,7 @@ class VersionCommand extends Command {
 	}
 
 	/**
-	 * Check Compsoer outdated.
+	 * Check Composer outdated.
 	 * 
 	 * @param string          $cwd    Directory.
 	 * @param InputInterface  $input  Input interface.
@@ -924,14 +924,14 @@ class VersionCommand extends Command {
 
 			$io->write( $process->getOutput() );
 
-			return $io->confirm( 'Continue with outdated Compsoer packages?', false );
+			return $io->confirm( 'Continue with outdated Composer packages?', false );
 		}
 
 		return true;
 	}
 
 	/**
-	 * Check Compsoer non comparable version.
+	 * Check Composer non-comparable version.
 	 * 
 	 * @param string       $cwd Directory.
 	 * @param SymfonyStyle $io  Input/output style.
@@ -965,7 +965,7 @@ class VersionCommand extends Command {
 		}
 
 		if ( count( $packages ) > 0 ) {
-			$io->note( 'Detected non comparable Composer package versions.' );
+			$io->note( 'Detected non-comparable Composer package versions.' );
 
 			$io->table(
 				[
