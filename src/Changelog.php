@@ -54,50 +54,80 @@ class Changelog {
 	}
 
 	/**
+	 * Get changelog entries.
+	 *
+	 * @return ChangelogEntry[]
+	 */
+	public function get_entries() {
+		$entries    = [];
+		$start      = null;
+		$version    = null;
+		$empty_line = null;
+		$last_line  = array_key_last( $this->data );
+
+		foreach ( $this->data as $i => $line ) {
+			if ( '' === trim( $line ) ) {
+				$empty_line = $i;
+			}
+
+			if ( ! \str_starts_with( $line, '## ' ) && $i !== $last_line ) {
+				continue;
+			}
+
+			if ( \str_contains( $line, 'Unreleased' ) ) {
+				continue;
+			}
+
+			if ( null !== $start && null !== $version ) {
+				$end = $i - 1;
+
+				if ( $i === $last_line ) {
+					if ( \str_starts_with( $line, '[' . $version . ']' ) ) {
+						$end = $i;
+					} else if ( null !== $empty_line ) {
+						$end = $empty_line;
+					}
+				}
+
+				$body = array_slice( $this->data, $start + 1, $end - $start );
+
+				$entry = new ChangelogEntry( $this, $version );
+
+				$entry->body = trim( implode( '', $body ) );
+
+				$entries[ $version ] = $entry;
+			}
+
+			$start = $i;
+
+			// Version.
+			$version = null;
+
+			$version_start = \strpos( $line, '[' );
+			$version_end   = \strpos( $line, ']' );
+
+			if ( false !== $version_start && null !== $version_end ) {
+				$version = trim( \substr( $line, $version_start + 1, $version_end - $version_start - 1 ) );
+			}
+		}
+
+		return $entries;
+	}
+
+	/**
 	 * Get entry for version.
 	 * 
 	 * @param string $version Version.
 	 * @return ChangelogEntry|null
 	 */
 	public function get_entry( $version ) {
-		$search = '[' . $version . ']';
+		$entries = $this->get_entries();
 
-		$start   = null;
-		$end     = null;
-		$heading = null;
-
-		foreach ( $this->data as $i => $line ) {
-			if ( ! \str_starts_with( $line, '## ' ) ) {
-				continue;
-			}
-
-			if ( null !== $start ) {
-				$end = $i;
-
-				break;
-			}
-
-			if ( null === $start && \str_contains( $line, $search ) ) {
-				$title = $line;
-				$start = $i;
-			}
-		}
-
-		if ( null === $start ) {
+		if ( ! \array_key_exists( $version, $entries ) ) {
 			return null;
 		}
 
-		if ( null === $end ) {
-			return null;
-		}
-
-		$body = array_slice( $this->data, $start + 1, $end - $start - 1 );
-
-		$entry = new ChangelogEntry( $this, $version );
-
-		$entry->body = trim( implode( '', $body ) );
-
-		return $entry;
+		return $entries[ $version ];
 	}
 
 	/**
@@ -107,19 +137,11 @@ class Changelog {
 	 * @return bool
 	 */
 	public function has_entry( $version ) {
-		$search = '[' . $version . ']';
+		$entries = $this->get_entries();
 
-		foreach ( $this->data as $line ) {
-			if ( ! str_starts_with( $line, '## ' ) ) {
-				continue;
-			}
+		$has_entry = \array_key_exists( $version, $entries );
 
-			if ( str_contains( $line, $search ) ) {
-				return true;
-			}
-		}
-
-		return false;
+		return $has_entry;
 	}
 
 	/**

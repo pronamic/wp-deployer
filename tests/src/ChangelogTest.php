@@ -30,4 +30,19 @@ class ChangelogTest extends TestCase {
 
 		$this->assertNotNull( $item );
 	}
+
+	/**
+	 * Test has last entry.
+	 *
+	 * @return void
+	 */
+	public function test_has_last_entry() {
+		$file = __DIR__ . '/../plugin/CHANGELOG.md';
+
+		$changelog = new Changelog( $file );
+
+		$has_entry = $changelog->has_entry( '0.0.1' );
+
+		$this->assertTrue( $has_entry );
+	}
 }
