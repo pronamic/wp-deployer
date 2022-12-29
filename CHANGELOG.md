@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.9] - 2022-12-29
+
+### Commits
+
+- Fixed "PHP Fatal error:  Uncaught TypeError: property_exists(): Argument #2 ($property) must be of type string, stdClass given". ([40c4164](https://github.com/pronamic/wp-deployer/commit/40c4164d079d8115e2aefea5bd9c9745ecdafa7e))
+
+Full set of changes: [`1.2.8...1.2.9`][1.2.9]
+
+[1.2.9]: https://github.com/pronamic/wp-deployer/compare/v1.2.8...v1.2.9
+
 ## [1.2.8] - 2022-12-29
 
 ### Commits
