@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.7] - 2022-12-29
+
+### Commits
+
+- Added build archive as release asset. ([177c421](https://github.com/pronamic/wp-deployer/commit/177c421046d057d7429e7287783b545c97727e79))
+- Added method to get all changelog entries. ([ac5331e](https://github.com/pronamic/wp-deployer/commit/ac5331ea16d00ebc4433fd6329b51ff89ce29751))
+- Run Composer `preversion`, `version` and `postversion` scripts if defined. ([44c2ef3](https://github.com/pronamic/wp-deployer/commit/44c2ef363e96f62fd1006e2090d5c0458b403337))
+
+Full set of changes: [`1.2.6...1.2.7`][1.2.7]
+
+[1.2.7]: https://github.com/pronamic/wp-deployer/compare/v1.2.6...v1.2.7
+
 ## [1.2.6] - 2022-12-23
 
 ### Commits
