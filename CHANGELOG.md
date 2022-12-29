@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.8] - 2022-12-29
+
+### Commits
+
+- Fixed error `stat ./build/*.zip: no such file or directory`. ([839125d](https://github.com/pronamic/wp-deployer/commit/839125d6b6264f77905db0784895e9f924b9a0e0))
+
+Full set of changes: [`1.2.7...1.2.8`][1.2.8]
+
+[1.2.8]: https://github.com/pronamic/wp-deployer/compare/v1.2.7...v1.2.8
+
 ## [1.2.7] - 2022-12-29
 
 ### Commits
