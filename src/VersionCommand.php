@@ -124,7 +124,7 @@ class VersionCommand extends Command {
 		 * 
 		 * @link https://github.com/pronamic/wp-deployer/issues/5
 		 */
-		$this->run_compser_script( 'preversion', $cwd, $output );
+		$this->run_composer_script( 'preversion', $cwd, $output );
 
 		/**
 		 * Detect type.
@@ -505,7 +505,7 @@ class VersionCommand extends Command {
 		 * 
 		 * @link https://github.com/pronamic/wp-deployer/issues/5
 		 */
-		$this->run_compser_script( 'version', $cwd, $output );
+		$this->run_composer_script( 'version', $cwd, $output );
 
 		/**
 		 * Git commit.
@@ -592,7 +592,7 @@ class VersionCommand extends Command {
 		 * 
 		 * @link https://github.com/pronamic/wp-deployer/issues/5
 		 */
-		$this->run_compser_script( 'postversion', $cwd, $output );
+		$this->run_composer_script( 'postversion', $cwd, $output );
 
 		return 0;
 	}
@@ -1161,7 +1161,7 @@ class VersionCommand extends Command {
 	 * @param OutputInterface $output Output interface.
 	 * @return void
 	 */
-	private function run_compser_script( $script, $cwd, $output ) {
+	private function run_composer_script( $script, $cwd, $output ) {
 		$composer_json_file = $cwd . '/composer.json';
 
 		if ( ! \is_readable( $composer_json_file ) ) {
