@@ -572,10 +572,16 @@ class VersionCommand extends Command {
 		 * 
 		 * @link https://cli.github.com/manual/gh_release_create
 		 */
+		$assets = \array_map(
+			'\escapeshellarg',
+			\glob( $cwd . '/build/*.zip' )
+		);
+
 		$command = \sprintf(
-			'gh release create %s --title %s --notes-file - ./build/*.zip',
+			'gh release create %s --title %s --notes-file - %s',
 			$tagname,
-			\escapeshellarg( $new_version )
+			\escapeshellarg( $new_version ),
+			\implode( ' ', $assets )
 		);
 
 		$process = $this->new_process( $command, $cwd, null, $changelog_entry->body );
