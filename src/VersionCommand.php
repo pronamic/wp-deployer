@@ -578,7 +578,7 @@ class VersionCommand extends Command {
 		 * @link https://cli.github.com/manual/gh_release_create
 		 */
 		$command = \sprintf(
-			'gh release create %s --title %s --notes-file -',
+			'gh release create %s --title %s --notes-file - ./build/*.zip',
 			$tagname,
 			\escapeshellarg( $new_version )
 		);
