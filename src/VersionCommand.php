@@ -1181,7 +1181,7 @@ class VersionCommand extends Command {
 			return;
 		}
 
-		if ( ! \property_exists( $script, $data->scripts ) ) {
+		if ( ! \property_exists( $data->scripts, $script ) ) {
 			return;
 		}
 
