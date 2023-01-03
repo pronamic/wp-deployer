@@ -478,6 +478,7 @@ class DeployCommand extends Command {
 				);
 
 				$process = Process::fromShellCommandline( $command );
+				$process->setTimeout( null );
 				$process->setTty( true );
 
 				$helper->mustRun( $output, $process );
