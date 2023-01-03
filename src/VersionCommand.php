@@ -563,7 +563,7 @@ class VersionCommand extends Command {
 
 		$process_helper->mustRun( $output, $process );
 
-		$process = $this->new_process( 'git push --tags', $cwd );
+		$process = $this->new_process( 'git push origin refs/tags/' . $tagname, $cwd );
 
 		$process_helper->mustRun( $output, $process );
 
