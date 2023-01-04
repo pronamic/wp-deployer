@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.10] - 2023-01-04
+
+### Commits
+
+- Only push specific tagname. ([91e96cb](https://github.com/pronamic/wp-deployer/commit/91e96cba5126a87be4707f84fa931ef45e1be9d0))
+- Removed timeout for `svn commit` command. ([1e4b75a](https://github.com/pronamic/wp-deployer/commit/1e4b75a03a96de6649fcde3db79249aac6db379a))
+
+Full set of changes: [`1.2.9...1.2.10`][1.2.10]
+
+[1.2.10]: https://github.com/pronamic/wp-deployer/compare/v1.2.9...v1.2.10
+
 ## [1.2.9] - 2022-12-29
 
 ### Commits
