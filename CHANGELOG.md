@@ -18,9 +18,11 @@ Full set of changes: [`1.2.11...1.2.12`][1.2.12]
 [1.2.12]: https://github.com/pronamic/wp-deployer/compare/v1.2.11...v1.2.12
 
 ## [1.2.11] - 2023-01-31
+
 ### Composer
 
 - Changed `php` from `>=8.0` to `>=7.4`.
+
 Full set of changes: [`1.2.10...1.2.11`][1.2.11]
 
 [1.2.11]: https://github.com/pronamic/wp-deployer/compare/v1.2.10...v1.2.11
