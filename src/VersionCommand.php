@@ -240,17 +240,28 @@ class VersionCommand extends Command {
 		 * @link https://docs.npmjs.com/cli/v8/commands/npm-version#description
 		 * @link https://github.com/npm/node-semver#functions
 		 */
+		$semver = new SemanticVersion( $version );
+
 		$bump_method = $io->choice(
 			'Select bump method',
 			[
-				'major',
-				'minor',
-				'patch',
-			],
-			'patch' 
+				'major' => \sprintf( 
+					'Major: from %s to %s.',
+					'<info>' . $version . '</info>',
+					'<info>' . $semver->inc( 'major' ) . '</info>'
+				),
+				'minor' => \sprintf( 
+					'Minor: from %s to %s.',
+					'<info>' . $version . '</info>',
+					'<info>' . $semver->inc( 'minor' ) . '</info>'
+				),
+				'patch' => \sprintf( 
+					'Patch: from %s to %s.',
+					'<info>' . $version . '</info>',
+					'<info>' . $semver->inc( 'patch' ) . '</info>'
+				),
+			]
 		);
-
-		$semver = new SemanticVersion( $version );
 
 		switch ( $bump_method ) {
 			case 'input':
