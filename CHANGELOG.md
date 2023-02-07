@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.13] - 2023-02-07
+
+### Commits
+
+- Show GitHub release info, closes #11. ([bbc9ec1](https://github.com/pronamic/wp-deployer/commit/bbc9ec1c71effb5ad2341cb2eeb336ec04c25707))
+
+Full set of changes: [`1.2.12...1.2.13`][1.2.13]
+
+[1.2.13]: https://github.com/pronamic/wp-deployer/compare/v1.2.12...v1.2.13
+
 ## [1.2.12] - 2023-02-07
 
 ### Commits
