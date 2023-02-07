@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.12] - 2023-02-07
+
+### Commits
+
+- Show inc version for bump method, closes #9. ([d6262c6](https://github.com/pronamic/wp-deployer/commit/d6262c69b71edbe00e41e95711a0610096cd5459))
+
+Full set of changes: [`1.2.11...1.2.12`][1.2.12]
+
+[1.2.12]: https://github.com/pronamic/wp-deployer/compare/v1.2.11...v1.2.12
+
 ## [1.2.11] - 2023-01-31
 ### Composer
 
