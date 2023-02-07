@@ -583,6 +583,8 @@ class VersionCommand extends Command {
 		 * 
 		 * @link https://cli.github.com/manual/gh_release_create
 		 */
+		$io->title( 'GitHub release' );
+
 		$assets = \array_map(
 			'\escapeshellarg',
 			\glob( $cwd . '/build/*.zip' )
@@ -595,9 +597,13 @@ class VersionCommand extends Command {
 			\implode( ' ', $assets )
 		);
 
+		$io->text( '<info>' . $command . '</info>' );
+
 		$process = $this->new_process( $command, $cwd, null, $changelog_entry->body );
 
 		$process_helper->mustRun( $output, $process );
+
+		$io->write( $process->getOutput() );
 
 		/**
 		 * Composer script `postversion`.
