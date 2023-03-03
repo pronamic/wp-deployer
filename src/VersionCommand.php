@@ -583,27 +583,31 @@ class VersionCommand extends Command {
 		 * 
 		 * @link https://cli.github.com/manual/gh_release_create
 		 */
-		$io->title( 'GitHub release' );
+		$should_create_gh_release = $io->confirm( 'Do you want to create a GitHub release? (deprecated)', false );
 
-		$assets = \array_map(
-			'\escapeshellarg',
-			\glob( $cwd . '/build/*.zip' )
-		);
+		if ( $should_create_gh_release ) {
+			$io->title( 'GitHub release' );
 
-		$command = \sprintf(
-			'gh release create %s --title %s --notes-file - %s',
-			$tagname,
-			\escapeshellarg( $new_version ),
-			\implode( ' ', $assets )
-		);
+			$assets = \array_map(
+				'\escapeshellarg',
+				\glob( $cwd . '/build/*.zip' )
+			);
 
-		$io->text( '<info>' . $command . '</info>' );
+			$command = \sprintf(
+				'gh release create %s --title %s --notes-file - %s',
+				$tagname,
+				\escapeshellarg( $new_version ),
+				\implode( ' ', $assets )
+			);
 
-		$process = $this->new_process( $command, $cwd, null, $changelog_entry->body );
+			$io->text( '<info>' . $command . '</info>' );
 
-		$process_helper->mustRun( $output, $process );
+			$process = $this->new_process( $command, $cwd, null, $changelog_entry->body );
 
-		$io->write( $process->getOutput() );
+			$process_helper->mustRun( $output, $process );
+
+			$io->write( $process->getOutput() );
+		}
 
 		/**
 		 * Composer script `postversion`.
