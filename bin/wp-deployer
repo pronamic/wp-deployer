@@ -29,6 +29,7 @@ use Symfony\Component\Console\Application;
 
 $application = new Application( 'Pronamic deployer.', '1.0.0' );
 
+$application->add( new ChangelogCommand() );
 $application->add( new DeployCommand() );
 $application->add( new VersionCommand() );
 
