@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.3.0] - 2023-03-03
+
+### Commits
+
+- Added an CLI command to retrive a changelog entry by version. ([2c8be32](https://github.com/pronamic/wp-deployer/commit/2c8be327c8ed8079daf1f594b3ed1898ac74e034))
+- Ask for GitHub release, this feature will be removed in the future. ([099bbf1](https://github.com/pronamic/wp-deployer/commit/099bbf152e4bd7c67c0e6a5396a6c95f49806c71))
+
+Full set of changes: [`1.2.13...1.3.0`][1.3.0]
+
+[1.3.0]: https://github.com/pronamic/wp-deployer/compare/v1.2.13...v1.3.0
+
 ## [1.2.13] - 2023-02-07
 
 ### Commits
