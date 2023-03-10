@@ -249,6 +249,23 @@ class SvnReleaseCommand extends Command {
 
 		$helper->mustRun( $output, $process );
 
+		// Subversion - Tag.
+		$command = sprintf(
+			'svn cp %s %s %s -m "%s"',
+			$svn_auth,
+			$svn_url . '/trunk',
+			$svn_url . '/tags/' . $version,
+			sprintf(
+				'Tagging version %s for release.',
+				$version
+			)
+		);
+
+		$process = Process::fromShellCommandline( $command );
+		$process->setTty( true );
+
+		$helper->mustRun( $output, $process );
+
 		return 0;
 	}
 }
