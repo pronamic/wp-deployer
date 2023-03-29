@@ -107,8 +107,6 @@ class SvnReleaseCommand extends Command {
 			return 1;
 		}
 
-		// 
-		// vendor/bin/wp-deployer svn-release build/plugin build/svn https://plugins.svn.wordpress.org/pronamic-pay-with-mollie-for-gravity-forms
 		$working_dir = $input->getArgument( 'working-dir' );
 		$svn_dir     = $input->getArgument( 'svn-dir' );
 		$svn_url     = $input->getArgument( 'svn-url' );

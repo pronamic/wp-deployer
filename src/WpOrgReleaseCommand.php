@@ -57,7 +57,6 @@ class WpOrgReleaseCommand extends Command {
 	 * @return int
 	 */
 	protected function execute( InputInterface $input, OutputInterface $output ) {
-		// vendor/bin/wp-deployer wp-org-release build/plugin build/svn pronamic-pay-with-mollie-for-gravity-forms
 		$working_dir = $input->getArgument( 'working-dir' );
 		$svn_dir     = $input->getArgument( 'svn-dir' );
 		$slug        = $input->getArgument( 'slug' );

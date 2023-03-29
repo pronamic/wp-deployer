@@ -6,9 +6,36 @@
 
 ## Table of contents
 
+- [Commands](#commands)
 - [Examples](#examples)
 - [Alternatives](#alternatives)
 - [Links](#links)
+
+## Commands
+
+### `changelog`
+
+Show the changelong entry of a specific version from `CHANGELOG.md`.
+
+```sh
+bin/wp-deployer changelog 1.0.0
+```
+
+### `svn-release`
+
+Release a directory to a Subversion repository.
+
+```sh
+bin/wp-deployer svn-release build/plugin build/svn https://plugins.svn.wordpress.org/pronamic-pay-with-mollie-for-gravity-forms 1.0.0
+```
+
+### `wp-org-release`
+
+Release a directory to the WordPress Plugin Directory.
+
+```sh
+bin/wp-deployer wp-org-release build/plugin build/svn pronamic-pay-with-mollie-for-gravity-forms
+```
 
 ## Examples
 
