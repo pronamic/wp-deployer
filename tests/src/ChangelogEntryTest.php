@@ -26,21 +26,24 @@ class ChangelogEntryTest extends TestCase {
 
 		$changelog = new Changelog( $file );
 
-		$changelog_entry = $changelog->new_entry( 'test' );
+		$changelog_entry = $changelog->new_entry( '1.0.0' );
 
-		$changelog_entry->body = 'Test';
+		$changelog_entry->body = '- Test.';
 
 		$render = $changelog_entry->render();
 
-		$this->assertStringStartsWith( '## [test]', $render );
+		$expected = <<<END
+		## [1.0.0] - 2023-03-30
 
-		$lines = explode( "\n", $render );
+		- Test.
 
-		$count = \count( $lines );
+		Full set of changes: [`1.0.0`][1.0.0]
 
-		$this->assertEquals( '', $lines[ $count - 4 ] );
-		$this->assertStringStartsWith( 'Full set of changes: ', $lines[ $count - 3 ] );
-		$this->assertEquals( '', $lines[ $count - 2 ] );
-		$this->assertStringStartsWith( '[test]: ', $lines[ $count - 1 ] );
+		[1.0.0]: /releases/tag/v1.0.0
+		END;
+
+		$expected = \str_replace( '2023-03-30', \date( 'Y-m-d' ), $expected );
+
+		$this->assertEquals( $expected, $render );
 	}
 }

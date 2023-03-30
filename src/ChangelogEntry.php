@@ -80,15 +80,17 @@ class ChangelogEntry {
 	 * @return string
 	 */
 	public function render() {
-		\ob_start();
+		$lines = [
+			'## [' . $this->version . '] - ' . $this->date->format( 'Y-m-d' ),
+			'',
+			\trim( $this->body ),
+			'',
+			'Full set of changes: [`' . $this->get_version_compare() . '`][' . $this->version . ']',
+			'',
+			'[' . $this->version . ']: ' . $this->get_link()
+		];
 
-		$changelog_entry = $this;
-
-		include __DIR__ . '/../templates/changelog-entry.php';
-
-		$output = ob_get_clean();
-
-		return $output;
+		return \implode( "\n", $lines );
 	}
 
 	/**
