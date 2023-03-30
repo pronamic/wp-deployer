@@ -33,5 +33,14 @@ class ChangelogEntryTest extends TestCase {
 		$render = $changelog_entry->render();
 
 		$this->assertStringStartsWith( '## [test]', $render );
+
+		$lines = explode( "\n", $render );
+
+		$count = \count( $lines );
+
+		$this->assertEquals( '', $lines[ $count - 4 ] );
+		$this->assertStringStartsWith( 'Full set of changes: ', $lines[ $count - 3 ] );
+		$this->assertEquals( '', $lines[ $count - 2 ] );
+		$this->assertStringStartsWith( '[test]: ', $lines[ $count - 1 ] );
 	}
 }
