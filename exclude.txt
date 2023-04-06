@@ -27,13 +27,10 @@ CODE_OF_CONDUCT.md
 /wordpress_org_assets/
 
 # Composer (https://getcomposer.org/)
-/vendor/bin/
-/vendor/*/*/documentation/
-/vendor/*/*/tests/
+/vendor/
 
 # Composer bin plugin (https://github.com/bamarni/composer-bin-plugin)
 /vendor-bin/
-/vendor/*/*/vendor-bin/
 
 # Eclipse (https://www.eclipse.org/)
 .buildpath
