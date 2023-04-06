@@ -64,6 +64,8 @@ class WpBuildCommand extends Command {
 			getcwd()
 		);
 
+		$io = new SymfonyStyle( $input, $output );
+
 		$helper = $this->getHelper( 'process' );
 
 		$filesystem = new Filesystem();
@@ -117,16 +119,36 @@ class WpBuildCommand extends Command {
 			$helper->run( $output, $process );
 		}
 
+		// Slug.
+		$slug = null;
+
+		$composer_json_file = $working_dir . '/composer.json';
+
+		$data = file_get_contents( $composer_json_file );
+
+		$composer_json = json_decode( $data );
+
+		if ( ! isset( $composer->config->{'wp-slug'} ) ) {
+			$io->note( 'The `composer.json` file is missing a `config.wp-slug` property.' );
+		} else {
+			$slug = $composer->config->{'wp-slug'};
+		}
+
 		// Distribution archive.
 		$bin_wp = $bin_dir . '/wp';
 
 		if ( file_exists( $bin_wp ) ) {
-			$command = \sprintf(
-				$bin_wp . ' dist-archive %s',
-				$build_dir
-			);
+			$command = [
+				$bin_wp,
+				'dist-archive',
+				$build_dir,
+			];
 
-			$process = Process::fromShellCommandline( $command );
+			if ( $slug !== null ) {
+				$command[] = '--plugin-dirname=' . $slug;
+			}
+
+			$process = new Process( $command );
 
 			$helper->mustRun( $output, $process );
 		}
