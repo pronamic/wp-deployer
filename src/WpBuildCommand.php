@@ -108,7 +108,13 @@ class WpBuildCommand extends Command {
 
 			$process = Process::fromShellCommandline( $command );
 
-			$helper->mustRun( $output, $process );
+			/**
+			 * PHP Code Beautifier will return exit-code 1 if all 'errors' are fixed.
+			 * 
+			 * @link https://github.com/squizlabs/PHP_CodeSniffer/issues/3057
+			 * @link https://github.com/squizlabs/PHP_CodeSniffer/issues/2898
+			 */			
+			$helper->run( $output, $process );
 		}
 
 		// Distribution archive.
