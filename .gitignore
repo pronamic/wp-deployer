@@ -7,3 +7,6 @@ vendor/
 
 # PHPUnit
 /.phpunit.result.cache
+
+# Tests
+/tests/plugin/build/

@@ -1,0 +1,130 @@
+<?php
+/**
+ * WordPress build command
+ *
+ * @author    Pronamic <info@pronamic.eu>
+ * @copyright 2005-2018 Pronamic
+ * @license   GPL-3.0-or-later
+ * @package   Pronamic\Deployer
+ */
+
+namespace Pronamic\Deployer;
+
+use Acme\Command\DefaultCommand;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputDefinition;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Filesystem\Path;
+use Symfony\Component\Process\Process;
+
+/**
+ * WordPress build command
+ *
+ * @author  Remco Tolsma
+ * @version 1.0.0
+ * @since   1.0.0
+ */
+class WpBuildCommand extends Command {
+	/**
+	 * Configure.
+	 */
+	protected function configure() {
+		$this
+			->setName( 'wp-build' )
+			->setDescription( 'WordPress build.' )
+			->setDefinition(
+				new InputDefinition(
+					[
+						new InputArgument( 'working-dir', InputArgument::REQUIRED ),
+						new InputArgument( 'build-dir', InputArgument::REQUIRED ),
+					]
+				)
+			);
+	}
+
+	/**
+	 * Execute.
+	 *
+	 * @param InputInterface  $input  Input interface.
+	 * @param OutputInterface $output Output interface.
+	 * @return int
+	 */
+	protected function execute( InputInterface $input, OutputInterface $output ) {
+		global $_composer_bin_dir;
+
+		$working_dir = $input->getArgument( 'working-dir' );
+		$build_dir   = $input->getArgument( 'build-dir' );
+
+		$bin_dir = Path::makeRelative(
+			$_composer_bin_dir ?? __DIR__ . '/../vendor/bin',
+			getcwd()
+		);
+
+		$helper = $this->getHelper( 'process' );
+
+		$filesystem = new Filesystem();
+
+		$filesystem->mkdir( $build_dir );
+
+		$exclude_file = Path::makeRelative(
+			\realpath( __DIR__ . '/../exclude.txt' ),
+			getcwd()
+		);
+
+		// Build - Sync.
+		$command = sprintf(
+			'rsync --recursive --delete --exclude-from=%s --verbose %s %s',
+			$exclude_file,
+			$working_dir . '/',
+			$build_dir . '/'
+		);
+
+		$process = Process::fromShellCommandline( $command );
+
+		$helper->mustRun( $output, $process );
+
+		// Composer.
+		$command = \sprintf(
+			'composer install --no-dev --prefer-dist --optimize-autoloader --working-dir=%s',
+			$working_dir
+		);
+
+		$process = Process::fromShellCommandline( $command );
+
+		$helper->mustRun( $output, $process );
+
+		// Text domain fixer.
+		$bin_phpcbf = $bin_dir . '/phpcbf';
+
+		if ( file_exists( $bin_phpcbf ) ) {
+			$command = \sprintf(
+				$bin_phpcbf . ' -s -v --sniffs=WordPress.Utils.I18nTextDomainFixer %s',
+				$working_dir
+			);
+
+			$process = Process::fromShellCommandline( $command );
+
+			$helper->mustRun( $output, $process );
+		}
+
+		// Distribution archive.
+		$bin_wp = $bin_dir . '/wp';
+
+		if ( file_exists( $bin_wp ) ) {
+			$command = \sprintf(
+				$bin_wp . ' dist-archive %s',
+				$working_dir
+			);
+
+			$process = Process::fromShellCommandline( $command );
+
+			$helper->mustRun( $output, $process );
+		}
+
+		return 0;
+	}
+}
