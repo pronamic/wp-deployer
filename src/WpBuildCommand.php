@@ -90,7 +90,7 @@ class WpBuildCommand extends Command {
 		// Composer.
 		$command = \sprintf(
 			'composer install --no-dev --prefer-dist --optimize-autoloader --working-dir=%s',
-			$working_dir
+			$build_dir
 		);
 
 		$process = Process::fromShellCommandline( $command );
@@ -103,7 +103,7 @@ class WpBuildCommand extends Command {
 		if ( file_exists( $bin_phpcbf ) ) {
 			$command = \sprintf(
 				$bin_phpcbf . ' -s -v --sniffs=WordPress.Utils.I18nTextDomainFixer %s',
-				$working_dir
+				$build_dir
 			);
 
 			$process = Process::fromShellCommandline( $command );
@@ -117,7 +117,7 @@ class WpBuildCommand extends Command {
 		if ( file_exists( $bin_wp ) ) {
 			$command = \sprintf(
 				$bin_wp . ' dist-archive %s',
-				$working_dir
+				$build_dir
 			);
 
 			$process = Process::fromShellCommandline( $command );
