@@ -128,10 +128,10 @@ class WpBuildCommand extends Command {
 
 		$composer_json = json_decode( $data );
 
-		if ( ! isset( $composer->config->{'wp-slug'} ) ) {
+		if ( ! isset( $composer_json->config->{'wp-slug'} ) ) {
 			$io->note( 'The `composer.json` file is missing a `config.wp-slug` property.' );
 		} else {
-			$slug = $composer->config->{'wp-slug'};
+			$slug = $composer_json->config->{'wp-slug'};
 		}
 
 		// Distribution archive.
