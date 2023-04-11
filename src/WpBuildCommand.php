@@ -14,6 +14,7 @@ use Acme\Command\DefaultCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputDefinition;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
@@ -39,8 +40,20 @@ class WpBuildCommand extends Command {
 			->setDefinition(
 				new InputDefinition(
 					[
-						new InputArgument( 'working-dir', InputArgument::REQUIRED ),
-						new InputArgument( 'build-dir', InputArgument::REQUIRED ),
+						new InputOption(
+							'working-dir',
+							null,
+							InputOption::VALUE_REQUIRED,
+							'The working directory.',
+							'./'
+						),
+						new InputOption(
+							'build-dir',
+							null,
+							InputOption::VALUE_REQUIRED,
+							'The build directory.',
+							'./build/plugin'
+						),
 					]
 				)
 			);
@@ -56,8 +69,8 @@ class WpBuildCommand extends Command {
 	protected function execute( InputInterface $input, OutputInterface $output ) {
 		global $_composer_bin_dir;
 
-		$working_dir = $input->getArgument( 'working-dir' );
-		$build_dir   = $input->getArgument( 'build-dir' );
+		$working_dir = $input->getOption( 'working-dir' );
+		$build_dir   = $input->getOption( 'build-dir' );
 
 		$bin_dir = Path::makeRelative(
 			$_composer_bin_dir ?? __DIR__ . '/../vendor/bin',
