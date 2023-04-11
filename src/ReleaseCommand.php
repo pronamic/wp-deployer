@@ -53,6 +53,13 @@ class ReleaseCommand extends Command {
 							'./build/plugin'
 						),
 						new InputOption(
+							'svn-dir',
+							null,
+							InputOption::VALUE_REQUIRED,
+							'The Subversion directory.',
+							'./build/svn'
+						),
+						new InputOption(
 							'gcloud-storage',
 							null,
 							InputOption::VALUE_NONE,
@@ -244,6 +251,27 @@ class ReleaseCommand extends Command {
 
 				$helper->mustRun( $output, $process );
 			}
+		}
+
+		// WordPress.org.
+		$release_to_wp_org = $input->getOption( 'wp-org' );
+
+		if ( $release_to_wp_org ) {
+			$io->section( 'WordPress.org' );
+
+			$svn_dir = $input->getOption( 'svn-dir' );
+
+			$command = $this->getApplication()->find( 'wp-org-release' );
+
+			$command_arguments = [
+				'working-dir' => $build_dir,
+				'svn-dir'     => $svn_dir,
+				'slug'        => $slug,
+			];
+
+			$command_input = new ArrayInput( $command_arguments );
+
+			$command->run( $command_input, $output );
 		}
 
 		return 0;
