@@ -6,11 +6,6 @@
 # .DS_Store (https://en.wikipedia.org/wiki/.DS_Store)
 .DS_Store
 
-# License
-LICENSE
-LICENSE.md
-LICENSE.txt
-
 # Code of Conduct
 CODE_OF_CONDUCT.md
 
