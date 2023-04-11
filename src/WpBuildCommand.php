@@ -90,6 +90,9 @@ class WpBuildCommand extends Command {
 			getcwd()
 		);
 
+		// Project.
+		$project = new WpProject( $working_dir );
+
 		$io->title( 'Build' );
 
 		// Build - Sync.
@@ -151,17 +154,7 @@ class WpBuildCommand extends Command {
 
 		$io->text( 'The build command tries to determine the <info>slug</info> of the plugin or theme.' );
 
-		$slug = null;
-
-		$composer_json_file = $working_dir . '/composer.json';
-
-		$data = file_get_contents( $composer_json_file );
-
-		$composer_json = json_decode( $data );
-
-		if ( isset( $composer_json->config->{'wp-slug'} ) ) {
-			$slug = $composer_json->config->{'wp-slug'};
-		}
+		$slug = $project->get_slug();
 
 		if ( empty( $slug ) ) {
 			$io->note( 'The slug could not be determined, define it in <fg=green>composer.json</fg=green> <fg=green>config.wp-slug</fg=green>.' );
