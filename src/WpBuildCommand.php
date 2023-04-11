@@ -90,7 +90,13 @@ class WpBuildCommand extends Command {
 			getcwd()
 		);
 
+		$io->title( 'Build' );
+
 		// Build - Sync.
+		$io->section( 'Rsync' );
+
+		$io->text( 'The build command uses <fg=green>rsync</fg=green> to copy files from the working directory to the build directory.' );
+
 		$command = sprintf(
 			'rsync --recursive --delete --exclude-from=%s --verbose %s %s',
 			$exclude_file,
@@ -103,6 +109,10 @@ class WpBuildCommand extends Command {
 		$helper->mustRun( $output, $process );
 
 		// Composer.
+		$io->section( 'Composer' );
+
+		$io->text( 'The build command installs the required Composer libraries.' );
+
 		$command = \sprintf(
 			'composer install --no-dev --prefer-dist --optimize-autoloader --working-dir=%s',
 			$build_dir
@@ -113,6 +123,10 @@ class WpBuildCommand extends Command {
 		$helper->mustRun( $output, $process );
 
 		// Text domain fixer.
+		$io->section( 'I18n text domain fixer tool' );
+
+		$io->text( 'The build command runs the WordPress Coding Standards <fg=green>I18nTextDomainFixer</fg=green> tool.' );
+
 		$bin_phpcbf = $bin_dir . '/phpcbf';
 
 		if ( file_exists( $bin_phpcbf ) ) {
@@ -133,6 +147,10 @@ class WpBuildCommand extends Command {
 		}
 
 		// Slug.
+		$io->section( 'Slug' );
+
+		$io->text( 'The build command tries to determine the <info>slug</info> of the plugin or theme.' );
+
 		$slug = null;
 
 		$composer_json_file = $working_dir . '/composer.json';
@@ -141,15 +159,33 @@ class WpBuildCommand extends Command {
 
 		$composer_json = json_decode( $data );
 
-		if ( ! isset( $composer_json->config->{'wp-slug'} ) ) {
-			$io->note( 'The `composer.json` file is missing a `config.wp-slug` property.' );
-		} else {
+		if ( isset( $composer_json->config->{'wp-slug'} ) ) {
 			$slug = $composer_json->config->{'wp-slug'};
 		}
 
-		// Distribution archive.
+		if ( empty( $slug ) ) {
+			$io->note( 'The slug could not be determined, define it in <fg=green>composer.json</fg=green> <fg=green>config.wp-slug</fg=green>.' );
+		}
+
+		// WP-CLI.
 		$bin_wp = $bin_dir . '/wp';
 
+		// Make POT.
+		if ( file_exists( $bin_wp ) ) {
+			$command = [
+				$bin_wp,
+				'i18n',
+				'make-pot',
+				$build_dir,
+				'--slug=' . $slug,
+			];
+
+			$process = new Process( $command );
+
+			$helper->mustRun( $output, $process );
+		}
+
+		// Distribution archive.
 		if ( file_exists( $bin_wp ) ) {
 			$command = [
 				$bin_wp,
