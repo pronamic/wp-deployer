@@ -56,22 +56,19 @@ class ReleaseCommand extends Command {
 							'gcloud-storage',
 							null,
 							InputOption::VALUE_NONE,
-							'Release to Google Cloud Storage?',
-							false
+							'Release to Google Cloud Storage?'
 						),
 						new InputOption(
 							'pronamic-eu',
 							null,
 							InputOption::VALUE_NONE,
-							'Release to Pronamic.eu?',
-							false
+							'Release to Pronamic.eu?'
 						),
 						new InputOption(
 							'wp-org',
 							null,
 							InputOption::VALUE_NONE,
-							'Release to WordPress.org?',
-							false
+							'Release to WordPress.org?'
 						),
 					]
 				)
