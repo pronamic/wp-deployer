@@ -11,11 +11,13 @@
 namespace Pronamic\Deployer;
 
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\Filesystem\Path;
 use Symfony\Component\Process\Process;
 
 /**
@@ -92,6 +94,12 @@ class ReleaseCommand extends Command {
 			return 1;
 		}
 
+		// Distribution archive.
+		$zip_file_path = Path::makeRelative(
+			$build_dir . '/../' . $slug . '.' . $version . '.zip',
+			\getcwd()
+		);
+
 		// Build.
 		$io->section( 'Build' );
 
@@ -119,7 +127,7 @@ class ReleaseCommand extends Command {
 			'gcloud',
 			'storage',
 			'cp',
-			$build_dir . '/../' . $zip_filename_version,
+			$zip_file_path,
 			$gcloud_bucket_name . '/' . $zip_filename_version,
 		];
 
@@ -145,8 +153,10 @@ class ReleaseCommand extends Command {
 		$command = [
 			'curl',
 			'--netrc',
-			'--data version=' . $version,
-			'--request PATCH',
+			'--data',
+			'version=' . $version,
+			'--request',
+			'PATCH',
 			'https://www.pronamic.eu/wp-json/pronamic-wp-extensions/v1/plugins/' . $slug,
 		];
 
@@ -155,27 +165,50 @@ class ReleaseCommand extends Command {
 		$helper->mustRun( $output, $process );
 
 		// GitHub.
+		$io->section( 'GitHub' );
+
 		$command = [
 			'gh',
 			'release',
-			'create',
+			'view',
 			'v' . $version,
-			'--title ' . $version,
-			'--notes-file -',
-			$build_dir . '/../' . $zip_filename_version,
+			'--json',
+			'url',
 		];
 
-		$changelog_entry = '';
+		$process = new Process( $command );
 
-		$entry = $changelog->get_entry( $version );
+		$helper->run( $output, $process );
 
-		if ( null !== $entry ) {
-			$changelog_entry = $entry->body;
+		if ( $process->isSuccessful() ) {
+			$io->text( 'GitHub release already exists.' );
 		}
 
-		$process = new Process( $command, null, null, $changelog_entry, null );
+		if ( ! $process->isSuccessful() ) {
+			$command = [
+				'gh',
+				'release',
+				'create',
+				'v' . $version,
+				'--title',
+				$version,
+				'--notes-file',
+				'-',
+				$zip_file_path,
+			];
 
-		$helper->mustRun( $output, $process );
+			$changelog_entry = '';
+
+			$entry = $changelog->get_entry( $version );
+
+			if ( null !== $entry ) {
+				$changelog_entry = $entry->body;
+			}
+
+			$process = new Process( $command, null, null, $changelog_entry, null );
+
+			$helper->mustRun( $output, $process );
+		}
 
 		return 0;
 	}
