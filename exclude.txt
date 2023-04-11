@@ -92,6 +92,7 @@ apigen.neon
 phpci.yml
 
 # PHP_CodeSniffer (https://github.com/squizlabs/PHP_CodeSniffer)
+phpcs.xml
 phpcs.xml.dist
 phpcs.ruleset.xml
 
@@ -138,5 +139,8 @@ wp-cli.yml
 # wp-env (https://github.com/WordPress/gutenberg/tree/trunk/packages/env)
 .wp-env.json
 
-# Other
-/build/
+# WordPress distribution archive (https://developer.wordpress.org/cli/commands/dist-archive/)
+.distignore
+
+# Pronamic build ignore
+.pronamic-build-ignore
