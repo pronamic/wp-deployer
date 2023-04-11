@@ -146,5 +146,3 @@ wp-cli.yml
 /repositories/
 /src/
 /tests/
-
-README.md
