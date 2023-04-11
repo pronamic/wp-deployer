@@ -177,8 +177,11 @@ class WpBuildCommand extends Command {
 				'i18n',
 				'make-pot',
 				$build_dir,
-				'--slug=' . $slug,
 			];
+
+			if ( $slug !== null ) {
+				$command[] = '--slug=' . $slug;
+			}
 
 			$process = new Process( $command );
 
