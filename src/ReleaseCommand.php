@@ -52,6 +52,27 @@ class ReleaseCommand extends Command {
 							'The build directory.',
 							'./build/plugin'
 						),
+						new InputOption(
+							'gcloud-storage',
+							null,
+							InputOption::VALUE_NONE,
+							'Release to Google Cloud Storage?',
+							false
+						),
+						new InputOption(
+							'pronamic-eu',
+							null,
+							InputOption::VALUE_NONE,
+							'Release to Pronamic.eu?',
+							false
+						),
+						new InputOption(
+							'wp-org',
+							null,
+							InputOption::VALUE_NONE,
+							'Release to WordPress.org?',
+							false
+						),
 					]
 				)
 			);
@@ -115,99 +136,111 @@ class ReleaseCommand extends Command {
 		$command->run( $command_input, $output );
 
 		// Google Cloud Storage.
-		$io->section( 'Google Cloud Storage' );
+		$release_to_gcloud_storage = $input->getOption( 'gcloud-storage' );
 
-		$zip_filename_version = "$slug.$version.zip";
+		if ( $release_to_gcloud_storage ) {
+			$io->section( 'Google Cloud Storage' );
 
-		$zip_filename = "$slug.zip";
+			$zip_filename_version = "$slug.$version.zip";
 
-		$gcloud_bucket_name = "gs://downloads.pronamic.eu/plugins/$slug";
+			$zip_filename = "$slug.zip";
 
-		$command = [
-			'gcloud',
-			'storage',
-			'cp',
-			$zip_file_path,
-			$gcloud_bucket_name . '/' . $zip_filename_version,
-		];
+			$gcloud_bucket_name = "gs://downloads.pronamic.eu/plugins/$slug";
 
-		$process = new Process( $command );
+			$command = [
+				'gcloud',
+				'storage',
+				'cp',
+				$zip_file_path,
+				$gcloud_bucket_name . '/' . $zip_filename_version,
+			];
 
-		$helper->mustRun( $output, $process );
+			$process = new Process( $command );
 
-		$command = [
-			'gcloud',
-			'storage',
-			'cp',
-			$gcloud_bucket_name . '/' . $zip_filename_version,
-			$gcloud_bucket_name . '/' . $zip_filename,
-		];
+			$helper->mustRun( $output, $process );
 
-		$process = new Process( $command );
+			$command = [
+				'gcloud',
+				'storage',
+				'cp',
+				$gcloud_bucket_name . '/' . $zip_filename_version,
+				$gcloud_bucket_name . '/' . $zip_filename,
+			];
 
-		$helper->mustRun( $output, $process );
+			$process = new Process( $command );
 
-		// Pronamic.eu.
-		$io->section( 'Pronamic.eu' );
-
-		$command = [
-			'curl',
-			'--netrc',
-			'--data',
-			'version=' . $version,
-			'--request',
-			'PATCH',
-			'https://www.pronamic.eu/wp-json/pronamic-wp-extensions/v1/plugins/' . $slug,
-		];
-
-		$process = new Process( $command );
-
-		$helper->mustRun( $output, $process );
-
-		// GitHub.
-		$io->section( 'GitHub' );
-
-		$command = [
-			'gh',
-			'release',
-			'view',
-			'v' . $version,
-			'--json',
-			'url',
-		];
-
-		$process = new Process( $command );
-
-		$helper->run( $output, $process );
-
-		if ( $process->isSuccessful() ) {
-			$io->text( 'GitHub release already exists.' );
+			$helper->mustRun( $output, $process );
 		}
 
-		if ( ! $process->isSuccessful() ) {
+		// Pronamic.eu.
+		$release_to_pronamic_eu = $input->getOption( 'pronamic-eu' );
+
+		if ( $release_to_pronamic_eu ) {
+			$io->section( 'Pronamic.eu' );
+
+			$command = [
+				'curl',
+				'--netrc',
+				'--data',
+				'version=' . $version,
+				'--request',
+				'PATCH',
+				'https://www.pronamic.eu/wp-json/pronamic-wp-extensions/v1/plugins/' . $slug,
+			];
+
+			$process = new Process( $command );
+
+			$helper->mustRun( $output, $process );
+		}
+
+		// GitHub.
+		$release_to_github = $input->getOption( 'github' );
+
+		if ( $release_to_github ) {
+			$io->section( 'GitHub' );
+
 			$command = [
 				'gh',
 				'release',
-				'create',
+				'view',
 				'v' . $version,
-				'--title',
-				$version,
-				'--notes-file',
-				'-',
-				$zip_file_path,
+				'--json',
+				'url',
 			];
 
-			$changelog_entry = '';
+			$process = new Process( $command );
 
-			$entry = $changelog->get_entry( $version );
+			$helper->run( $output, $process );
 
-			if ( null !== $entry ) {
-				$changelog_entry = $entry->body;
+			if ( $process->isSuccessful() ) {
+				$io->text( 'GitHub release already exists.' );
 			}
 
-			$process = new Process( $command, null, null, $changelog_entry, null );
+			if ( ! $process->isSuccessful() ) {
+				$command = [
+					'gh',
+					'release',
+					'create',
+					'v' . $version,
+					'--title',
+					$version,
+					'--notes-file',
+					'-',
+					$zip_file_path,
+				];
 
-			$helper->mustRun( $output, $process );
+				$changelog_entry = '';
+
+				$entry = $changelog->get_entry( $version );
+
+				if ( null !== $entry ) {
+					$changelog_entry = $entry->body;
+				}
+
+				$process = new Process( $command, null, null, $changelog_entry, null );
+
+				$helper->mustRun( $output, $process );
+			}
 		}
 
 		return 0;
