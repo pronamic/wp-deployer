@@ -100,14 +100,28 @@ class WpBuildCommand extends Command {
 
 		$io->text( 'The build command uses <fg=green>rsync</fg=green> to copy files from the working directory to the build directory.' );
 
-		$command = sprintf(
-			'rsync --recursive --delete --exclude-from=%s --verbose %s %s',
-			$exclude_file,
-			$working_dir . '/',
-			$build_dir . '/'
-		);
+		$options = [
+			'--recursive',
+			'--delete',
+			'--verbose',
+			'--exclude-from=' . $exclude_file,
+		];
 
-		$process = Process::fromShellCommandline( $command );
+		if ( \is_readable( $working_dir . '/.pronamic-build-ignore' ) ) {
+			$options[] = '--exclude-from=' . Path::makeRelative(
+				$working_dir . '/.pronamic-build-ignore',
+				getcwd()
+			);
+		}
+
+		$command = [
+			'rsync',
+			...$options,
+			$working_dir . '/',
+			$build_dir . '/',
+		];
+
+		$process = new Process( $command );
 
 		$helper->mustRun( $output, $process );
 
