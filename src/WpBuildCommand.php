@@ -172,6 +172,10 @@ class WpBuildCommand extends Command {
 
 		// Make POT.
 		if ( file_exists( $bin_wp ) ) {
+			$io->section( 'Create a POT file' );
+
+			$io->text( 'The build command uses <info>WP-CLI</info> to create a POT file via <fg=green>wp i18n make-pot</fg=green>.' );
+
 			$command = [
 				$bin_wp,
 				'i18n',
@@ -190,6 +194,10 @@ class WpBuildCommand extends Command {
 
 		// Distribution archive.
 		if ( file_exists( $bin_wp ) ) {
+			$io->section( 'Create a distribution archive' );
+
+			$io->text( 'The build command uses <info>WP-CLI</info> to create a distribution archive via <fg=green>wp dist-archive</fg=green>.' );
+
 			$command = [
 				$bin_wp,
 				'dist-archive',
