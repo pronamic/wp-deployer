@@ -65,6 +65,12 @@ class ReleaseCommand extends Command {
 							'Release to Pronamic.eu?'
 						),
 						new InputOption(
+							'github',
+							null,
+							InputOption::VALUE_NONE,
+							'Release to GitHub?'
+						),
+						new InputOption(
 							'wp-org',
 							null,
 							InputOption::VALUE_NONE,
