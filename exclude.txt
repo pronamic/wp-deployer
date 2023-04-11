@@ -6,9 +6,6 @@
 # .DS_Store (https://en.wikipedia.org/wiki/.DS_Store)
 .DS_Store
 
-# Keep a Changelog (https://keepachangelog.com/)
-CHANGELOG.md
-
 # License
 LICENSE
 LICENSE.md
