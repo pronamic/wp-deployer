@@ -140,7 +140,6 @@ wp-cli.yml
 
 # Other
 /build/
-/etc/
 /repositories/
 /src/
 /tests/
