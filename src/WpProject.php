@@ -18,6 +18,8 @@ namespace Pronamic\Deployer;
  * @since   1.0.0
  */
 class WpProject {
+	private $directory;
+
 	public function __construct( $directory ) {
 		$this->directory = $directory;
 	}
