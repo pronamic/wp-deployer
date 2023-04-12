@@ -1,11 +1,15 @@
 <h1 align="center">Pronamic WordPress Deployer</h3>
 
-> **Warning**
-> Deprecated, because [Pronamic CLI](https://github.com/pronamic/pronamic-cli) is the successor.
-
 <p align="center">
 	Console application to <strong>build</strong> and <strong>deploy</strong> WordPress solutions to the <strong>WordPress.org repository</strong> and <strong>AWS S3</strong>.
 </p>
+
+---
+
+> **Warning**
+> Deprecated, because [Pronamic CLI](https://github.com/pronamic/pronamic-cli) is the successor.
+
+---
 
 ## Table of contents
 
